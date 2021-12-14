@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2021-11-15UTC17:03:210">
+        <header>
+            <authorName>qcscsc</authorName>
+            <authorEmail>qc@mce.ca</authorEmail>
+        </header>
+        <body>
+            <trans-unit id="title">
+                <source>Import redirects list</source>
+                <target>Importer la liste des redirections</target>
+            </trans-unit>
+            <trans-unit id="tab">
+                <source> tab</source>
+                <target>tabulation</target>
+            </trans-unit>
+            <trans-unit id="separationColon">
+                <source>: colon</source>
+                <target>: deux points</target>
+            </trans-unit>
+            <trans-unit id="separationComma">
+                <source>, comma</source>
+                <target>, virgule</target>
+            </trans-unit>
+            <trans-unit id="separationPipe">
+                <source>| pipe</source>
+                <target>| pipe</target>
+            </trans-unit>
+            <trans-unit id="separationSemicolon">
+                <source>; semicolon</source>
+                <target>; point-virgule</target>
+            </trans-unit>
+            <trans-unit id="separationCharacter">
+                <source>Additional field values separated by:</source>
+                <target>Valeurs de champ supplémentaires séparées par :</target>
+            </trans-unit>
+             <trans-unit id="enterRedirectsItems">
+                <source>Enter the redirects items</source>
+                <target>Saisissez les éléments de redirection</target>
+            </trans-unit>
+            <trans-unit id="lCreate_msg1">
+                <source>You&#39;re about to import a list of redirects. Are you sure you want to continue?</source>
+                <target>Vous êtes sur le point d'importer une liste de redirections. Es-tu sur de vouloir continuer?</target>
+            </trans-unit>
+            <trans-unit id="lReset">
+                <source>Clear fields</source>
+                <target>Effacer les champs</target>
+            </trans-unit>
+            <trans-unit id="import_success_body">
+                <source>The list has been imported successfully</source>
+                <target>La liste a été importée avec succès</target>
+            </trans-unit>
+           <trans-unit id="success">
+                <source>Success</source>
+                <target>Succès</target>
+           </trans-unit>
+            <trans-unit id="import_error_duplicated">
+               <source>Error when importing the redirect list, the source path : </source>
+               <target>Erreur lors de l'importation de la liste de redirection,</target>
+           </trans-unit>
+          <trans-unit id="error">
+               <source>Error</source>
+               <target>Erreur</target>
+          </trans-unit>
+            <trans-unit id="is_duplicated">
+              <source> is duplicated</source>
+              <target> est dupliqué</target>
+          </trans-unit>
+          <trans-unit id="columns">
+            <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
+            <target>titre, source de host, chemin de source, cible, heure de début, heure de fin,expression régulière, code d'état</target>
+         </trans-unit>
+           <trans-unit id="import_error_syntax">
+               <source>Error when importing the redirect list, please verify the importing syntax </source>
+               <target>Erreur lors de l'importation de la liste de redirection, veuillez vérifier la syntaxe d'importation</target>
+           </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,57 @@
+<html
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+        data-namespace-typo3-fluid="true"
+>
+
+<h1>
+    <f:translate key="title" extensionName="qc_redirects"/>
+</h1>
+<f:flashMessages />
+<form action="{be:moduleLink(route:'add_redirects')}" method="post">
+    <div class="form-group t3js-newpagetree-container">
+        <div class="form-section">
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
+                    <select name="separationCharacter" class="form-control form-control-adapt" id="separationCharacter">
+                        <option value="tab" selected="selected"><f:translate key="tab" extensionName="qc_redirects" /></option>
+                        <option value="comma" ><f:translate key="separationComma" extensionName="qc_redirects" /></option>
+                        <option value="pipe"><f:translate key="separationPipe" extensionName="qc_redirects" /></option>
+                        <option value="semicolon"><f:translate key="separationSemicolon" extensionName="qc_redirects" /></option>
+                        <option value="colon"><f:translate key="separationColon" extensionName="qc_redirects" /></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <label for="pageTree">
+                        <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
+                    </label>
+                    <br>
+                    <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
+                    <div class="form-control-wrap">
+                        <textarea class="form-control" id="pageTree" name="redirectsList" rows="8"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input
+                class="btn btn-default"
+                type="submit"
+                name="create"
+                value="Create Redirects List"
+                data-message="{f:translate(key:'lCreate_msg1', extensionName:'qc_redirects')}"
+                onclick="return confirm(this.dataset.message)"
+        />
+        <input
+                class="btn btn-default"
+                type="reset"
+                value="{f:translate(key:'lReset', extensionName:'qc_redirects')}"
+        />
+    </div>
+</form>
+</html>
