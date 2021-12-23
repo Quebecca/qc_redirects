@@ -4,9 +4,9 @@
  * Extension Manager/Repository config file for ext "qc_redirects".
  */
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'qc redirects',
-    'description' => 'Module that improve the redirects module',
-    'category' => 'templates',
+    'title' => 'qc_redirects',
+    'description' => 'Module used to improve the redirects module, by importing a redirects list with a title column',
+    'category' => 'plugin',
     'constraints' => [
         'depends' => [
             'typo3' => '10.4.0-10.4.99',
@@ -20,9 +20,8 @@ $EM_CONF[$_EXTKEY] = [
     'state' => 'stable',
     'uploadfolder' => 0,
     'createDirs' => '',
-    'clearCacheOnLoad' => 1,
-    'author' => 'qcscsc',
-    'author_email' => 'qc@mce.ca',
-    'author_company' => 'mce',
+    'clearCacheOnLoad' => 0,
+    'author' => 'Quebec.ca/',
+    'author_email' => '',
     'version' => '1.0.0',
 ];

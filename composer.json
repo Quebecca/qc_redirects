@@ -2,7 +2,6 @@
     "name": "mce/qc-redirects",
     "type": "typo3-cms-extension",
     "description": "Module used to import redirects list",
-    "homepage": "https://localhost.com",
     "license": ["GPL-2.0-or-later"],
     "keywords": ["TYPO3 CMS"],
     "require": {

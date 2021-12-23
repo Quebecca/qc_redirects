@@ -28,7 +28,7 @@
                 <source>Clear fields</source>
             </trans-unit>
             <trans-unit id="separationCharacter">
-                <source>Additional field values separated by:</source>
+                 <source>Fields values separated by:</source>
             </trans-unit>
              <trans-unit id="enterRedirectsItems">
                 <source>Enter the redirects items</source>
@@ -62,6 +62,9 @@
            </trans-unit>
            <trans-unit id="import_error_syntax">
               <source>Error when importing the redirect list, please verify the importing syntax </source>
+          </trans-unit>
+          <trans-unit id="import">
+            <source>Import the redirects list</source>
           </trans-unit>
         </body>
     </file>

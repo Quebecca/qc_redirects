@@ -49,13 +49,16 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
     /**
-     * Main function Handling input variables and rendering main view
+     * Import function Handling input variables and rendering the view
      *
      * @param ServerRequestInterface $request
      * @return ResponseInterface Response
      */
-    public function mainAction(ServerRequestInterface $request = null): ResponseInterface
+    public function importAction(ServerRequestInterface $request = null)
     {
+        if(is_null($request)){
+            return null;
+        }
         $this->request = $request;
         // rendering after form submit
         /** @var StandaloneView $view */
@@ -114,7 +117,7 @@ class AddRedirectsController  extends BackendModuleActionController
     /**
      * Persist imported list of redirects in DB
      *
-     * @return bool TRUE if the was list was successefly stored in the database
+     * @return bool TRUE if the was list was successfully stored in the database
      */
     protected function createRedirectsList(array $redirectListArray): bool
     {
@@ -229,7 +232,4 @@ class AddRedirectsController  extends BackendModuleActionController
         return $GLOBALS['BE_USER'];
     }
 
-    public function importAction(){
-
-    }
 }

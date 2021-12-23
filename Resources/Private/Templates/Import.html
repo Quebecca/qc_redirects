@@ -9,7 +9,7 @@
 </h1>
 <f:flashMessages />
 <form action="{be:moduleLink(route:'add_redirects')}" method="post">
-    <div class="form-group t3js-newpagetree-container">
+    <div class="form-group">
         <div class="form-section">
             <div class="row">
                 <div class="form-group col-xs-12">
@@ -25,13 +25,13 @@
             </div>
             <div class="row">
                 <div class="form-group col-xs-12">
-                    <label for="pageTree">
+                    <label for="importedList">
                         <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
                     </label>
                     <br>
                     <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
                     <div class="form-control-wrap">
-                        <textarea class="form-control" id="pageTree" name="redirectsList" rows="8"></textarea>
+                        <textarea class="form-control" id="importedList" name="redirectsList" rows="8"></textarea>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 class="btn btn-default"
                 type="submit"
                 name="create"
-                value="Create Redirects List"
+                value="{f:translate(key:'import', extensionName:'qc_redirects')}"
                 data-message="{f:translate(key:'lCreate_msg1', extensionName:'qc_redirects')}"
                 onclick="return confirm(this.dataset.message)"
         />
