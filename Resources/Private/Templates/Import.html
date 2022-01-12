@@ -13,16 +13,7 @@
         <div class="form-section">
             <div class="row">
                 <div class="form-group col-xs-12">
-                    <f:debug>{_all}</f:debug>
                     <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
-                    <f:comment>
-                    <select name="separationCharacter" class="form-control form-control-adapt" id="separationCharacter">
-                        <f:for each="{separatedChars}" as="char" key="charKey">
-                            <option value="{char}" ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
-
-                        </f:for>
-                    </select>
-                    </f:comment>
                      <select name="separationCharacter" class="form-control form-control-adapt" id="separationCharacter">
                             <option value="tab" selected="selected"><f:translate key="tab" extensionName="qc_redirects" /></option>
                             <option value="comma" ><f:translate key="comma" extensionName="qc_redirects" /></option>

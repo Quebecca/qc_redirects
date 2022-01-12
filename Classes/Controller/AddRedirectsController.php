@@ -2,13 +2,13 @@
 declare(strict_types=1);
 namespace QcRedirects\Controller;
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Domain\Model\Redirect;
-use QcRedirects\Domain\Repository\RedirectRepository;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -20,7 +20,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 class AddRedirectsController  extends BackendModuleActionController
 {
-    const NUMBER_OF_ROW = 8;
+
+    const NUMBER_OF_FIELDS = 8;
     const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     /**
      * ModuleTemplate object
@@ -34,12 +35,14 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $localizationUtility;
 
-    /*
-     * @var RedirectRepository
-     */
-    private $redirectRepository;
+    protected $queryBuilder;
 
-    protected $separatedChars = [
+    /**
+     * @var string
+     */
+    protected string $table = 'sys_redirect';
+
+    protected array $separatedChars = [
         'tab' => "\t",
         'pipe' => '|',
         'semicolon' => ';',
@@ -47,19 +50,21 @@ class AddRedirectsController  extends BackendModuleActionController
         'comma' => ',',
     ];
 
-    protected $selectedSeparatedChar = '';
+    protected DataHandler $dataHandler;
 
-    protected  $duplicatedSourcePath = '';
+    protected string $selectedSeparatedChar = '';
+
+    protected string $duplicatedSourcePath = '';
 
     public function __construct(
         ModuleTemplate $moduleTemplate = null,
-        RedirectRepository $redirectRepository = null,
         LocalizationUtility $localizationUtility = null
     )
     {
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->redirectRepository = $redirectRepository ?: GeneralUtility::makeInstance(RedirectRepository::class);
+        $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
     }
 
     public function initializeAction()
@@ -69,8 +74,6 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
     /**
-     * Import function Handling input variables and rendering the view
-     *
      * @param ServerRequestInterface $request
      * @return ResponseInterface Response
      */
@@ -91,7 +94,7 @@ class AddRedirectsController  extends BackendModuleActionController
         if(!is_null($redirectsList)){
             // convert data to array
             $redirectsListArray = explode("\r\n", $redirectsList);
-            $created = $this->importRedirects($redirectsListArray);
+            $created = $this->processRedirects($redirectsListArray);
             // alert message
             $this->generateAlertMessage($created);
         }
@@ -102,6 +105,94 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
 
+    /**
+     * @return bool TRUE if the list was successfully stored in the database
+     */
+    protected function processRedirects(array $redirectListArray): bool
+    {
+        $validImport = true;
+        $rows = [];
+        // get the source_paths from the DB
+        $sourcePathArray = $this->getSourcePaths();
+        // precessing each line in the array
+        foreach ($redirectListArray as $item){
+            // separate the row columns
+            $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            // empty line
+            if(count($row) == 1 && $row[0] == ''){
+                continue;
+            }
+            // verify if all columnus are valide
+            // we have to make sure that we have all important fields
+            // make sure that all the fields are valid
+            if(count($row) == SELF::NUMBER_OF_FIELDS){
+                  array_push($rows,[
+                      'pid' => '0',
+                     'title' => $row[0],
+                     'source_host' => $row[1],
+                     'source_path' => $row[2],
+                     'target' => $row[3],
+                     'starttime' => strtotime($row[4]),
+                     'endtime' => strtotime($row[5]),
+                     'is_regexp' => (int)$row[6],
+                     'target_statuscode' => (int)$row[7],
+                 ]);
+
+                // verify if the source_path is already exists
+                if(in_array($row[2], $sourcePathArray, TRUE)){
+                    $validImport = false;
+                    $this->duplicatedSourcePath = $row[2];
+                    break;
+                }
+                array_push($sourcePathArray, $row[2]);
+            }
+            else{
+                $validImport = false;
+                break;
+            }
+        }
+        // save the items if all import are valid
+        if($validImport){
+            if(!is_null($rows) && count($rows) > 0){
+                $this->saveRedirects($rows);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param $rows
+     */
+    protected function saveRedirects($rows)
+    {
+        $data =[];
+        foreach ($rows as $key => $row) {
+            $data[$this->table]['NEW_'.$key] = $row;
+        }
+        $this->dataHandler->start($data, []);
+        $this->dataHandler->process_datamap();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSourcePaths() : array {
+        $sourcePathArray = [];
+        $statement = $this->queryBuilder
+            ->select('source_path')
+            ->from($this->table)
+            ->execute();
+        while ($row = $statement->fetch()) {
+            array_push($sourcePathArray, $row['source_path']);
+        }
+        return $sourcePathArray;
+    }
+
+
+    /**
+     * @param bool $success
+     */
     public function generateAlertMessage(bool $success){
         if($success){
             $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_success_body');
@@ -131,108 +222,6 @@ class AddRedirectsController  extends BackendModuleActionController
         $messageQueue = $flashService->getMessageQueueByIdentifier();
         $messageQueue->addMessage($message);
     }
-    /**
-     * Persist imported list of redirects in DB
-     *
-     * @return bool TRUE if the was list was successfully stored in the database
-     */
-    protected function importRedirects(array $redirectListArray): bool
-    {
-        $validImport = true;
-        $rows = [];
-        // get the source_paths from the DB
-        $sourcePathArray = $this->redirectRepository->getSourcePaths();
-        // precessing each line in the array
-        foreach ($redirectListArray as $item){
-            // separate the row columns
-            $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
-            // empty line
-            if(count($row) == 1 && $row[0] == ''){
-                continue;
-            }
-            // verify if all columnus are valide
-            // we have to make sure that we have all important fields
-            // make sure that all the fields are valid
-            if(count($row) == SELF::NUMBER_OF_ROW){
-                // Mapping item to Demand Redirect Reposiotry
-                // title, source host, source path, target, start time, end time, is regular experssion, status code
-                /*$redirectItem = new Redirect();
-                $redirectItem->setTitle($row[0]);
-                $redirectItem->setSourceHost($row[1]);
-                $redirectItem->setSourcePath($row[2]);
-                $redirectItem->setTarget($row[3]);
-                // date formating
-                $startTime = strtotime($row[4]);
-                $endDate = strtotime($row[5]);
 
-                $redirectItem->setStartTime((int)$startTime);
-                $redirectItem->setEndTime((int)$endDate);
-                $redirectItem->setIsRegExp((int)$row[6]);
-                $redirectItem->setTargetStatusCode((int)$row[7]);*/
-                $row[4] = strtotime($row[4]);
-                $row[5] = strtotime($row[5]);
-                array_push($rows, $row);
-                // verify if the source_path already exists
-                if(in_array($row[2], $sourcePathArray, TRUE)){
-                    $validImport = false;
-                    $this->duplicatedSourcePath = $row[2];
-                    break;
-                }
-                array_push($sourcePathArray, $row[2]);
-            }
-            else{
-                $validImport = false;
-                break;
-            }
-        }
-
-        // save the items if all import are valid
-        if($validImport == true){
-            if(!is_null($rows) && count($rows) > 0){
-                foreach ($rows as $item){
-
-                    //$this->redirectRepository->saveRedirect($item);
-                }
-                $validImport = true;
-            }
-            else{
-                $validImport = false;
-            }
-        }
-        return $validImport;
-    }
-
-
-    protected function importRedirect($rows)
-    {
-
-        $datamap = [];
-        foreach ($rows as $key => $item) {
-            $datamap['sys_redirects']['NEW_'.$key] = $item;
-        }
-        $dataHandler = $this->getDatahandler($datamap);
-        $dataHandler->process_datamap();
-        $success[] = count($datamap[$this->tableName]) . ' événements ont été importés.';
-    }
-
-    /**
-     * Returns LanguageService
-     *
-     * @return LanguageService
-     */
-    protected function getLanguageService(): LanguageService
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * Returns current BE user
-     *
-     * @return BackendUserAuthentication
-     */
-    protected function getBackendUser(): BackendUserAuthentication
-    {
-        return $GLOBALS['BE_USER'];
-    }
 
 }
