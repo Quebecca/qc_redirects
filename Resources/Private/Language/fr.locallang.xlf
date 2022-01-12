@@ -14,19 +14,19 @@
                 <source> tab</source>
                 <target>tabulation</target>
             </trans-unit>
-            <trans-unit id="separationColon">
+            <trans-unit id="colon">
                 <source>: colon</source>
                 <target>: deux points</target>
             </trans-unit>
-            <trans-unit id="separationComma">
+            <trans-unit id="comma">
                 <source>, comma</source>
                 <target>, virgule</target>
             </trans-unit>
-            <trans-unit id="separationPipe">
+            <trans-unit id="pipe">
                 <source>| pipe</source>
                 <target>| pipe</target>
             </trans-unit>
-            <trans-unit id="separationSemicolon">
+            <trans-unit id="semicolon">
                 <source>; semicolon</source>
                 <target>; point-virgule</target>
             </trans-unit>

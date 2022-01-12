@@ -12,16 +12,16 @@
             <trans-unit id="tab">
                 <source> tab</source>
             </trans-unit>
-            <trans-unit id="separationColon">
+            <trans-unit id="colon">
                 <source>: colon</source>
             </trans-unit>
-            <trans-unit id="separationComma">
+            <trans-unit id="comma">
                 <source>, comma</source>
             </trans-unit>
-            <trans-unit id="separationPipe">
+            <trans-unit id="pipe">
                 <source>| pipe</source>
             </trans-unit>
-            <trans-unit id="separationSemicolon">
+            <trans-unit id="semicolon">
                 <source>; semicolon</source>
             </trans-unit>
             <trans-unit id="reset">
