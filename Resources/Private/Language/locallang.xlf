@@ -9,8 +9,8 @@
             <trans-unit id="title">
                 <source>Import redirects list</source>
             </trans-unit>
-            <trans-unit id="tab">
-                <source> tab</source>
+            <trans-unit id="tabulation">
+                <source> tabulation</source>
             </trans-unit>
             <trans-unit id="colon">
                 <source>: colon</source>

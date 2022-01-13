@@ -2,19 +2,20 @@
 declare(strict_types=1);
 namespace QcRedirects\Controller;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -43,7 +44,7 @@ class AddRedirectsController  extends BackendModuleActionController
     protected string $table = 'sys_redirect';
 
     protected array $separatedChars = [
-        'tab' => "\t",
+        'tabulation' => "\t",
         'pipe' => '|',
         'semicolon' => ';',
         'colon' => ':',
@@ -56,6 +57,7 @@ class AddRedirectsController  extends BackendModuleActionController
 
     protected string $duplicatedSourcePath = '';
 
+
     public function __construct(
         ModuleTemplate $moduleTemplate = null,
         LocalizationUtility $localizationUtility = null
@@ -66,30 +68,36 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
     }
+    /**
+     * Set up the doc header properly here
+     *
+     * @param ViewInterface $view
+     * @return void
+     */
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+        $this->view->assign('separatedChars', $this->separatedChars);
 
+    }
     public function initializeAction()
     {
         $this->extKey = $this->request->getControllerExtensionKey();
         $this->moduleName = $this->request->getPluginName();
     }
 
+
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface Response
+     * @param ServerRequestInterface|null $request
+     * @return HtmlResponse|null
      */
     public function importAction(ServerRequestInterface $request = null)
     {
-        if(is_null($request)){
+        if($request == null){
             return null;
         }
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
-            'EXT:qc_redirects/Resources/Private/Templates/Import.html'
-        ));
-
         $redirectsList = $request->getParsedBody()['redirectsList'];
-        $character = $request->getParsedBody()['indentationCharacter'];
         $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
         if(!is_null($redirectsList)){
             // convert data to array
@@ -98,9 +106,6 @@ class AddRedirectsController  extends BackendModuleActionController
             // alert message
             $this->generateAlertMessage($created);
         }
-        $view->assign('character', $character);
-        $view->assign('separatedChars', $this->separatedChars);
-        $this->moduleTemplate->setContent($view->render());
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
@@ -127,15 +132,15 @@ class AddRedirectsController  extends BackendModuleActionController
             // make sure that all the fields are valid
             if(count($row) == SELF::NUMBER_OF_FIELDS){
                   array_push($rows,[
-                      'pid' => '0',
-                     'title' => $row[0],
-                     'source_host' => $row[1],
-                     'source_path' => $row[2],
-                     'target' => $row[3],
-                     'starttime' => strtotime($row[4]),
-                     'endtime' => strtotime($row[5]),
-                     'is_regexp' => (int)$row[6],
-                     'target_statuscode' => (int)$row[7],
+                    'pid' => '0',
+                    'title' => $row[0],
+                    'source_host' => $row[1],
+                    'source_path' => $row[2],
+                    'target' => $row[3],
+                    'starttime' => strtotime($row[4]),
+                    'endtime' => strtotime($row[5]),
+                    'is_regexp' => (int)$row[6],
+                    'target_statuscode' => (int)$row[7],
                  ]);
 
                 // verify if the source_path is already exists
@@ -152,11 +157,9 @@ class AddRedirectsController  extends BackendModuleActionController
             }
         }
         // save the items if all import are valid
-        if($validImport){
-            if(!is_null($rows) && count($rows) > 0){
-                $this->saveRedirects($rows);
-                return true;
-            }
+        if($validImport && !is_null($rows) && count($rows) > 0){
+            $this->saveRedirects($rows);
+            return true;
         }
         return false;
     }
@@ -200,16 +203,15 @@ class AddRedirectsController  extends BackendModuleActionController
             $flashMessageService =  AbstractMessage::OK;
         }
         else{
+            $alertMessageBody =    $this->localizationUtility->translate(SELF::LANG_FILE.'error');
+            $flashMessageService =   AbstractMessage::ERROR;
+
             if($this->duplicatedSourcePath == ''){
                 $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_error_syntax');
-                $alertMessageBody =    $this->localizationUtility->translate(SELF::LANG_FILE.'error');
-                $flashMessageService =   AbstractMessage::ERROR;
             }
             else{
                 $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_error_duplicated')
                     . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(SELF::LANG_FILE.'is_duplicated') ;
-                $alertMessageBody =    $this->localizationUtility->translate(SELF::LANG_FILE.'error');
-                $flashMessageService =   AbstractMessage::ERROR;
             }
         }
 

@@ -10,8 +10,8 @@
                 <source>Import redirects list</source>
                 <target>Importer la liste des redirections</target>
             </trans-unit>
-            <trans-unit id="tab">
-                <source> tab</source>
+            <trans-unit id="tabulation">
+                <source> tabulation</source>
                 <target>tabulation</target>
             </trans-unit>
             <trans-unit id="colon">
