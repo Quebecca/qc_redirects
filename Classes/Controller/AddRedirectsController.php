@@ -57,16 +57,19 @@ class AddRedirectsController  extends BackendModuleActionController
 
     protected string $duplicatedSourcePath = '';
 
+    protected $view;
 
     public function __construct(
         ModuleTemplate $moduleTemplate = null,
-        LocalizationUtility $localizationUtility = null
+        LocalizationUtility $localizationUtility = null,
+        StandaloneView $view = null
     )
     {
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
+        $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
     }
     /**
      * Set up the doc header properly here
@@ -78,7 +81,6 @@ class AddRedirectsController  extends BackendModuleActionController
     {
         parent::initializeView($view);
         $this->view->assign('separatedChars', $this->separatedChars);
-
     }
     public function initializeAction()
     {
@@ -96,7 +98,6 @@ class AddRedirectsController  extends BackendModuleActionController
         if($request == null){
             return null;
         }
-
         $redirectsList = $request->getParsedBody()['redirectsList'];
         $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
         if(!is_null($redirectsList)){
@@ -106,9 +107,17 @@ class AddRedirectsController  extends BackendModuleActionController
             // alert message
             $this->generateAlertMessage($created);
         }
+        $this->renderView();
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
+    function renderView(){
+        $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
+            'EXT:qc_redirects/Resources/Private/Templates/Import.html'
+        ));
+        $this->view->assign('separatedChars', $this->separatedChars);
+        $this->moduleTemplate->setContent($this->view->render());
+    }
 
     /**
      * @return bool TRUE if the list was successfully stored in the database
