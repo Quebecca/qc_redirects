@@ -2,15 +2,13 @@
 declare(strict_types=1);
 namespace QcRedirects\Controller;
 
+use Doctrine\DBAL\Driver\Exception;
 use LST\BackendModule\Controller\BackendModuleActionController;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use QcRedirects\Repository\ImportRedirectsRepository;
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -36,13 +34,6 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $localizationUtility;
 
-    protected $queryBuilder;
-
-    /**
-     * @var string
-     */
-    protected string $table = 'sys_redirect';
-
     protected array $separatedChars = [
         'tabulation' => "\t",
         'pipe' => '|',
@@ -51,11 +42,11 @@ class AddRedirectsController  extends BackendModuleActionController
         'comma' => ',',
     ];
 
-    protected DataHandler $dataHandler;
-
     protected string $selectedSeparatedChar = '';
 
     protected string $duplicatedSourcePath = '';
+
+    protected ImportRedirectsRepository  $importRedirectsRepository;
 
     protected $view;
 
@@ -67,15 +58,16 @@ class AddRedirectsController  extends BackendModuleActionController
     {
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
         $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
+        $this->importRedirectsRepository =  GeneralUtility::makeInstance(ImportRedirectsRepository::class);
     }
+
     /**
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
      * @return void
+     * @throws RouteNotFoundException
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -90,10 +82,12 @@ class AddRedirectsController  extends BackendModuleActionController
 
 
     /**
+     * this function is used to receive data form the BE form
      * @param ServerRequestInterface|null $request
      * @return HtmlResponse|null
+     * @throws Exception
      */
-    public function importAction(ServerRequestInterface $request = null)
+    public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
         if($request == null){
             return null;
@@ -111,6 +105,9 @@ class AddRedirectsController  extends BackendModuleActionController
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
+    /**
+     * This function is used to render View after form submission
+     */
     function renderView(){
         $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
             'EXT:qc_redirects/Resources/Private/Templates/Import.html'
@@ -120,18 +117,26 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
     /**
-     * @return bool TRUE if the list was successfully stored in the database
+     * This function returns True if the list was successfully stored in the database
+     * @param array $redirectListArray
+     * @return bool
+     * @throws Exception
      */
     protected function processRedirects(array $redirectListArray): bool
     {
         $validImport = true;
         $rows = [];
         // get the source_paths from the DB
-        $sourcePathArray = $this->getSourcePaths();
+        $sourcePathArray = $this->importRedirectsRepository->getSourcePaths();
         // precessing each line in the array
         foreach ($redirectListArray as $item){
             // separate the row columns
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            // remove white spacing
+            if($this->selectedSeparatedChar !== "tabulation"){
+                $row[2] = preg_replace('/\s+/', '', $row[2]);
+                $row[2] = trim($row[2], ' ');
+            }
             // empty line
             if(count($row) == 1 && $row[0] == ''){
                 continue;
@@ -158,7 +163,7 @@ class AddRedirectsController  extends BackendModuleActionController
                     $this->duplicatedSourcePath = $row[2];
                     break;
                 }
-                array_push($sourcePathArray, $row[2]);
+                array_push($sourcePathArray,  $row[2]);
             }
             else{
                 $validImport = false;
@@ -167,42 +172,14 @@ class AddRedirectsController  extends BackendModuleActionController
         }
         // save the items if all import are valid
         if($validImport && !is_null($rows) && count($rows) > 0){
-            $this->saveRedirects($rows);
+            $this->importRedirectsRepository->saveRedirects($rows);
             return true;
         }
         return false;
     }
 
     /**
-     * @param $rows
-     */
-    protected function saveRedirects($rows)
-    {
-        $data =[];
-        foreach ($rows as $key => $row) {
-            $data[$this->table]['NEW_'.$key] = $row;
-        }
-        $this->dataHandler->start($data, []);
-        $this->dataHandler->process_datamap();
-    }
-
-    /**
-     * @return array
-     */
-    public function getSourcePaths() : array {
-        $sourcePathArray = [];
-        $statement = $this->queryBuilder
-            ->select('source_path')
-            ->from($this->table)
-            ->execute();
-        while ($row = $statement->fetch()) {
-            array_push($sourcePathArray, $row['source_path']);
-        }
-        return $sourcePathArray;
-    }
-
-
-    /**
+     * This function is used to generate alert message
      * @param bool $success
      */
     public function generateAlertMessage(bool $success){
