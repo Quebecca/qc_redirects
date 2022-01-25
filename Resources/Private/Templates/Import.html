@@ -5,7 +5,7 @@
 >
 
 <h1>
-    <f:translate key="title" extensionName="qc_redirects"/>
+    <f:translate key="title" />
 </h1>
 <f:flashMessages />
 <form action="{be:moduleLink(route:'add_redirects')}" method="post">
@@ -14,22 +14,21 @@
         <div class="form-section">
             <div class="row">
                 <div class="form-group col-xs-12">
-                    <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
+                    <label for="separationCharacter"><f:translate key="separationCharacter"/></label>
                      <select name="separationCharacter" class="form-control form-control-adapt" id="separationCharacter">
                              <f:for each="{separatedChars}" key="charKey" as="character">
-                                 <option value="{charKey}" ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
+                                 <option value="{charKey}" ><f:translate key="{charKey}"  /></option>
                              </f:for>
                     </select>
-
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-xs-12">
                     <label for="importedList">
-                        <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
+                        <f:translate key="enterRedirectsItems"/>
                     </label>
                     <br>
-                    <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
+                    <span class="formengine-field-item-description text-muted"><f:translate key="columns"  /></span>
                     <div class="form-control-wrap">
                         <textarea class="form-control" id="importedList" name="redirectsList" rows="8"></textarea>
                     </div>

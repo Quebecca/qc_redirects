@@ -6,7 +6,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'qc_redirects',
     'description' => 'Module used to improve the redirects module, by importing a redirects list with a title column',
-    'category' => 'plugin',
+    'category' => 'module',
     'constraints' => [
         'depends' => [
             'typo3' => '10.4.0-10.4.99',
