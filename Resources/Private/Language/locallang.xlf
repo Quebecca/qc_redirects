@@ -2,8 +2,7 @@
 <xliff version="1.0">
     <file source-language="en" datatype="plaintext" original="messages" date="2021-11-15UTC17:03:210">
         <header>
-            <authorName>qcscsc</authorName>
-            <authorEmail>qc@mce.ca</authorEmail>
+            <authorEmail>techno@mce.ca</authorEmail>
         </header>
         <body>
             <trans-unit id="title">
@@ -28,9 +27,9 @@
                 <source>Clear fields</source>
             </trans-unit>
             <trans-unit id="separationCharacter">
-                 <source>Fields values separated by:</source>
+                <source>Fields values separated by:</source>
             </trans-unit>
-             <trans-unit id="enterRedirectsItems">
+            <trans-unit id="enterRedirectsItems">
                 <source>Enter the redirects items</source>
             </trans-unit>
             <trans-unit id="lCreate_msg1">
@@ -42,30 +41,45 @@
             <trans-unit id="import_success_body">
                 <source>The list has been imported successfully</source>
             </trans-unit>
-           <trans-unit id="success">
+            <trans-unit id="success">
                 <source>Success</source>
-           </trans-unit>
-           <trans-unit id="import_error_duplicated">
-               <source>Error when importing the redirect list, the source path : </source>
-           </trans-unit>
-          <trans-unit id="error">
-               <source>Error</source>
-          </trans-unit>
-          <trans-unit id="mlang_tabs_tab">
-              <source>Qc Redirects</source>
-          </trans-unit>
-           <trans-unit id="is_duplicated">
-              <source> is duplicated</source>
-          </trans-unit>
-           <trans-unit id="columns">
-              <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
-           </trans-unit>
-           <trans-unit id="import_error_syntax">
-              <source>Error when importing the redirect list, please verify the importing syntax </source>
-          </trans-unit>
-          <trans-unit id="import">
-            <source>Import the redirects list</source>
-          </trans-unit>
+            </trans-unit>
+            <trans-unit id="import_error_duplicated">
+                <source>Error when importing the redirect list, the source path : </source>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>Error</source>
+            </trans-unit>
+            <trans-unit id="mlang_tabs_tab">
+                <source>Qc Redirects</source>
+            </trans-unit>
+            <trans-unit id="is_duplicated">
+                <source> is duplicated</source>
+            </trans-unit>
+            <trans-unit id="columns">
+                <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
+            </trans-unit>
+            <trans-unit id="import_error_syntax">
+                <source>Error when importing the redirect list, please verify the importing syntax </source>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>Import the redirects list</source>
+            </trans-unit>
+            <trans-unit id="import_invalidValue">
+                <source>Invalid value inserted for the column</source>
+            </trans-unit>
+                <trans-unit id="sourceHost">
+                <source>Source host</source>
+            </trans-unit>
+                <trans-unit id="sourcePath">
+                <source>Source path</source>
+            </trans-unit>
+                <trans-unit id="target">
+                <source>Target</source>
+            </trans-unit>
+                <trans-unit id="isRegularExpression">
+                <source>Is regular experssion</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

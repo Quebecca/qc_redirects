@@ -34,6 +34,9 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $localizationUtility;
 
+    /**
+     * @var array|string[]
+     */
     protected array $separatedChars = [
         'tabulation' => "\t",
         'pipe' => '|',
@@ -41,15 +44,45 @@ class AddRedirectsController  extends BackendModuleActionController
         'colon' => ':',
         'comma' => ',',
     ];
+    //            if(empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[6]) || ($row[6] != 1 && $row[6] != 0)){
+    /**
+     * @var int
+     */
+    protected int $wrongValuekey = -1;
+    /**
+     * @var array|string[]
+     */
+    protected array $rowsConstraints = [
+        0 => 'sourceHost',
+        1 => 'sourcePath',
+        2 => 'target',
+        3 => 'isRegularExpression'
+    ];
 
+    /**
+     * @var string
+     */
     protected string $selectedSeparatedChar = '';
 
+    /**
+     * @var string
+     */
     protected string $duplicatedSourcePath = '';
 
+    /**
+     * @var ImportRedirectsRepository
+     */
     protected ImportRedirectsRepository  $importRedirectsRepository;
-
+    /**
+     * @var StandaloneView
+     */
     protected $view;
 
+    /**
+     * @param ModuleTemplate|null $moduleTemplate
+     * @param LocalizationUtility|null $localizationUtility
+     * @param StandaloneView|null $view
+     */
     public function __construct(
         ModuleTemplate $moduleTemplate = null,
         LocalizationUtility $localizationUtility = null,
@@ -141,10 +174,16 @@ class AddRedirectsController  extends BackendModuleActionController
             if(count($row) == 1 && $row[0] == ''){
                 continue;
             }
+
             // verify if all columnus are valide
             // we have to make sure that we have all important fields
             // make sure that all the fields are valid
-            if(count($row) == SELF::NUMBER_OF_FIELDS){
+            if(count($row) == self::NUMBER_OF_FIELDS){
+                // verify if the source path,source host, target value is not empty
+                if($this->verifyColumnsValues(array($row[1], $row[2],$row[3], $row[6]))){
+                    $validImport = false;
+                    break;
+                }
                   array_push($rows,[
                     'pid' => '0',
                     'title' => $row[0],
@@ -179,25 +218,51 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
     /**
+     * @param array $row
+     * @return bool
+     */
+    public function verifyColumnsValues(array $row) : bool {
+        $i = 0;
+        $invalidValue = false;
+        foreach ($row as $item){
+            if(empty($item)){
+                $this->wrongValuekey = $i;
+                $invalidValue = true;
+                break;
+            }
+            $i++;
+        }
+        // verify the is regular expression value
+        if($row[3] !== '1' && $row[3] !== '0'){
+            $this->wrongValuekey = 3;
+            $invalidValue = true;
+        }
+        return $invalidValue;
+    }
+
+    /**
      * This function is used to generate alert message
      * @param bool $success
      */
     public function generateAlertMessage(bool $success){
         if($success){
-            $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_success_body');
-            $alertMessageBody =    $this->localizationUtility->translate(SELF::LANG_FILE.'success');
+            $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
+            $alertMessageBody =    $this->localizationUtility->translate(self::LANG_FILE.'success');
             $flashMessageService =  AbstractMessage::OK;
         }
         else{
-            $alertMessageBody =    $this->localizationUtility->translate(SELF::LANG_FILE.'error');
-            $flashMessageService =   AbstractMessage::ERROR;
 
-            if($this->duplicatedSourcePath == ''){
-                $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_error_syntax');
+            $alertMessageBody =    $this->localizationUtility->translate(self::LANG_FILE.'error');
+            $flashMessageService =   AbstractMessage::ERROR;
+            if($this->wrongValuekey !== -1){
+                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_invalidValue'). " ' ". $this->localizationUtility->translate(self::LANG_FILE.$this->rowsConstraints[$this->wrongValuekey])." '";
+            }
+            elseif (!empty($this->duplicatedSourcePath)){
+                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_duplicated')
+                    . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;
             }
             else{
-                $alertMessageHeader = $this->localizationUtility->translate(SELF::LANG_FILE.'import_error_duplicated')
-                    . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(SELF::LANG_FILE.'is_duplicated') ;
+                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_syntax');
             }
         }
 

@@ -2,7 +2,6 @@
 <xliff version="1.0">
     <file source-language="en" datatype="plaintext" original="messages" date="2021-11-15UTC17:03:210">
         <header>
-            <authorName>qcscsc</authorName>
             <authorEmail>qc@mce.ca</authorEmail>
         </header>
         <body>
@@ -34,7 +33,7 @@
                 <source>Fields values separated by:</source>
                 <target>Valeurs des champs séparées par :</target>
             </trans-unit>
-             <trans-unit id="enterRedirectsItems">
+                <trans-unit id="enterRedirectsItems">
                 <source>Enter the redirects items</source>
                 <target>Saisissez les éléments de redirection</target>
             </trans-unit>
@@ -50,34 +49,54 @@
                 <source>The list has been imported successfully</source>
                 <target>La liste a été importée avec succès</target>
             </trans-unit>
-           <trans-unit id="success">
+            <trans-unit id="success">
                 <source>Success</source>
                 <target>Succès</target>
-           </trans-unit>
+            </trans-unit>
             <trans-unit id="import_error_duplicated">
-               <source>Error when importing the redirect list, the source path : </source>
-               <target>Erreur lors de l'importation de la liste de redirection,</target>
-           </trans-unit>
-          <trans-unit id="error">
-               <source>Error</source>
-               <target>Erreur</target>
-          </trans-unit>
+                <source>Error when importing the redirect list, the source path : </source>
+                <target>Erreur lors de l'importation de la liste de redirection,</target>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>Error</source>
+                <target>Erreur</target>
+            </trans-unit>
             <trans-unit id="is_duplicated">
-              <source> is duplicated</source>
-              <target> est dupliqué</target>
-          </trans-unit>
-          <trans-unit id="columns">
-            <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
-            <target>titre, source de host, chemin de source, cible, heure de début, heure de fin,expression régulière, code d'état</target>
-          </trans-unit>
-          <trans-unit id="import_error_syntax">
-            <source>Error when importing the redirect list, please verify the importing syntax </source>
-            <target>Erreur lors de l'importation de la liste de redirection, veuillez vérifier la syntaxe d'importation</target>
-          </trans-unit>
-          <trans-unit id="import">
-               <source>Import the redirects list</source>
-               <target>Importer la liste des redirections</target>
-           </trans-unit>
+                <source> is duplicated</source>
+                <target> est dupliqué</target>
+            </trans-unit>
+            <trans-unit id="columns">
+                <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
+                <target>titre, source de host, chemin de source, cible, heure de début, heure de fin,expression régulière, code d'état</target>
+            </trans-unit>
+            <trans-unit id="import_error_syntax">
+                <source>Error when importing the redirect list, please verify the importing syntax </source>
+                <target>Erreur lors de l'importation de la liste de redirection, veuillez vérifier la syntaxe d'importation</target>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>Import the redirects list</source>
+                <target>Importer la liste des redirections</target>
+            </trans-unit>
+            <trans-unit id="import_invalidValue">
+                <source>Invalid value inserted for the column</source>
+                <target>Valeur non valide insérée pour la colonne</target>
+            </trans-unit>
+            <trans-unit id="sourceHost">
+                <source>Source host</source>
+                <target>Chemin d'hôte</target>
+            </trans-unit>
+            <trans-unit id="sourcePath">
+                <source>Source path</source>
+                <target>Chemin de source</target>
+            </trans-unit>
+            <trans-unit id="target">
+                <source>Target</source>
+                <target>Cible</target>
+            </trans-unit>
+            <trans-unit id="isRegularExpression">
+                <source>Is regular experssion</source>
+                <target>Est-ce une expression régulière</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -9,7 +9,8 @@ defined('TYPO3') or die();
             'label' => 'title',
             'config' => [
                 'type' => 'input',
-                'default' => 0
+                'default' => '',
+                'eval' => 'trim'
             ]
         ],
 
