@@ -42,6 +42,9 @@ class ImportRedirectsRepository
      */
     public function getSourcePaths() : array {
         $sourcePathArray = [];
+        $this->queryBuilder
+            ->getRestrictions()
+            ->removeAll();
         $statement = $this->queryBuilder
             ->select('source_path')
             ->from($this->table)

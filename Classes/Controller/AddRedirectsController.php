@@ -188,10 +188,10 @@ class AddRedirectsController  extends BackendModuleActionController
                     'title' => $row[0],
                     'source_host' => $row[1],
                     'source_path' => $row[2],
-                    'target' => $row[3] === 'true',
+                    'target' => $row[3],
                     'starttime' => strtotime($row[4]),
                     'endtime' => strtotime($row[5]),
-                    'is_regexp' => strtolower($row[6]) == 'true',
+                    'is_regexp' => strtolower($row[6]) == 'true' ? 1 : 0,
                     'target_statuscode' => (int)$row[7],
                  ]);
 
