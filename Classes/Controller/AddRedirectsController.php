@@ -44,11 +44,12 @@ class AddRedirectsController  extends BackendModuleActionController
         'colon' => ':',
         'comma' => ',',
     ];
-    //            if(empty($row[1]) || empty($row[2]) || empty($row[3]) || empty($row[6]) || ($row[6] != 1 && $row[6] != 0)){
+
     /**
      * @var int
      */
     protected int $wrongValuekey = -1;
+
     /**
      * @var array|string[]
      */
@@ -175,9 +176,7 @@ class AddRedirectsController  extends BackendModuleActionController
                 continue;
             }
 
-            // verify if all columnus are valide
-            // we have to make sure that we have all important fields
-            // make sure that all the fields are valid
+            // make sure that we have all important fields
             if(count($row) == self::NUMBER_OF_FIELDS){
                 // verify if the source path,source host, target value is not empty
                 if($this->verifyColumnsValues(array($row[1], $row[2],$row[3], $row[6]))){
@@ -189,10 +188,10 @@ class AddRedirectsController  extends BackendModuleActionController
                     'title' => $row[0],
                     'source_host' => $row[1],
                     'source_path' => $row[2],
-                    'target' => $row[3],
+                    'target' => $row[3] === 'true',
                     'starttime' => strtotime($row[4]),
                     'endtime' => strtotime($row[5]),
-                    'is_regexp' => (int)$row[6],
+                    'is_regexp' => strtolower($row[6]) == 'true',
                     'target_statuscode' => (int)$row[7],
                  ]);
 
@@ -218,6 +217,7 @@ class AddRedirectsController  extends BackendModuleActionController
     }
 
     /**
+     * This function is used to verify the values of the columns
      * @param array $row
      * @return bool
      */
@@ -233,7 +233,7 @@ class AddRedirectsController  extends BackendModuleActionController
             $i++;
         }
         // verify the is regular expression value
-        if($row[3] !== '1' && $row[3] !== '0'){
+        if(strtolower($row[3]) !== 'false' &&strtolower($row[3]) !== 'true'){
             $this->wrongValuekey = 3;
             $invalidValue = true;
         }
