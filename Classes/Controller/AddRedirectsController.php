@@ -1,11 +1,23 @@
 <?php
 declare(strict_types=1);
+/***
+ *
+ * This file is part of Qc Redirects project.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ *  (c) 2022 <techno@quebec.ca>
+ *
+ ***/
+
 namespace QcRedirects\Controller;
 
 use Doctrine\DBAL\Driver\Exception;
 use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Repository\ImportRedirectsRepository;
+use QcRedirects\Domaine\Repository\ImportRedirectsRepository;
+use QcRedirects\Mapper\RedirectEntityMapper;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
@@ -33,6 +45,11 @@ class AddRedirectsController  extends BackendModuleActionController
      * @var LocalizationUtility
      */
     protected $localizationUtility;
+
+    /**
+     * @var RedirectEntityMapper
+     */
+    protected RedirectEntityMapper $redirectMapper;
 
     /**
      * @var array|string[]
@@ -74,6 +91,7 @@ class AddRedirectsController  extends BackendModuleActionController
      * @var ImportRedirectsRepository
      */
     protected ImportRedirectsRepository  $importRedirectsRepository;
+
     /**
      * @var StandaloneView
      */
@@ -93,7 +111,8 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
-        $this->importRedirectsRepository =  GeneralUtility::makeInstance(ImportRedirectsRepository::class);
+        $this->redirectMapper =  GeneralUtility::makeInstance(RedirectEntityMapper::class);
+        $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
     }
 
     /**
@@ -108,6 +127,7 @@ class AddRedirectsController  extends BackendModuleActionController
         parent::initializeView($view);
         $this->view->assign('separatedChars', $this->separatedChars);
     }
+
     public function initializeAction()
     {
         $this->extKey = $this->request->getControllerExtensionKey();
@@ -159,7 +179,7 @@ class AddRedirectsController  extends BackendModuleActionController
     protected function processRedirects(array $redirectListArray): bool
     {
         $validImport = true;
-        $rows = [];
+        $redirectEntities = [];
         // get the source_paths from the DB
         $sourcePathArray = $this->importRedirectsRepository->getSourcePaths();
         // precessing each line in the array
@@ -178,30 +198,21 @@ class AddRedirectsController  extends BackendModuleActionController
 
             // make sure that we have all important fields
             if(count($row) == self::NUMBER_OF_FIELDS){
+                $redirectEntity = $this->redirectMapper->rowToRedirectEntity($row);
                 // verify if the source path,source host, target value is not empty
-                if($this->verifyColumnsValues(array($row[1], $row[2],$row[3], $row[6]))){
+                if($this->verifyColumnsValues(array($redirectEntity->getSourceHost(), $redirectEntity->getSourcePath(),$redirectEntity->getTarget(), $redirectEntity->getIsRegExp()))){
                     $validImport = false;
                     break;
                 }
-                  array_push($rows,[
-                    'pid' => '0',
-                    'title' => $row[0],
-                    'source_host' => $row[1],
-                    'source_path' => $row[2],
-                    'target' => $row[3],
-                    'starttime' => strtotime($row[4]),
-                    'endtime' => strtotime($row[5]),
-                    'is_regexp' => strtolower($row[6]) == 'true' ? 1 : 0,
-                    'target_statuscode' => (int)$row[7],
-                 ]);
-
+                // Map Row to Redirect Entity
                 // verify if the source_path is already exists
-                if(in_array($row[2], $sourcePathArray, TRUE)){
+                if(in_array($redirectEntity->getSourcePath(), $sourcePathArray, TRUE)){
                     $validImport = false;
-                    $this->duplicatedSourcePath = $row[2];
+                    $this->duplicatedSourcePath = $redirectEntity->getSourcePath();
                     break;
                 }
-                array_push($sourcePathArray,  $row[2]);
+                array_push($sourcePathArray,  $redirectEntity->getSourcePath());
+                array_push($redirectEntities, $redirectEntity);
             }
             else{
                 $validImport = false;
@@ -209,12 +220,13 @@ class AddRedirectsController  extends BackendModuleActionController
             }
         }
         // save the items if all import are valid
-        if($validImport && !is_null($rows) && count($rows) > 0){
-            $this->importRedirectsRepository->saveRedirects($rows);
+        if($validImport && !is_null($redirectEntities) && count($redirectEntities) > 0){
+            $this->importRedirectsRepository->saveRedirects($redirectEntities);
             return true;
         }
         return false;
     }
+
 
     /**
      * This function is used to verify the values of the columns

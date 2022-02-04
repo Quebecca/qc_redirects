@@ -1,34 +1,63 @@
 <?php
-namespace QcRedirects\Repository;
+/***
+ *
+ * This file is part of Qc Redirects project.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ *  (c) 2022 <techno@quebec.ca>
+ *
+ ***/
+
+namespace QcRedirects\Domaine\Repository;
 
 use Doctrine\DBAL\Driver\Exception;
+use QcRedirects\Mapper\RedirectEntityMapper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportRedirectsRepository
 {
-
+    /**
+     * @var QueryBuilder
+     */
     protected $queryBuilder;
 
+    /**
+     * @var DataHandler
+     */
     protected DataHandler $dataHandler;
 
+    /**
+     * @var string
+     */
     protected string $table = 'sys_redirect';
+
+    /**
+     * @var RedirectEntityMapper
+     */
+    protected RedirectEntityMapper $redirectMapper;
+
 
     public function __construct()
     {
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
+        $this->redirectMapper = GeneralUtility::makeInstance(RedirectEntityMapper::class);
     }
 
     /**
      * This function use the Datahandler for store records in sys_redirects table
      * @param $rows
      */
-    public function saveRedirects($rows)
+    public function saveRedirects($redirectsEntities)
     {
         $data =[];
-        foreach ($rows as $key => $row) {
+        foreach ($redirectsEntities as $key => $redirectsEntity) {
+            $row = $this->redirectMapper->redirectEntityToDBRow($redirectsEntity);
             $data[$this->table]['NEW_'.$key] = $row;
         }
         $this->dataHandler->start($data, []);
