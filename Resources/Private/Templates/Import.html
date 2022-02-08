@@ -4,6 +4,14 @@
         data-namespace-typo3-fluid="true"
 >
 
+<f:asset.css identifier="qc_redirects">
+    .qc-form-control {
+        display: block;
+        width: 10%;
+        padding : 5px;
+    }
+</f:asset.css>
+
 <h1>
     <f:translate key="title" extensionName="qc_redirects"/>
 </h1>
@@ -15,7 +23,7 @@
             <div class="row">
                 <div class="form-group col-xs-12">
                     <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
-                    <select name="separationCharacter" class="form-control form-control-adapt" id="separationCharacter">
+                    <select name="separationCharacter" class="qc-form-control" id="separationCharacter">
                         <f:for each="{separatedChars}" key="charKey" as="character">
                             <option value="{charKey}" ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
                         </f:for>
