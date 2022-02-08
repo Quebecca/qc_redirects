@@ -13,6 +13,7 @@ $EM_CONF[$_EXTKEY] = [
             'fluid_styled_content' => '10.4.0-11.5.99',
             'rte_ckeditor' => '10.4.0-11.5.99',
             'backend_module' => '2.2.1',
+            'redirects' => '10.4.21'
         ],
         'conflicts' => [
         ],
@@ -21,7 +22,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => 0,
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'author' => 'Quebec.ca/',
+    'author' => '',
     'author_email' => '',
     'version' => '1.0.0',
 ];
