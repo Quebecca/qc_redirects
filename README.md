@@ -1,6 +1,6 @@
 Qc Redirects
 ==============================================================
-*La [version française](#documentation-qc-redirects) de la documentation suit le texte anglais*
+*La [version française](#documentation-qc_redirects) de la documentation suit le texte anglais*
 
 ## About
 This extension adds features to the TYPO3 Core Redirects module.
