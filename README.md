@@ -1,31 +1,52 @@
 Qc Redirects
 ==============================================================
 *La [version française](#documentation-qc-redirects) de la documentation suit le texte anglais*
+
 ## About
-This extension aims to improve the core Redirects module.
-The extension offers the ability to import a list of redirects, by filling in the text fields with the redirects to import.
+This extension adds features to the TYPO3 Core Redirects module.
+
+- Ability to import a list of redirects by copy-pasting a list of redirects from an Excel/CSV file (exemple found in /Documentation/).
+- Adds a new, optional **Title** field so when you use complex Regexp, you got a more readable item. 
+- Shows the created date (field createdon)
+- Shows the modified date (field updateon)
+
 ## How to import a redirect list
-The best way to import is by using a csv or excel file, in which we define the values of the fields to be entered.
-The extension offers the option to choose the character that will be used to separate the values entered for importing the list.
-The extension also added a title field that will be useful in case of importing redirects using regular expressions.
-The order used to import redirects is as follows: 
+The best way to import is by using a CSV or an Excel file, in which we define the values of the fields to be entered.
+The extension offers the option to choose the separation character.
+The order of fields, used to import redirects, is : 
 
     Title, Source host, Source path, Target, Start time, Snd time, Is regular expression , Status code. 
-The value of the source host, the source path, and the target is required.
-The regular expression column, takes two possible values 'true' or 'false'
+
+The value of the source host, the source path, and the target are required.
+The regular expression column takes two possible values 'true' or 'false'
+
+### Files example
+In the /Documentation/ folder you will find 2 files: One in CSV format and the other in XLS (Excel) format.
+
 
 -----------
+
 [Version française]
-## Documentation qc redirects
+
+## Documentation qc_redirects
+
 ### À propos
-Cette extension vise à améliorer le module de base Redirects.
-L’extension offre la possibilité d’importer une liste de redirections, en remplissant les champs de texte avec les redirections à importer.
-## Comment importer une liste de redirection
-La meilleure façon d’importer est d’utiliser un fichier csv ou excel, dans lequel nous définissons les valeurs des champs à saisir.
-L’extension offre la possibilité de choisir le caractère qui sera utilisé pour séparer les valeurs entrées pour importer la liste.
-L’extension a également ajouté un champ de titre qui sera utile en cas d’importation de redirections en utilisant des expressions régulières.
-L’ordre d’importation des redirections est le suivant :
+Cette extension ajoute des fonctionnalités au module TYPO3 Redirects.
+
+- Ajouts de redirections par copier-coller à partir d'un fichier Excel ou CSV (voir dans le dossier /Documentation pour des exemples)
+- Ajout d'un nouveau champ **Titre**, permettant de faciliter le repérage lorsqu'on utilise des expressions régulières dans le champs source.
+- Affichage de la date de création (champ "createdon")
+- Affichage de la date de modification (champ "modifiedon")
+
+## Importer une liste de redirection
+La meilleure façon d’importer les redirections est d’utiliser un fichier CSV ou Excel, selon un ordre précis.  
+L’extension offre la possibilité de choisir le caractère de séparation.
+L’ordre d’importation des champs est le suivant :
 
     Titre, Chemin de hôte, Chemin de source, Cible, Date de debut, Date de fin, Est une expression régulière, Code d'état. 
-La valeur de champ Chemin d'hôte,Chemin de source, Cible doit être remplies.
-Le champ "Est une expression régulière" peut prendre deux valeurs possibles 'true' ou 'false'.
+
+La valeur de champ Chemin d'hôte, Chemin de source et Cible sont obligatoires.  
+Le champ "Est une expression régulière" peut prendre uniquement les valeurs 'true' ou 'false'.
+
+### Fichiers d'exemples
+Dans le dossier /Documentation/ , vous y trouverez 2 fichiers: Un au format CSV, l'autre au format XLS (Excel).
