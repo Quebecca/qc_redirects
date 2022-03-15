@@ -1,14 +1,28 @@
 <?php
+/***
+ *
+ * This file is part of Qc Redirects project.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ *  (c) 2022 <techno@quebec.ca>
+ *
+ ***/
 
-namespace QcRedirects\Controller;
+namespace QcRedirects\Controller\ExtendedRedirectModule;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Configuration\Features;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Redirects\Controller\ManagementController;
 use TYPO3\CMS\Redirects\Repository\Demand;
@@ -26,6 +40,16 @@ class ManagementControllerExt extends ManagementController
      */
     protected string $orderType = '';
 
+    /**
+     * @var LocalizationUtility
+     */
+    protected $localizationUtility;
+
+    /**
+     * @var string
+     */
+    const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+    const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
     protected const ORDER_BY_DEFAULT = 'createdon';
 
@@ -50,6 +74,16 @@ class ManagementControllerExt extends ManagementController
         ],
     ];
 
+
+    /**
+     * Instantiate the form protection before a simulated user is initialized.
+     */
+    public function __construct()
+    {
+       parent::__construct();
+        $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
+    }
+
     /**
      * @param string $templateName
      * @throws RouteNotFoundException
@@ -62,7 +96,6 @@ class ManagementControllerExt extends ManagementController
         // orderBy
         $this->orderBy = (string)(GeneralUtility::_GP('orderBy') ?? self::ORDER_BY_DEFAULT);
 
-
         // Table header
         $sortActions = [];
         foreach (array_keys(self::ORDER_BY_VALUES) as $key) {
@@ -73,8 +106,10 @@ class ManagementControllerExt extends ManagementController
         $this->view->assign('tableHeader', $this->getVariablesForTableHeader($sortActions));
 
     }
+
     /**
      * Injects the request object for the current request, and renders the overview of all redirects
+     * This core function is overloaded to change the template
      *
      * @param ServerRequestInterface $request the current request
      * @return ResponseInterface the response with the content
@@ -90,6 +125,7 @@ class ManagementControllerExt extends ManagementController
 
     /**
      * Show all redirects, and add a button to create a new redirect
+     * This overloaded function is used to add order column and the order type
      * @param ServerRequestInterface $request
      */
     protected function overviewAction(ServerRequestInterface $request)
@@ -115,8 +151,8 @@ class ManagementControllerExt extends ManagementController
         ]);
     }
 
-
     /**
+     * This function is used to build URI for sorting actions
      * @param array<string,mixed> $additionalQueryParameters
      * @param string $route
      * @return string
@@ -138,9 +174,8 @@ class ManagementControllerExt extends ManagementController
     }
 
 
-
     /**
-     * Sets variables for the Fluid Template of the table with the Excluded Links
+     * This function is used to generate headers of the redirects table in FE
      * @param array<string,string> $sortActions
      * @return mixed[] variables
      */
@@ -159,7 +194,10 @@ class ManagementControllerExt extends ManagementController
                 'url'   => '',
                 'icon'  => '',
             ];
-            $tableHeadData[$key]['label'] =  $key;
+            if($key == 'createdon')
+                $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::QC_LANG_FILE .$key);
+            else
+                $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::CORE_LANG_FILE .$key);
 
             if (isset($sortActions[$key])) {
                 // sorting available, add url

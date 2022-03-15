@@ -97,6 +97,18 @@
                 <source>Is regular experssion</source>
                 <target>Est-ce une expression régulière</target>
             </trans-unit>
+            <trans-unit id="createdon">
+                <source>Creation date</source>
+                <target>Date de création</target>
+            </trans-unit>
+            <trans-unit id="updatedon">
+                <source>Update date</source>
+                <target>Date de modification</target>
+            </trans-unit>
+            <trans-unit id="label_title">
+                <source>Title</source>
+                <target>Titre</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

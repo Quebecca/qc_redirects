@@ -49,27 +49,24 @@
             <thead>
             <tr>
                 <th>
-                    <f:format.raw>{tableHeader.createdon.header}</f:format.raw>
-                    <f:if condition="{tableHeader.createdon.icon}">
-                        <core:icon identifier="{tableHeader.createdon.icon}"/>
+                    <f:format.raw>{tableHeader.source_host.header}</f:format.raw>
+                    <f:if condition="{tableHeader.source_host.icon}">
+                        <core:icon identifier="{tableHeader.source_host.icon}"/>
                     </f:if>
                 </th>
-
                 <th>
                     <f:format.raw>{tableHeader.source_path.header}</f:format.raw>
                     <f:if condition="{tableHeader.source_path.icon}">
                         <core:icon identifier="{tableHeader.source_path.icon}"/>
                     </f:if>
                 </th>
+                <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:destination"/></th>
                 <th>
-                    <f:format.raw>{tableHeader.source_host.header}</f:format.raw>
-                    <f:if condition="{tableHeader.source_host.icon}">
-                        <core:icon identifier="{tableHeader.source_host.icon}"/>
+                    <f:format.raw>{tableHeader.createdon.header}</f:format.raw>
+                    <f:if condition="{tableHeader.createdon.icon}">
+                        <core:icon identifier="{tableHeader.createdon.icon}"/>
                     </f:if>
                 </th>
-
-                <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:destination"/></th>
-
                 <f:if condition="{showHitCounter}">
                     <th># <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:hits"/></th>
                     <th><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:hit_last"/></th>
@@ -82,8 +79,6 @@
                 <f:variable name="pageId" value="{rd:targetPageId(target:redirect.target)}" />
                 <f:variable name="targetUri" value="{f:uri.typolink(parameter:redirect.target)}" />
                 <tr>
-                    <td><f:format.date format="d.m.Y - H:i:s">{redirect.createdon}</f:format.date></td>
-
                     <td>{redirect.source_host}</td>
                     <td>
                         <f:alias map="{
@@ -107,6 +102,7 @@
                     <td><f:link.typolink parameter="{redirect.target}" target="_blank" title="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:visit_destination')} {f:if(condition: targetUri, then:targetUri, else:redirect.target)}">{f:if(condition: targetUri, then:targetUri, else:redirect.target)}</f:link.typolink>
                         (<f:if condition="{pageId}"><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:pageID"/>: {pageId},
                         </f:if><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:destination_status_code"/>: {redirect.target_statuscode})</td>
+                    <td><f:format.date format="d.m.Y - H:i:s">{redirect.createdon}</f:format.date></td>
                     <f:if condition="{showHitCounter}">
                         <td>
                             <f:if condition="!{redirect.disable_hitcount}">

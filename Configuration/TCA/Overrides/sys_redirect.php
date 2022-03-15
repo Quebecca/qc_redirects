@@ -1,5 +1,6 @@
 <?php
 defined('TYPO3') or die();
+$lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
 
 // Add some fields to sys_redirect table to show TCA fields definitions
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
@@ -7,7 +8,7 @@ defined('TYPO3') or die();
     [
         'title' => [
             'exclude' => true,
-            'label' => 'title',
+            'label' =>  $lll . ':label_title',
             'config' => [
                 'type' => 'input',
                 'default' => '',
@@ -16,7 +17,7 @@ defined('TYPO3') or die();
         ],
         'updatedon' => [
             'exclude' => true,
-            'label' => 'updatedon',
+            'label' => $lll . ':updatedon',
             'config' => [
                 'type' => 'input',
                 'default' => '',
@@ -28,7 +29,7 @@ defined('TYPO3') or die();
 
         'createdon' => [
             'exclude' => true,
-            'label' => 'createdon',
+            'label' => $lll . ':createdon',
             'config' => [
                 'type' => 'input',
                 'default' => '',

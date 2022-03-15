@@ -77,9 +77,19 @@
                 <trans-unit id="target">
                 <source>Target</source>
             </trans-unit>
-                <trans-unit id="isRegularExpression">
+            <trans-unit id="isRegularExpression">
                 <source>Is regular experssion</source>
             </trans-unit>
+             <trans-unit id="createdon">
+                <source>Creation date</source>
+             </trans-unit>
+             <trans-unit id="updatedon">
+                   <source>Update date</source>
+             </trans-unit>
+             <trans-unit id="label_title">
+                 <source>Title</source>
+              </trans-unit>
+
         </body>
     </file>
 </xliff>
