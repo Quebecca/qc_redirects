@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace QcRedirects\Controller;
 
+use ApacheSolrForTypo3\Solr\System\Data\DateTime;
 use Doctrine\DBAL\Driver\Exception;
 use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ServerRequestInterface;
