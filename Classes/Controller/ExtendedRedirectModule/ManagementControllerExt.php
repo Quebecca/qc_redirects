@@ -1,14 +1,4 @@
 <?php
-/***
- *
- * This file is part of Qc Redirects project.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- *  (c) 2022 <techno@quebec.ca>
- *
- ***/
 
 namespace QcRedirects\Controller\ExtendedRedirectModule;
 
@@ -25,7 +15,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Redirects\Controller\ManagementController;
-use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class ManagementControllerExt extends ManagementController
@@ -54,6 +43,12 @@ class ManagementControllerExt extends ManagementController
     protected const ORDER_BY_DEFAULT = 'createdon';
 
     protected const ORDER_BY_VALUES = [
+        'title' => [
+            ['title', 'ASC'],
+        ],
+        'title_reverse' => [
+            ['title', 'DESC'],
+        ],
         'source_host' => [
             ['source_host', 'ASC'],
         ],
@@ -80,7 +75,7 @@ class ManagementControllerExt extends ManagementController
      */
     public function __construct()
     {
-       parent::__construct();
+        parent::__construct();
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
     }
 
@@ -131,7 +126,7 @@ class ManagementControllerExt extends ManagementController
     protected function overviewAction(ServerRequestInterface $request)
     {
         $this->getButtons();
-        $demand = Demand::createFromRequest($request);
+        $demand = DemandExt::createFromRequest($request);
         $redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
         if(str_contains($this->orderBy, '_reverse')){
             $this->orderBy = str_replace('_reverse', '',$this->orderBy);
@@ -140,7 +135,6 @@ class ManagementControllerExt extends ManagementController
         $redirectRepository->setOrderBy($this->orderBy);
         $redirectRepository->setOrderType($this->orderType);
         $count = $redirectRepository->countRedirectsByByDemand();
-
         $this->view->assignMultiple([
             'redirects' => $redirectRepository->findRedirectsByDemand(),
             'hosts' => $redirectRepository->findHostsOfRedirects(),
@@ -182,6 +176,7 @@ class ManagementControllerExt extends ManagementController
     protected function getVariablesForTableHeader(array $sortActions): array
     {
         $headers = [
+            'title',
             'source_host',
             'source_path',
             'createdon'

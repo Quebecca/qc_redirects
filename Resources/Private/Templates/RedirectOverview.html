@@ -49,6 +49,13 @@
             <thead>
             <tr>
                 <th>
+                    <f:format.raw>{tableHeader.title.header}</f:format.raw>
+                    <f:if condition="{tableHeader.title.icon}">
+                        <core:icon identifier="{tableHeader.title.icon}"/>
+                    </f:if>
+                </th>
+
+                <th>
                     <f:format.raw>{tableHeader.source_host.header}</f:format.raw>
                     <f:if condition="{tableHeader.source_host.icon}">
                         <core:icon identifier="{tableHeader.source_host.icon}"/>
@@ -79,6 +86,7 @@
                 <f:variable name="pageId" value="{rd:targetPageId(target:redirect.target)}" />
                 <f:variable name="targetUri" value="{f:uri.typolink(parameter:redirect.target)}" />
                 <tr>
+                    <td>{redirect.title}</td>
                     <td>{redirect.source_host}</td>
                     <td>
                         <f:alias map="{
@@ -189,6 +197,10 @@
         <div class="form-group">
             <label for="demand-target"><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.destination"/></label>
             <input type="text" id="demand-target" class="form-control input-sm" name="demand[target]" value="{demand.target}"/>
+        </div>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" class="form-control input-sm" name="demand[title]" value="{demand.title}"/>
         </div>
         <div class="form-group">
             <label for="demand-target-status-code"><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.targetStatusCode"/></label>
