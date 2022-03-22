@@ -15,7 +15,7 @@
             </trans-unit>
             <trans-unit id="colon">
                 <source>: colon</source>
-                <target>: deux points</target>
+                <target>: deux-points</target>
             </trans-unit>
             <trans-unit id="comma">
                 <source>, comma</source>
@@ -23,23 +23,23 @@
             </trans-unit>
             <trans-unit id="pipe">
                 <source>| pipe</source>
-                <target>| pipe</target>
+                <target>| barre verticale</target>
             </trans-unit>
             <trans-unit id="semicolon">
                 <source>; semicolon</source>
                 <target>; point-virgule</target>
             </trans-unit>
             <trans-unit id="separationCharacter">
-                <source>Fields values separated by:</source>
-                <target>Valeurs des champs séparées par :</target>
+                <source>Fields separated by:</source>
+                <target>Champs séparés par :</target>
             </trans-unit>
                 <trans-unit id="enterRedirectsItems">
                 <source>Enter the redirects items</source>
-                <target>Saisissez les éléments de redirection</target>
+                <target>Saisissez les redirections</target>
             </trans-unit>
             <trans-unit id="lCreate_msg1">
                 <source>You&#39;re about to import a list of redirects. Are you sure you want to continue?</source>
-                <target>Vous êtes sur le point d'importer une liste de redirections. Es-tu sur de vouloir continuer?</target>
+                <target>Vous êtes sur le point d'importer une liste de redirections. Êtes-vous sûr de vouloir continuer ?</target>
             </trans-unit>
             <trans-unit id="lReset">
                 <source>Clear fields</source>
@@ -47,7 +47,7 @@
             </trans-unit>
             <trans-unit id="import_success_body">
                 <source>The list has been imported successfully</source>
-                <target>La liste a été importée avec succès</target>
+                <target>La liste a correctement été importée</target>
             </trans-unit>
             <trans-unit id="success">
                 <source>Success</source>
@@ -55,7 +55,7 @@
             </trans-unit>
             <trans-unit id="import_error_duplicated">
                 <source>Error when importing the redirect list, the source path : </source>
-                <target>Erreur lors de l'importation de la liste de redirection,</target>
+                <target>Erreur lors de l'importation,</target>
             </trans-unit>
             <trans-unit id="error">
                 <source>Error</source>
@@ -66,12 +66,12 @@
                 <target> est dupliqué</target>
             </trans-unit>
             <trans-unit id="columns">
-                <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
-                <target>titre, source de host, chemin de source, cible, heure de début, heure de fin,expression régulière, code d'état</target>
+                <source>title, source host, source path, target, start time, end time, is regular expression, status code</source>
+                <target>titre, domaine source, chemin source, cible, heure de début, heure de fin,expression régulière (true, false), code http (302,307,etc)</target>
             </trans-unit>
             <trans-unit id="import_error_syntax">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
-                <target>Erreur lors de l'importation de la liste de redirection, veuillez vérifier la syntaxe d'importation</target>
+                <target>Erreur lors de l'importation. Veuillez vérifier la syntaxe d'importation</target>
             </trans-unit>
             <trans-unit id="import">
                 <source>Import the redirects list</source>
@@ -83,11 +83,11 @@
             </trans-unit>
             <trans-unit id="sourceHost">
                 <source>Source host</source>
-                <target>Chemin d'hôte</target>
+                <target>Domaine source</target>
             </trans-unit>
             <trans-unit id="sourcePath">
                 <source>Source path</source>
-                <target>Chemin de source</target>
+                <target>Chemin source</target>
             </trans-unit>
             <trans-unit id="target">
                 <source>Target</source>
@@ -95,7 +95,7 @@
             </trans-unit>
             <trans-unit id="isRegularExpression">
                 <source>Is regular experssion</source>
-                <target>Est-ce une expression régulière</target>
+                <target>Est-ce une expression régulière ?</target>
             </trans-unit>
             <trans-unit id="createdon">
                 <source>Creation date</source>
