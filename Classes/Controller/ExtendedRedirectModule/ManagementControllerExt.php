@@ -189,11 +189,10 @@ class ManagementControllerExt extends ManagementController
                 'url'   => '',
                 'icon'  => '',
             ];
-            if($key == 'createdon')
+            if($key == 'createdon' || $key == 'title')
                 $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::QC_LANG_FILE .$key);
             else
                 $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::CORE_LANG_FILE .$key);
-
             if (isset($sortActions[$key])) {
                 // sorting available, add url
                 if ($this->orderBy === $key) {

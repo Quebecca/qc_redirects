@@ -89,6 +89,10 @@
                 <source>Source path</source>
                 <target>Chemin source</target>
             </trans-unit>
+            <trans-unit id="title">
+                <source>Title</source>
+                <target>Titre</target>
+            </trans-unit>
             <trans-unit id="target">
                 <source>Target</source>
                 <target>Cible</target>
