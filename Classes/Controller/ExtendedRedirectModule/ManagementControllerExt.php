@@ -22,7 +22,7 @@ class ManagementControllerExt extends ManagementController
     /**
      * @var string
      */
-    protected string $orderBy = 'Asc';
+    protected string $orderBy = 'Desc';
 
     /**
      * @var string
@@ -40,7 +40,7 @@ class ManagementControllerExt extends ManagementController
     const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
-    protected const ORDER_BY_DEFAULT = 'createdon';
+    protected const ORDER_BY_DEFAULT = 'title';
 
     protected const ORDER_BY_VALUES = [
         'title' => [
@@ -77,6 +77,8 @@ class ManagementControllerExt extends ManagementController
     {
         parent::__construct();
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
+        $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
+
     }
 
     /**

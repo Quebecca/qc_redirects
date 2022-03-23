@@ -77,21 +77,9 @@ class DemandExt extends Demand
      */
     public function getParameters(): array
     {
-        $parameters = [];
-        if ($this->hasSourcePath()) {
-            $parameters['source_path'] = $this->getSourcePath();
-        }
-        if ($this->hasSourceHost()) {
-            $parameters['source_host'] = $this->getSourceHost();
-        }
+        $parameters [] = parent::getParameters();
         if ($this->hasTitle()) {
             $parameters['title'] = $this->getTitle();
-        }
-        if ($this->hasTarget()) {
-            $parameters['target'] = $this->getTarget();
-        }
-        if ($this->hasStatusCode()) {
-            $parameters['target_statuscode'] = $this->getStatusCode();
         }
         return $parameters;
     }
