@@ -22,12 +22,12 @@ class DemandExt extends Demand
     /**
      * @var string
      */
-    protected string $orderBy = 'title';
+    protected string $orderBy;
 
     /**
      * @var string
      */
-    protected string $orderType = 'Desc';
+    protected string $orderType;
 
     /**
      * Demand constructor.

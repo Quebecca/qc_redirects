@@ -92,6 +92,8 @@ class ManagementControllerExt extends ManagementController
         $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->backendSession = $backendSession ?? GeneralUtility::makeInstance(BackendSession::class);
         $this->demand = $demand ?? GeneralUtility::makeInstance(DemandExt::class);
+        $this->demand->setOrderBy(self::ORDER_BY_DEFAULT);
+        $this->demand->setOrderType(self::ORDER_TYPE_DEFAULT);
         if($this->backendSession->get('qc_redirect_filterKey') != null){
             $this->demand = $this->backendSession->get('qc_redirect_filterKey');
         }
@@ -128,8 +130,6 @@ class ManagementControllerExt extends ManagementController
         foreach (array_keys(self::ORDER_BY_VALUES) as $key) {
             $sortActions[$key] = $this->constructBackendUri(['orderBy' => $key]);
         }
-
-
         $this->view->assign('sortActions', $sortActions);
         $this->view->assign('tableHeader', $this->getVariablesForTableHeader($sortActions));
 
@@ -168,11 +168,10 @@ class ManagementControllerExt extends ManagementController
             $this->demand->setOrderBy($demand->getOrderBy());
             $this->demand->setSourceHost($demand->getSourceHost());
             $this->demand->setSourcePath($demand->getSourcePath());
-            $this->demand->setPage($demand->getPage());
             $this->demand->setLimit($demand->getLimit());
+            $this->demand->setStatusCode($demand->getStatusCode());
         }
-
-
+        $this->demand->setPage($demand->getPage());
         $this->updateFilter();
         $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
 
