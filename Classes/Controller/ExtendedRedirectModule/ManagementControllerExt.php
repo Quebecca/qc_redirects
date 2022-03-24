@@ -31,20 +31,9 @@ use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 class ManagementControllerExt extends ManagementController
 {
     /**
-     * @var string
-     */
-    protected string $orderBy = '';
-
-    /**
-     * @var string
-     */
-    protected string $orderType = '';
-
-    /**
      * @var LocalizationUtility
      */
     protected $localizationUtility;
-
 
     /**
      * @var BackendSession
@@ -210,7 +199,7 @@ class ManagementControllerExt extends ManagementController
     protected function constructBackendUri(array $additionalQueryParameters = [], string $route = 'site_redirects'): string
     {
         $parameters = [
-            'orderBy' => $this->orderBy,
+            'orderBy' => $this->demand->getOrderBy(),
         ];
         // if same key, additionalQueryParameters should overwrite parameters
         $parameters = array_merge($parameters, $additionalQueryParameters);
@@ -244,24 +233,16 @@ class ManagementControllerExt extends ManagementController
                 'url'   => '',
                 'icon'  => '',
             ];
-            if($key == 'createdon' || $key == 'title')
-                $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::QC_LANG_FILE .$key);
-            else
-                $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::CORE_LANG_FILE .$key);
+            $lg_ext = (($key == 'createdon') || ($key == 'title')) ? self::QC_LANG_FILE : self::CORE_LANG_FILE ;
+            $tableHeadData[$key]['label'] = $this->localizationUtility->translate($lg_ext .$key);
             if (isset($sortActions[$key])) {
                 // sorting available, add url
-                if ($this->demand->getOrderBy() === $key) {
-                    $tableHeadData[$key]['url'] = $sortActions[$key . '_reverse'] ?? '';
-                } else {
-                    $tableHeadData[$key]['url'] = $sortActions[$key] ?? '';
-                }
+                $tableHeadData[$key]['url'] = $this->demand->getOrderBy() === $key ? $sortActions[$key . '_reverse'] ?? '' : $sortActions[$key] ?? '';
 
                 // add icon only if this is the selected sort order
-                if ($this->demand->getOrderBy() === $key) {
-                    $tableHeadData[$key]['icon'] = 'status-status-sorting-asc';
-                } elseif ($this->demand->getOrderBy() === $key . '_reverse') {
-                    $tableHeadData[$key]['icon'] = 'status-status-sorting-desc';
-                }
+                $tableHeadData[$key]['icon'] = $this->demand->getOrderBy() === $key
+                    ? 'status-status-sorting-asc'
+                    : ($this->demand->getOrderBy() === $key . '_reverse' ? 'status-status-sorting-desc' : '');
             }
         }
         $tableHeaderHtml = [];
