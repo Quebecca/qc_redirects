@@ -55,6 +55,7 @@ class ImportRedirectsRepository
      */
     public function saveRedirects($redirectsEntities)
     {
+        debug($redirectsEntities);
         $data =[];
         foreach ($redirectsEntities as $key => $redirectsEntity) {
             $row = $this->redirectMapper->redirectEntityToDBRow($redirectsEntity);

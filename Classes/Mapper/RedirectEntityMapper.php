@@ -23,10 +23,10 @@ class RedirectEntityMapper
      */
     public function rowToRedirectEntity($row) : RedirectEntity{
         $redirectEntity = new RedirectEntity();
-        $redirectEntity->setTitle($row[0]);
-        $redirectEntity->setSourceHost($row[1]);
-        $redirectEntity->setSourcePath($row[2]);
-        $redirectEntity->setTarget($row[3]);
+        $redirectEntity->setSourceHost($row[0]);
+        $redirectEntity->setSourcePath($row[1]);
+        $redirectEntity->setTarget($row[2]);
+        $redirectEntity->setTitle($row[3]);
         $redirectEntity->setStartTime($row[4]);
         $redirectEntity->setEndTime($row[5]);
         $redirectEntity->setIsRegExp($row[6]);

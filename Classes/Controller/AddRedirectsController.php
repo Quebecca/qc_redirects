@@ -245,7 +245,7 @@ class AddRedirectsController  extends BackendModuleActionController
             }
             $i++;
         }
-        // verify the is regular expression value
+        // verify the regular expression value
         if(strtolower($row[3]) !== 'false' &&strtolower($row[3]) !== 'true'){
             $this->wrongValuekey = 3;
             $invalidValue = true;
@@ -260,12 +260,12 @@ class AddRedirectsController  extends BackendModuleActionController
     public function generateAlertMessage(bool $success){
         if($success){
             $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
-            $alertMessageBody =    $this->localizationUtility->translate(self::LANG_FILE.'success');
+            $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
             $flashMessageService =  AbstractMessage::OK;
         }
         else{
 
-            $alertMessageBody =    $this->localizationUtility->translate(self::LANG_FILE.'error');
+            $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
             $flashMessageService =   AbstractMessage::ERROR;
             if($this->wrongValuekey !== -1){
                 $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_invalidValue'). " ' ". $this->localizationUtility->translate(self::LANG_FILE.$this->rowsConstraints[$this->wrongValuekey])." '";
