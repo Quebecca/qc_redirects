@@ -189,8 +189,8 @@ class AddRedirectsController  extends BackendModuleActionController
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
-                $row[2] = preg_replace('/\s+/', '', $row[2]);
-                $row[2] = trim($row[2], ' ');
+                $row[0] = preg_replace('/\s+/', '', $row[0]);
+                $row[1] = preg_replace('/\s+/', '', $row[1]);
             }
             // empty line
             if(count($row) == 1 && $row[0] == ''){
