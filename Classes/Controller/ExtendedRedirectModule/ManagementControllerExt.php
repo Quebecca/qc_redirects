@@ -57,7 +57,7 @@ class ManagementControllerExt extends ManagementController
     const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
-    protected const ORDER_BY_DEFAULT = 'title';
+    protected const ORDER_BY_DEFAULT = 'createdon';
     protected const ORDER_TYPE_DEFAULT = 'DESC';
 
     protected const ORDER_BY_VALUES = [
