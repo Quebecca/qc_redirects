@@ -9,7 +9,7 @@ class RedirectRepositoryExt extends RedirectRepository
     /**
      * @var DemandExt
      */
-    protected DemandExt $demand;
+    protected $demand;
 
     /**
      * @var string

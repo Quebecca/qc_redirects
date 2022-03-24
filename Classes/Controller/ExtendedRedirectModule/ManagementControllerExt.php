@@ -4,6 +4,7 @@ namespace QcRedirects\Controller\ExtendedRedirectModule;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use QcRedirects\Controller\BackendSession\BackendSession;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -22,7 +23,7 @@ class ManagementControllerExt extends ManagementController
     /**
      * @var string
      */
-    protected string $orderBy = 'Desc';
+    protected string $orderBy = '';
 
     /**
      * @var string
@@ -34,6 +35,12 @@ class ManagementControllerExt extends ManagementController
      */
     protected $localizationUtility;
 
+
+    /**
+     * @var BackendSession
+     */
+    protected BackendSession $backendSession;
+
     /**
      * @var string
      */
@@ -41,6 +48,7 @@ class ManagementControllerExt extends ManagementController
     const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
     protected const ORDER_BY_DEFAULT = 'title';
+    protected const ORDER_TYPE_DEFAULT = 'DESC';
 
     protected const ORDER_BY_VALUES = [
         'title' => [
@@ -69,6 +77,10 @@ class ManagementControllerExt extends ManagementController
         ],
     ];
 
+    /**
+     * @var DemandExt
+     */
+    protected DemandExt $demand;
 
     /**
      * Instantiate the form protection before a simulated user is initialized.
@@ -78,7 +90,23 @@ class ManagementControllerExt extends ManagementController
         parent::__construct();
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
+        $this->backendSession = $backendSession ?? GeneralUtility::makeInstance(BackendSession::class);
+        $this->demand = $demand ?? GeneralUtility::makeInstance(DemandExt::class);
+        if($this->backendSession->get('qc_redirect_filterKey') != null){
+            $this->demand = $this->backendSession->get('qc_redirect_filterKey');
+        }
+        else{
+            // initialize the filter
+            $this->updateFilter();
+        }
 
+    }
+
+    /**
+     * This function is used to manage filter and pagination
+     */
+    public function updateFilter(){
+        $this->backendSession->store('qc_redirect_filterKey', $this->demand);
     }
 
     /**
@@ -91,14 +119,17 @@ class ManagementControllerExt extends ManagementController
         $this->view->setTemplateRootPaths(['EXT:qc_redirects/Resources/Private/Templates/']);
 
         // orderBy
-        $this->orderBy = (string)(GeneralUtility::_GP('orderBy') ?? self::ORDER_BY_DEFAULT);
-
+        if((string)(GeneralUtility::_GP('orderBy')) != null){
+            $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
+        }
+        $this->demand->setOrderType(str_contains($this->demand->getOrderBy(), '_reverse') ? 'ASC' : 'DESC');
         // Table header
         $sortActions = [];
         foreach (array_keys(self::ORDER_BY_VALUES) as $key) {
             $sortActions[$key] = $this->constructBackendUri(['orderBy' => $key]);
         }
-        $this->orderBy = (string)(GeneralUtility::_GP('orderBy') ?? self::ORDER_BY_DEFAULT);
+
+
         $this->view->assign('sortActions', $sortActions);
         $this->view->assign('tableHeader', $this->getVariablesForTableHeader($sortActions));
 
@@ -110,6 +141,7 @@ class ManagementControllerExt extends ManagementController
      *
      * @param ServerRequestInterface $request the current request
      * @return ResponseInterface the response with the content
+     * @throws RouteNotFoundException
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
@@ -128,20 +160,32 @@ class ManagementControllerExt extends ManagementController
     protected function overviewAction(ServerRequestInterface $request)
     {
         $this->getButtons();
+
         $demand = DemandExt::createFromRequest($request);
-        $redirectRepository = GeneralUtility::makeInstance(RedirectRepository::class, $demand);
-        if(str_contains($this->orderBy, '_reverse')){
-            $this->orderBy = str_replace('_reverse', '',$this->orderBy);
-            $this->orderType = 'Desc';
+        if($request->getParsedBody() != null){
+            $this->demand->setTitle($demand->getTitle());
+            $this->demand->setOrderType($demand->getOrderType());
+            $this->demand->setOrderBy($demand->getOrderBy());
+            $this->demand->setSourceHost($demand->getSourceHost());
+            $this->demand->setSourcePath($demand->getSourcePath());
+            $this->demand->setPage($demand->getPage());
+            $this->demand->setLimit($demand->getLimit());
         }
-        $redirectRepository->setOrderBy($this->orderBy);
-        $redirectRepository->setOrderType($this->orderType);
+
+
+        $this->updateFilter();
+        $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
+
+        $redirectRepository->setOrderBy(str_replace('_reverse', '', $this->demand->getOrderBy()));
+        $redirectRepository->setOrderType($this->demand->getOrderType());
         $count = $redirectRepository->countRedirectsByByDemand();
         $this->view->assignMultiple([
             'redirects' => $redirectRepository->findRedirectsByDemand(),
             'hosts' => $redirectRepository->findHostsOfRedirects(),
             'statusCodes' => $redirectRepository->findStatusCodesOfRedirects(),
-            'demand' => $demand,
+            'demand' => $this->demand,
+            'orderBy' => $this->demand->getOrderBy(),
+            'orderType' => $this->demand->getOrderType(),
             'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
             'pagination' => $this->preparePagination($demand, $count),
         ]);
@@ -197,16 +241,16 @@ class ManagementControllerExt extends ManagementController
                 $tableHeadData[$key]['label'] = $this->localizationUtility->translate(self::CORE_LANG_FILE .$key);
             if (isset($sortActions[$key])) {
                 // sorting available, add url
-                if ($this->orderBy === $key) {
+                if ($this->demand->getOrderBy() === $key) {
                     $tableHeadData[$key]['url'] = $sortActions[$key . '_reverse'] ?? '';
                 } else {
                     $tableHeadData[$key]['url'] = $sortActions[$key] ?? '';
                 }
 
                 // add icon only if this is the selected sort order
-                if ($this->orderBy === $key) {
+                if ($this->demand->getOrderBy() === $key) {
                     $tableHeadData[$key]['icon'] = 'status-status-sorting-asc';
-                } elseif ($this->orderBy === $key . '_reverse') {
+                } elseif ($this->demand->getOrderBy() === $key . '_reverse') {
                     $tableHeadData[$key]['icon'] = 'status-status-sorting-desc';
                 }
             }

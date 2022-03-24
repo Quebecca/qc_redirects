@@ -242,12 +242,16 @@
 </f:section>
 
 <f:section name="filter">
+
     <form action="{f:be.uri(route:'site_redirects', parameters: '{action: \'overview\'}')}"
           method="post"
           enctype="multipart/form-data"
           name="demand"
           class="form-inline form-inline-spaced">
-
+        <input type="hidden" name="demand[orderBy]"
+               value="{orderBy}"/>
+        <input type="hidden" name="demand[orderType]"
+               value="{orderType}"/>
         <div class="form-group">
             <label for="demand-source-host">
                 <f:translate
