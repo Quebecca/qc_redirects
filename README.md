@@ -26,7 +26,7 @@ The regular expression column takes two possible values 'true' or 'false'.
 
 NB: the default fields can be empty:
 
-    domaine source;chemin source;destination;true;;;;;
+    www.example.com;/example;targetExample;false;;;;
 
 ### Files example
 In the /Documentation/ folder you will find 2 files: One in CSV format and the other in XLS (Excel) format.
@@ -62,7 +62,7 @@ Le champ "Est une expression régulière" peut prendre uniquement les valeurs 't
 
 NB: les champs par défaut peuvent être vides : 
 
-    domaine source;chemin source;destination;true;;;;;
+    www.example.com;/example;targetExample;false;;;;
 
 
 ### Fichiers d'exemples
