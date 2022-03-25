@@ -26,10 +26,10 @@ class RedirectEntityMapper
         $redirectEntity->setSourceHost($row[0]);
         $redirectEntity->setSourcePath($row[1]);
         $redirectEntity->setTarget($row[2]);
-        $redirectEntity->setTitle($row[3]);
-        $redirectEntity->setStartTime($row[4]);
-        $redirectEntity->setEndTime($row[5]);
-        $redirectEntity->setIsRegExp($row[6]);
+        $redirectEntity->setIsRegExp($row[3]);
+        $redirectEntity->setTitle($row[4]);
+        $redirectEntity->setStartTime($row[5]);
+        $redirectEntity->setEndTime($row[6]);
         $redirectEntity->setStatusCode((int)$row[7]);
         return $redirectEntity;
     }

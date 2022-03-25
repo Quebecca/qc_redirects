@@ -1,8 +1,7 @@
-source host example 1;source path example 1;target;title example 1;10/12/2021 15:54;10/12/2021 15:54;true;307
-source host example 2;source path example 2;target;title example 2;10/12/2021 15:54;10/12/2021 15:54;false;307
-source host example 3;source path example 3;target;title example 3;10/12/2021 15:54;10/12/2021 15:54;true;307
-source host example 4;source path example 4;target;title example 4; 10/12/2021 15:54;10/12/2021 15:54;true;307
-source host example 5;source path example 5;target;title example 5; 10/12/2021 15:54;10/12/2021 15:54;false;307
-source host example 6;source path example 6;target; title example 6; 10/12/2021 15:54;10/12/2021 15:54;true;307
-source host example 7;source path example 7;target;title example 7; 10/12/2021 15:54;10/12/2021 15:54;false;307
-source host example 8;source path example 8;target;title example 8;10/12/2021 15:54;10/12/2021 15:54;true;307
+www.sourceHoste1.com;/example1;target1;true;title 1;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste2.com;/example2;target2;false;title 2;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste3.com;/example3;target3;true;title 3;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste4.com;/example4;target4;true;title 4;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste5.com;/example5;target5;false;title 5;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste6.com;/example6;target6;true;title 6;10/12/2021 15:54;10/12/2021 15:54;307
+www.sourceHoste7.com;/example7;target7;false;title 7;10/12/2021 15:54;10/12/2021 15:54;307
