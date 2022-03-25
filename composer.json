@@ -1,5 +1,5 @@
 {
-    "name": "mce/qc-redirects",
+    "name": "qc/qc-redirects",
     "type": "typo3-cms-extension",
     "description": "Module used to import redirects list",
     "license": ["GPL-2.0-or-later"],
