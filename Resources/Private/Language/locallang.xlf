@@ -5,7 +5,7 @@
             <authorEmail>techno@mce.ca</authorEmail>
         </header>
         <body>
-            <trans-unit id="title">
+            <trans-unit id="import_redirects_list">
                 <source>Import redirects list</source>
             </trans-unit>
             <trans-unit id="tabulation">
@@ -57,7 +57,7 @@
                 <source> is duplicated</source>
             </trans-unit>
             <trans-unit id="columns">
-                <source>title, source host, source path, target, start time, end time, is regular experssion, status code</source>
+                <source> source host, source path, target, is regular experssion (true, false), title, start time, end time,  status code</source>
             </trans-unit>
             <trans-unit id="import_error_syntax">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
@@ -89,9 +89,6 @@
              <trans-unit id="updatedon">
                    <source>Update date</source>
              </trans-unit>
-             <trans-unit id="label_title">
-                 <source>Title</source>
-              </trans-unit>
 
         </body>
     </file>

@@ -8,7 +8,7 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
     [
         'title' => [
             'exclude' => true,
-            'label' =>  $lll . ':label_title',
+            'label' =>  $lll . ':title',
             'config' => [
                 'type' => 'input',
                 'default' => '',
