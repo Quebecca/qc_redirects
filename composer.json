@@ -17,6 +17,9 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "qc_redirects"
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
         }
     }
 }
