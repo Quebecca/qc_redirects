@@ -17,16 +17,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use QcRedirects\Controller\BackendSession\BackendSession;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Configuration\Features;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Redirects\Controller\ManagementController;
-use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class ManagementControllerExt extends ManagementController
 {

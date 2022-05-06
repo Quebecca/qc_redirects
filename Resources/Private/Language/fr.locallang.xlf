@@ -113,10 +113,6 @@
                 <source>Title</source>
                 <target>Titre</target>
             </trans-unit>
-            <trans-unit id="showHelp">
-                <source>Show help</source>
-                <target>Afficher l'aide</target>
-            </trans-unit>
             <trans-unit id="mandatoryFieldsDesc">
                 <source>The Source host, Source path, Target and 'Is Regular Expression' field value are required.</source>
                 <target>La valeur de champ Chemin d'hôte, Chemin de source, Cible et 'Est une expression régulière' sont obligatoires.</target>

@@ -8,6 +8,22 @@
     <f:translate key="import_redirects_list" extensionName="qc_redirects"/>
 </h1>
 <f:flashMessages />
+<f:be.infobox title="{f:translate(key: 'instructions', extensionName:'qc_redirects')}" state="-1">
+    <ul>
+        <li>
+            <f:translate key="mandatoryFieldsDesc" extensionName="qc_redirects" />
+        </li>
+        <li>
+            <f:translate key="regularExpressionValuesDesc" extensionName="qc_redirects" />
+        </li>
+        <li>
+            <f:translate key="emptyFieldsDesc" extensionName="qc_redirects" />
+        </li>
+        <li>
+            exemple :  www.example.com;/example;targetExample;false;;;;
+        </li>
+    </ul>
+</f:be.infobox>
 <form action="{be:moduleLink(route:'add_redirects')}" method="post">
 
     <div class="form-group">
@@ -29,31 +45,9 @@
                         <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
                     </label>
                     <br>
-                        <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
-                        <div>
-                            <button class="btn btn-primary show-help-botton" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="multiCollapseExample1 multiCollapseExample2">
-                                <f:translate key="showHelp" extensionName="qc_redirects" />
-                            </button>
-
-                            <div class="collapse multi-collapse show-help">
-                                <ul>
-                                    <li>
-                                        <f:translate key="mandatoryFieldsDesc" extensionName="qc_redirects" />
-                                    </li>
-                                    <li>
-                                        <f:translate key="regularExpressionValuesDesc" extensionName="qc_redirects" />
-                                    </li>
-                                    <li>
-                                        <f:translate key="emptyFieldsDesc" extensionName="qc_redirects" />
-                                    </li>
-                                    <li>
-                                       exemple :  www.example.com;/example;targetExample;false;;;;
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                    <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
                     <div class="form-control-wrap">
-                        <textarea class="form-control" id="importedList" name="redirectsList" rows="18"></textarea>
+                        <textarea class="form-control" id="importedList" name="redirectsList" rows="18" required="required"></textarea>
                     </div>
                 </div>
             </div>
