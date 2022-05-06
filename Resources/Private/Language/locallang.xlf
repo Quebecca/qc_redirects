@@ -89,6 +89,18 @@
              <trans-unit id="updatedon">
                    <source>Update date</source>
              </trans-unit>
+            <trans-unit id="showHelp">
+                <source>Show help</source>
+            </trans-unit>
+            <trans-unit id="mandatoryFieldsDesc">
+                <source>The Source host, Source path, Target and 'Is Regular Expression' field value are required.</source>
+            </trans-unit>
+            <trans-unit id="regularExpressionValuesDesc">
+                <source>The "Is a regular expression" field can take only the values 'true' or 'false'</source>
+            </trans-unit>
+            <trans-unit id="emptyFieldsDesc">
+                <source>The default fields can be empty</source>
+            </trans-unit>
 
         </body>
     </file>

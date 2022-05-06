@@ -18,7 +18,7 @@ The best way to import is by using a CSV or an Excel file, in which we define th
 The extension offers the option to choose the separation character.
 The order of fields, used to import redirects, is : 
 
-     Source host, Source path, Target, Is regular expression, Title, Start time, Snd time, Status code. 
+     Source host, Source path, Target, Is regular expression, Title, Start time, End time, Status code. 
 
 The value of the source host, the source path, the target, and 'Is regular expression' are required.
 

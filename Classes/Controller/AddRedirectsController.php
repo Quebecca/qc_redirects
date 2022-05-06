@@ -111,6 +111,7 @@ class AddRedirectsController  extends BackendModuleActionController
     {
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
         $this->redirectMapper =  GeneralUtility::makeInstance(RedirectEntityMapper::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
