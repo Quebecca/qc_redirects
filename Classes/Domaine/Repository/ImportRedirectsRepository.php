@@ -57,8 +57,9 @@ class ImportRedirectsRepository
     {
         $data =[];
         foreach ($redirectsEntities as $key => $redirectsEntity) {
-            $row = $this->redirectMapper->redirectEntityToDBRow($redirectsEntity);
-            $data[$this->table]['NEW_'.$key] = $row;
+          //  $row = $this->redirectMapper->redirectEntityToDBRow($redirectsEntity);
+            $redirectsEntity['pid'] = '0';
+            $data[$this->table]['NEW_'.$key] = $redirectsEntity;
         }
         $this->dataHandler->start($data, []);
         $this->dataHandler->process_datamap();

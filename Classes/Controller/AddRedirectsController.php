@@ -71,10 +71,10 @@ class AddRedirectsController  extends BackendModuleActionController
      * @var array|string[]
      */
     protected array $rowsConstraints = [
-        0 => 'sourceHost',
-        1 => 'sourcePath',
+        0 => 'source_host',
+        1 => 'source_path',
         2 => 'target',
-        3 => 'isRegularExpression'
+        3 => 'is_regexp'
     ];
 
     /**
@@ -156,10 +156,12 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
+     //   debug($GLOBALS['TCA']['sys_redirect']['ctrl']);
         if($request == null){
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
+        $this->allowedAdditionalFields = array_keys($GLOBALS['TCA']['sys_redirect']['ctrl']);
         if(!empty(array_diff($this->extraFields, $this->allowedAdditionalFields))){
             $this->generateAlertMessage(false, true);
         }
@@ -213,10 +215,25 @@ class AddRedirectsController  extends BackendModuleActionController
         foreach ($redirectListArray as $item){
             // separate the row columns
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            $mappedRow = [];
+            $index = 0;
+            $importedDataHeader = array_merge($this->rowsConstraints, $this->extraFields);
+            foreach ($importedDataHeader as $fieldName){
+                if($fieldName == 'is_regexp')
+                    $mappedRow[$fieldName] = strtolower($row[$index]) == 'true' ? 1 : 0;
+                else{
+                    if($fieldName == 'starttime' || $fieldName == 'endtime')
+                        $mappedRow[$fieldName] = strtotime($row[$index]);
+                    else{
+                        $mappedRow[$fieldName] = $row[$index];
+                    }
+                }
 
+                 $index++;
+            }
             // build associatif array ['sourcePath' => 'ze', ..., 'title' =>'toto']
             // for mandatory wen know them
-            $associatifRow = [
+           /* $associatifRow = [
                 'sourceHost' => $row[0],
                 'sourcePath' => $row[1],
                 'target' => $row[2],
@@ -227,7 +244,7 @@ class AddRedirectsController  extends BackendModuleActionController
             foreach ($this->extraFields as $field){
                 $associatifRow[$field] = $row[$i];
                 $i++;
-            }
+            }*/
 
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
@@ -240,23 +257,29 @@ class AddRedirectsController  extends BackendModuleActionController
             }
 
             // make sure that we have all important fields
-            // todo : limit number of imported fileds
+            // todo : limit number of imported fields
             if(count($row) >= self::NUMBER_OF_FIELDS){
-                $redirectEntity = $this->redirectMapper->rowToRedirectEntity($associatifRow);
+                //$redirectEntity = $this->redirectMapper->rowToRedirectEntity($associatifRow);
                 // verify if the source path,source host, target value is not empty
-                if($this->verifyColumnsValues(array($redirectEntity->getSourceHost(), $redirectEntity->getSourcePath(),$redirectEntity->getTarget(), $redirectEntity->getIsRegExp()))){
+
+               /* if($this->verifyColumnsValues([
+                    $mappedRow['source_host'],
+                    $mappedRow['source_path'],
+                    $mappedRow['target'],
+                    $mappedRow['is_regexp'],
+                ])){
                     $validImport = false;
                     break;
-                }
+                }*/
                 // Map Row to Redirect Entity
                 // verify if the source_path is already exists
-                if(in_array($redirectEntity->getSourcePath(), $sourcePathArray, TRUE)){
+                if(in_array($mappedRow['source_path'], $sourcePathArray, TRUE)){
                     $validImport = false;
-                    $this->duplicatedSourcePath = $redirectEntity->getSourcePath();
+                    $this->duplicatedSourcePath = $mappedRow['source_path'];
                     break;
                 }
-                array_push($sourcePathArray,  $redirectEntity->getSourcePath());
-                array_push($redirectEntities, $redirectEntity);
+                array_push($sourcePathArray,  $mappedRow['source_path']);
+                array_push($redirectEntities, $mappedRow);
             }
             else{
                 $validImport = false;
@@ -278,6 +301,7 @@ class AddRedirectsController  extends BackendModuleActionController
      * @return bool
      */
     public function verifyColumnsValues(array $row) : bool {
+
         $i = 0;
         $invalidValue = false;
         foreach ($row as $item){
