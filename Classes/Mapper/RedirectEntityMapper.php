@@ -23,14 +23,20 @@ class RedirectEntityMapper
      */
     public function rowToRedirectEntity($row) : RedirectEntity{
         $redirectEntity = new RedirectEntity();
-        $redirectEntity->setSourceHost($row[0]);
+       /* $redirectEntity->setSourceHost($row[0]);
         $redirectEntity->setSourcePath($row[1]);
         $redirectEntity->setTarget($row[2]);
         $redirectEntity->setIsRegExp($row[3]);
         $redirectEntity->setTitle($row[4]);
         $redirectEntity->setStartTime($row[5]);
         $redirectEntity->setEndTime($row[6]);
-        $redirectEntity->setStatusCode((int)$row[7]);
+        $redirectEntity->setStatusCode((int)$row[7]);*/
+        foreach ($row as $fieldName => $value){
+            if($fieldName != ''){
+                $methodName = 'set'.ucfirst($fieldName);
+                $redirectEntity->$methodName($value);
+            }
+        }
         return $redirectEntity;
     }
 
@@ -41,7 +47,22 @@ class RedirectEntityMapper
      */
     public function redirectEntityToDBRow(RedirectEntity $entity): array
     {
-        return
+        $row = [
+            'pid' => '0',
+            'source_host' => $entity->getSourceHost(),
+            'source_path' => $entity->getSourcePath(),
+            'target' => $entity->getTarget(),
+            'is_regexp' => strtolower($entity->getIsRegExp()) == 'true' ? 1 : 0,
+            'title' => $entity->getTitle(),
+            'starttime' => strtotime($entity->getStartTime()),
+            'endtime' => strtotime($entity->getEndTime()),
+
+        ];
+        if($entity->getStatusCode()){
+            $row['target_statuscode'] = (int)$entity->getStatusCode();
+        }
+        return $row;
+        /*return
             [
                 'pid' => '0',
                 'title' => $entity->getTitle(),
@@ -52,6 +73,6 @@ class RedirectEntityMapper
                 'endtime' => strtotime($entity->getEndTime()),
                 'is_regexp' => strtolower($entity->getIsRegExp()) == 'true' ? 1 : 0,
                 'target_statuscode' => (int)$entity->getStatusCode(),
-             ];
+             ];*/
     }
 }

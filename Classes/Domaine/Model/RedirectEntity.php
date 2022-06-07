@@ -16,31 +16,31 @@ class RedirectEntity
     /**
      * @var string
      */
-    protected string $title;
+    protected string $title = '';
     /**
      * @var string
      */
-    protected string $sourceHost;
+    protected string $sourceHost = '';
     /**
      * @var string
      */
-    protected string $sourcePath;
+    protected string $sourcePath = '';
     /**
      * @var string
      */
-    protected string $target;
+    protected string $target = '';
     /**
      * @var string
      */
-    protected string $startTime;
+    protected string $startTime = '';
     /**
      * @var string
      */
-    protected string $endTime;
+    protected string $endTime = '';
     /**
      * @var string
      */
-    protected string $isRegExp;
+    protected string $isRegExp = '';
     /**
      * @var int
      */
@@ -158,12 +158,10 @@ class RedirectEntity
         $this->isRegExp = $isRegExp;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode(): int
+
+    public function getStatusCode(): ?int
     {
-        return $this->statusCode;
+        return $this->statusCode ?? null;
     }
 
     /**

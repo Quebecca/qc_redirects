@@ -32,7 +32,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AddRedirectsController  extends BackendModuleActionController
 {
 
-    const NUMBER_OF_FIELDS = 8;
+    const NUMBER_OF_FIELDS = 4;
     const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     /**
      * ModuleTemplate object
@@ -78,9 +78,21 @@ class AddRedirectsController  extends BackendModuleActionController
     ];
 
     /**
+     * @var array|string[]
+     */
+    protected array $allowedAdditionalFields  = [
+        'title',
+        'startTime',
+        'endTime',
+        'statusCode'
+    ];
+
+    /**
      * @var string
      */
     protected string $selectedSeparatedChar = '';
+
+    protected array $extraFields = [];
 
     /**
      * @var string
@@ -147,14 +159,20 @@ class AddRedirectsController  extends BackendModuleActionController
         if($request == null){
             return null;
         }
-        $redirectsList = $request->getParsedBody()['redirectsList'];
-        $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
-        if(!is_null($redirectsList)){
-            // convert data to array
-            $redirectsListArray = explode("\r\n", $redirectsList);
-            $created = $this->processRedirects($redirectsListArray);
-            // alert message
-            $this->generateAlertMessage($created);
+        $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
+        if(!empty(array_diff($this->extraFields, $this->allowedAdditionalFields))){
+            $this->generateAlertMessage(false, true);
+        }
+        else{
+            $redirectsList = $request->getParsedBody()['redirectsList'];
+            $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
+            if(!is_null($redirectsList)){
+                // convert data to array
+                $redirectsListArray = explode("\r\n", $redirectsList);
+                $created = $this->processRedirects($redirectsListArray);
+                // alert message
+                $this->generateAlertMessage($created);
+            }
         }
         $this->renderView();
         return new HtmlResponse($this->moduleTemplate->renderContent());
@@ -169,6 +187,14 @@ class AddRedirectsController  extends BackendModuleActionController
         ));
         $this->view->assign('separatedChars', $this->separatedChars);
         $this->moduleTemplate->setContent($this->view->render());
+    }
+
+    /**
+     * This function will be used to get the imported data header, by combining mandatory fields with additional fields
+     * @return array
+     */
+    protected function getImportedDataHeader() : array{
+        return [];
     }
 
     /**
@@ -187,6 +213,22 @@ class AddRedirectsController  extends BackendModuleActionController
         foreach ($redirectListArray as $item){
             // separate the row columns
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+
+            // build associatif array ['sourcePath' => 'ze', ..., 'title' =>'toto']
+            // for mandatory wen know them
+            $associatifRow = [
+                'sourceHost' => $row[0],
+                'sourcePath' => $row[1],
+                'target' => $row[2],
+                'isRegExp' => $row[3],
+            ];
+            // extra fields
+            $i = 4;
+            foreach ($this->extraFields as $field){
+                $associatifRow[$field] = $row[$i];
+                $i++;
+            }
+
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
                 $row[0] = preg_replace('/\s+/', '', $row[0]);
@@ -198,8 +240,9 @@ class AddRedirectsController  extends BackendModuleActionController
             }
 
             // make sure that we have all important fields
-            if(count($row) == self::NUMBER_OF_FIELDS){
-                $redirectEntity = $this->redirectMapper->rowToRedirectEntity($row);
+            // todo : limit number of imported fileds
+            if(count($row) >= self::NUMBER_OF_FIELDS){
+                $redirectEntity = $this->redirectMapper->rowToRedirectEntity($associatifRow);
                 // verify if the source path,source host, target value is not empty
                 if($this->verifyColumnsValues(array($redirectEntity->getSourceHost(), $redirectEntity->getSourcePath(),$redirectEntity->getTarget(), $redirectEntity->getIsRegExp()))){
                     $validImport = false;
@@ -257,27 +300,35 @@ class AddRedirectsController  extends BackendModuleActionController
      * This function is used to generate alert message
      * @param bool $success
      */
-    public function generateAlertMessage(bool $success){
-        if($success){
-            $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
-            $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
-            $flashMessageService =  AbstractMessage::OK;
+    public function generateAlertMessage(bool $success, bool $wrongAdditionalFileds = false){
+        if($wrongAdditionalFileds){
+            $alertMessageHeader = "Error";
+            $alertMessageBody = "Field(s) are not available";
+            $flashMessageService =  AbstractMessage::ERROR;
         }
         else{
-
-            $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
-            $flashMessageService =   AbstractMessage::ERROR;
-            if($this->wrongValuekey !== -1){
-                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_invalidValue'). " ' ". $this->localizationUtility->translate(self::LANG_FILE.$this->rowsConstraints[$this->wrongValuekey])." '";
-            }
-            elseif (!empty($this->duplicatedSourcePath)){
-                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_duplicated')
-                    . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;
+            if($success){
+                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
+                $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
+                $flashMessageService =  AbstractMessage::OK;
             }
             else{
-                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_syntax');
+
+                $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
+                $flashMessageService =   AbstractMessage::ERROR;
+                if($this->wrongValuekey !== -1){
+                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_invalidValue'). " ' ". $this->localizationUtility->translate(self::LANG_FILE.$this->rowsConstraints[$this->wrongValuekey])." '";
+                }
+                elseif (!empty($this->duplicatedSourcePath)){
+                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_duplicated')
+                        . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;
+                }
+                else{
+                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_syntax');
+                }
             }
         }
+
 
         $message = GeneralUtility::makeInstance(FlashMessage::class,
             $alertMessageHeader,

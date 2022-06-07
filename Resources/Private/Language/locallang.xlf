@@ -101,7 +101,12 @@
             <trans-unit id="instructions">
                 <source>Instructions</source>
             </trans-unit>
-
+            <trans-unit id="advanced">
+                <source>Advanced</source>
+            </trans-unit>
+            <trans-unit id="extraFields">
+                <source>Additional field names (space comma) (title, startTime, endTime, statusCode)</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

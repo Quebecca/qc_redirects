@@ -125,6 +125,14 @@
                 <source>The default fields can be empty</source>
                 <target>Les champs par défaut peuvent être vides.</target>
             </trans-unit>
+            <trans-unit id="advanced">
+                <source>Advanced</source>
+                <target>Avancée</target>
+            </trans-unit>
+            <trans-unit id="extraFields">
+                <source>Additional field names (space comma) (title, startTime, endTime, statusCode)</source>
+                <target>Noms de champ supplémentaires (délimités par des virgules) (title, startTime, endTime, statusCode)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
