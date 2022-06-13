@@ -67,10 +67,34 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected int $wrongValuekey = -1;
 
+
     /**
      * @var array|string[]
      */
     protected array $rowsConstraints = [
+
+    ];
+
+    /**
+     * @var array|string[]
+     */
+    protected array $errorsTypes = [
+        'emptyValue' => false,
+        'invalidValue' => false,
+        'syntaxError' => false,
+        'duplicatedSourcePath' => false,
+        'invalidField' => false
+    ];
+
+    /**
+     * @var array
+     */
+    protected array $invalidFields = [];
+
+    /**
+     * @var array|string[]
+     */
+    protected array $mandatoryFields = [
         0 => 'source_host',
         1 => 'source_path',
         2 => 'target',
@@ -156,15 +180,17 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
-        debug($GLOBALS['TCA']['sys_redirect']['columns']);
         if($request == null){
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
-        $this->allowedAdditionalFields = array_keys($GLOBALS['TCA']['sys_redirect']['columns']);
-    //    debug($this->allowedAdditionalFields);
-        if(!empty(array_diff($this->extraFields, $this->allowedAdditionalFields))){
-            $this->generateAlertMessage(false, true);
+        $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
+        // todo : Check if the field is readOnly
+        $invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
+        if(!empty($invalidFields)){
+            $this->errorsTypes['invalidField'] = true;
+            $this->invalidFields = $invalidFields;
+            $this->generateAlertMessage(false);
         }
         else{
             $redirectsList = $request->getParsedBody()['redirectsList'];
@@ -218,18 +244,10 @@ class AddRedirectsController  extends BackendModuleActionController
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
             $mappedRow = [];
             $index = 0;
-            $importedDataHeader = array_merge($this->rowsConstraints, $this->extraFields);
-            foreach ($importedDataHeader as $fieldName){
-                if($fieldName == 'is_regexp')
-                    $mappedRow[$fieldName] = strtolower($row[$index]) == 'true' ? 1 : (strtolower($row[$index]) == 'false' ? 0 : false);
-                else{
-                    if($fieldName == 'starttime' || $fieldName == 'endtime')
-                        $mappedRow[$fieldName] = strtotime($row[$index]);
-                    else{
-                        $mappedRow[$fieldName] = $row[$index];
-                    }
-                }
-
+            $this->rowsConstraints = array_merge($this->mandatoryFields, $this->extraFields);
+            // adding optional fields to be be validated
+            foreach ($this->rowsConstraints as $fieldName){
+                $mappedRow[$fieldName] = $row[$index];
                  $index++;
             }
 
@@ -246,15 +264,8 @@ class AddRedirectsController  extends BackendModuleActionController
             // make sure that we have all important fields
             // todo : limit number of imported fields
             if(count($row) >= self::NUMBER_OF_FIELDS){
-                //$redirectEntity = $this->redirectMapper->rowToRedirectEntity($associatifRow);
                 // verify if the source path,source host, target value is not empty
-
-                if($this->verifyColumnsValues([
-                    $mappedRow['source_host'],
-                    $mappedRow['source_path'],
-                    $mappedRow['target'],
-                    $mappedRow['is_regexp'],
-                ])){
+                if(!$this->verifyMandatoryColumnsExistence($mappedRow)){
                     $validImport = false;
                     break;
                 }
@@ -263,12 +274,33 @@ class AddRedirectsController  extends BackendModuleActionController
                 if(in_array($mappedRow['source_path'], $sourcePathArray, TRUE)){
                     $validImport = false;
                     $this->duplicatedSourcePath = $mappedRow['source_path'];
+                    $this->errorsTypes['duplicatedSourcePath'] = true;
                     break;
                 }
+                // verify fields values
+                $index = 0;
+                foreach ($mappedRow as $key => $value){
+                    $chckingMethodName = $this->allowedAdditionalFields[$key]['config']['renderType'];
+                    if($chckingMethodName != ''){
+                        $chckingMethodName .= 'Verify';
+                    }
+                    if($chckingMethodName != null){
+                        if(!$this->$chckingMethodName($value)){
+                            $this->wrongValuekey = $index;
+                            $this->errorsTypes['invalidValue'] = true;
+                            $validImport = false;
+                            break;
+                        }
+                    }
+                    $index++;
+                }
+
+
                 array_push($sourcePathArray,  $mappedRow['source_path']);
                 array_push($redirectEntities, $mappedRow);
             }
             else{
+                $this->errorsTypes['syntaxError'] = true;
                 $validImport = false;
                 break;
             }
@@ -287,54 +319,60 @@ class AddRedirectsController  extends BackendModuleActionController
      * @param array $row
      * @return bool
      */
-    public function verifyColumnsValues(array $row) : bool {
+    public function verifyMandatoryColumnsExistence(array $row) : bool {
         $i = 0;
-        $invalidValue = false;
-        foreach ($row as $item){
-            if(empty($item)){
+        foreach ($this->mandatoryFields as $fieldName){
+            if(empty($row[$fieldName])){
                 $this->wrongValuekey = $i;
-                $invalidValue = true;
-                break;
+                $this->errorsTypes['emptyValue'] = true;
+                return false;
             }
             $i++;
         }
-        // verify the regular expression value
-        if($row[3] == false){
-            $this->wrongValuekey = 3;
-            $invalidValue = true;
-        }
-        return $invalidValue;
+        return true;
+    }
+
+    public function inputLinkVerify($value){
+      //  return filter_var($value, FILTER_VALIDATE_URL);
+        return true;
+    }
+    public function inputDateTimeVerify($value): bool
+    {
+        return (bool)strtotime($value);
+    }
+
+    public function checkboxToggleVerify($value): bool
+    {
+        return $value == 'true' || $value == 'false';
     }
 
     /**
      * This function is used to generate alert message
      * @param bool $success
      */
-    public function generateAlertMessage(bool $success, bool $wrongAdditionalFileds = false){
-        if($wrongAdditionalFileds){
-            $alertMessageHeader = "Error";
-            $alertMessageBody = "Field(s) are not available";
-            $flashMessageService =  AbstractMessage::ERROR;
+    public function generateAlertMessage(bool $success){
+
+        if($success){
+            $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
+            $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
+            $flashMessageService =  AbstractMessage::OK;
         }
         else{
-            if($success){
-                $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
-                $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
-                $flashMessageService =  AbstractMessage::OK;
-            }
-            else{
-
-                $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
-                $flashMessageService =   AbstractMessage::ERROR;
-                if($this->wrongValuekey !== -1){
-                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_invalidValue'). " ' ". $this->localizationUtility->translate(self::LANG_FILE.$this->rowsConstraints[$this->wrongValuekey])." '";
-                }
-                elseif (!empty($this->duplicatedSourcePath)){
-                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_duplicated')
-                        . ' "'. $this->duplicatedSourcePath .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;
-                }
-                else{
-                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_error_syntax');
+            $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
+            $flashMessageService =   AbstractMessage::ERROR;
+            $alertMessageHeader = "";
+            foreach ($this->errorsTypes as $errorType => $value){
+                if($value){
+                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.$errorType);
+                    if($this->wrongValuekey != -1){
+                        $alertMessageHeader .= " ' ".$this->rowsConstraints[$this->wrongValuekey]." '";
+                    }
+                    if(!empty($this->invalidFields)){
+                        $alertMessageHeader .= implode(', ', $this->invalidFields);
+                    }
+                    if($this->duplicatedSourcePath != ''){
+                        $alertMessageHeader .= ' "'.  $this->duplicatedSourcePath  .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;   ;
+                    }
                 }
             }
         }

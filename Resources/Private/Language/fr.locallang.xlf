@@ -53,7 +53,7 @@
                 <source>Success</source>
                 <target>Succès</target>
             </trans-unit>
-            <trans-unit id="import_error_duplicated">
+            <trans-unit id="duplicatedSourcePath">
                 <source>Error when importing the redirect list, the source path : </source>
                 <target>Erreur lors de l'importation,</target>
             </trans-unit>
@@ -69,23 +69,31 @@
                 <source> source host, source path, target, is regular experssion (true, false), title, start time, end time,  status code</source>
                 <target> chemin d'hôte, chemin de source, cible, expression régulière (true, false), titre, heure de début, heure de fin, code http (302,307,etc)</target>
             </trans-unit>
-            <trans-unit id="import_error_syntax">
+            <trans-unit id="syntaxError">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
                 <target>Erreur lors de l'importation. Veuillez vérifier la syntaxe d'importation</target>
+            </trans-unit>
+            <trans-unit id="invalidField">
+                <source>Error : Invalid field </source>
+                <target>Erreur : champ invalid</target>
             </trans-unit>
             <trans-unit id="import">
                 <source>Import the redirects list</source>
                 <target>Importer la liste des redirections</target>
             </trans-unit>
-            <trans-unit id="import_invalidValue">
+            <trans-unit id="invalidValue">
                 <source>Invalid value inserted for the column</source>
                 <target>Valeur non valide insérée pour la colonne</target>
             </trans-unit>
-            <trans-unit id="sourceHost">
+            <trans-unit id="emptyValue">
+                <source>can't be empty</source>
+                <target>ne peut pas être vide</target>
+            </trans-unit>
+            <trans-unit id="source_host">
                 <source>Source host</source>
                 <target>Domaine source</target>
             </trans-unit>
-            <trans-unit id="sourcePath">
+            <trans-unit id="source_path">
                 <source>Source path</source>
                 <target>Chemin source</target>
             </trans-unit>
