@@ -188,6 +188,8 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
         $this->invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
 
+        // todo : save inserted values in the for in case of error
+
         // check if the field is on ReadOnly
         foreach ($this->extraFields as $field){
             if($this->allowedAdditionalFields[$field]['config']['readOnly']){
@@ -199,7 +201,7 @@ class AddRedirectsController  extends BackendModuleActionController
             $this->generateAlertMessage(false);
         }
 
-        if(!empty($this->invalidFields)){
+        elseif(!empty($this->invalidFields)){
             $this->errorsTypes['invalidField'] = true;
             $this->generateAlertMessage(false);
         }
@@ -256,7 +258,7 @@ class AddRedirectsController  extends BackendModuleActionController
             $mappedRow = [];
             $index = 0;
             $this->rowsConstraints = array_merge($this->mandatoryFields, $this->extraFields);
-            // adding optional fields to be be validated
+            // adding optional fields to be validated
             foreach ($this->rowsConstraints as $fieldName){
                 $mappedRow[$fieldName] = $row[$index];
                  $index++;
@@ -304,8 +306,6 @@ class AddRedirectsController  extends BackendModuleActionController
                     }
                     $index++;
                 }
-
-
                 array_push($sourcePathArray,  $mappedRow['source_path']);
                 array_push($redirectEntities, $mappedRow);
             }
