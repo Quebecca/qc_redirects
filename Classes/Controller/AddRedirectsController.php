@@ -66,9 +66,15 @@ class AddRedirectsController  extends BackendModuleActionController
     /**
      * @var array|string[]
      */
-    protected array $rowsConstraints = [
+    protected array $rowsConstraints = [];
 
+    /**
+     * @var array|string[]
+     */
+    protected array $checkingRules = [
+        'inputLink', 'inputDateTime', 'checkboxToggle'
     ];
+
 
     /**
      * @var array|string[]
@@ -216,17 +222,24 @@ class AddRedirectsController  extends BackendModuleActionController
                 $this->generateAlertMessage($created);
             }
         }
-        $this->renderView();
+        $this->renderView($request->getParsedBody());
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * This function is used to render View after form submission
      */
-    function renderView(){
+    function renderView($requestBody = null){
         $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
             'EXT:qc_redirects/Resources/Private/Templates/Import.html'
         ));
+        if($requestBody){
+            $this->view->assignMultiple([
+                'redirectsList' => $requestBody['redirectsList'],
+                'separationCharacter' => $requestBody['separationCharacter'],
+                'extraFields' => $requestBody['extraFields']
+            ]);
+        }
         $this->view->assign('separatedChars', $this->separatedChars);
         $this->moduleTemplate->setContent($this->view->render());
     }
@@ -296,7 +309,7 @@ class AddRedirectsController  extends BackendModuleActionController
                     if($chckingMethodName != ''){
                         $chckingMethodName .= 'Verify';
                     }
-                    if($chckingMethodName != null){
+                    if($chckingMethodName != null && in_array($chckingMethodName, $this->checkingRules )){
                         if(!$this->$chckingMethodName($value)){
                             $this->wrongValuekey = $index;
                             $this->errorsTypes['invalidValue'] = true;

@@ -8,6 +8,7 @@
     <f:translate key="import_redirects_list" extensionName="qc_redirects"/>
 </h1>
 <f:flashMessages />
+<f:debug>{_all}</f:debug>
 <f:be.infobox title="{f:translate(key: 'instructions', extensionName:'qc_redirects')}" state="-1">
     <ul>
         <li>
@@ -47,7 +48,7 @@
                     <br>
                     <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
                     <div class="form-control-wrap">
-                        <textarea class="form-control" id="importedList" name="redirectsList" rows="18" required="required"></textarea>
+                        <textarea class="form-control" id="importedList" name="redirectsList" rows="18" required="required">{redirectsList}</textarea>
                     </div>
                 </div>
             </div>
@@ -58,7 +59,7 @@
                 </div>
                 <div class="form-group col-xs-12">
                     <label for="extraFields"><f:translate key="extraFields" extensionName="qc_redirects" /></label>
-                    <input class="form-control" type="text" name="extraFields" size="30" id="extraFields"/>
+                    <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
                 </div>
             </div>
 
