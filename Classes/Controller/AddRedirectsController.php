@@ -156,12 +156,13 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
-     //   debug($GLOBALS['TCA']['sys_redirect']['ctrl']);
+        debug($GLOBALS['TCA']['sys_redirect']['columns']);
         if($request == null){
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
-        $this->allowedAdditionalFields = array_keys($GLOBALS['TCA']['sys_redirect']['ctrl']);
+        $this->allowedAdditionalFields = array_keys($GLOBALS['TCA']['sys_redirect']['columns']);
+    //    debug($this->allowedAdditionalFields);
         if(!empty(array_diff($this->extraFields, $this->allowedAdditionalFields))){
             $this->generateAlertMessage(false, true);
         }
@@ -220,7 +221,7 @@ class AddRedirectsController  extends BackendModuleActionController
             $importedDataHeader = array_merge($this->rowsConstraints, $this->extraFields);
             foreach ($importedDataHeader as $fieldName){
                 if($fieldName == 'is_regexp')
-                    $mappedRow[$fieldName] = strtolower($row[$index]) == 'true' ? 1 : 0;
+                    $mappedRow[$fieldName] = strtolower($row[$index]) == 'true' ? 1 : (strtolower($row[$index]) == 'false' ? 0 : false);
                 else{
                     if($fieldName == 'starttime' || $fieldName == 'endtime')
                         $mappedRow[$fieldName] = strtotime($row[$index]);
@@ -231,20 +232,6 @@ class AddRedirectsController  extends BackendModuleActionController
 
                  $index++;
             }
-            // build associatif array ['sourcePath' => 'ze', ..., 'title' =>'toto']
-            // for mandatory wen know them
-           /* $associatifRow = [
-                'sourceHost' => $row[0],
-                'sourcePath' => $row[1],
-                'target' => $row[2],
-                'isRegExp' => $row[3],
-            ];
-            // extra fields
-            $i = 4;
-            foreach ($this->extraFields as $field){
-                $associatifRow[$field] = $row[$i];
-                $i++;
-            }*/
 
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
@@ -262,7 +249,7 @@ class AddRedirectsController  extends BackendModuleActionController
                 //$redirectEntity = $this->redirectMapper->rowToRedirectEntity($associatifRow);
                 // verify if the source path,source host, target value is not empty
 
-               /* if($this->verifyColumnsValues([
+                if($this->verifyColumnsValues([
                     $mappedRow['source_host'],
                     $mappedRow['source_path'],
                     $mappedRow['target'],
@@ -270,7 +257,7 @@ class AddRedirectsController  extends BackendModuleActionController
                 ])){
                     $validImport = false;
                     break;
-                }*/
+                }
                 // Map Row to Redirect Entity
                 // verify if the source_path is already exists
                 if(in_array($mappedRow['source_path'], $sourcePathArray, TRUE)){
@@ -301,7 +288,6 @@ class AddRedirectsController  extends BackendModuleActionController
      * @return bool
      */
     public function verifyColumnsValues(array $row) : bool {
-
         $i = 0;
         $invalidValue = false;
         foreach ($row as $item){
@@ -313,7 +299,7 @@ class AddRedirectsController  extends BackendModuleActionController
             $i++;
         }
         // verify the regular expression value
-        if(strtolower($row[3]) !== 'false' &&strtolower($row[3]) !== 'true'){
+        if($row[3] == false){
             $this->wrongValuekey = 3;
             $invalidValue = true;
         }
