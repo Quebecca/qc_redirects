@@ -75,6 +75,9 @@
             <trans-unit id="emptyValue">
                 <source>can't be empty</source>
             </trans-unit>
+            <trans-unit id="readOnlyField">
+                <source>Field is on read only </source>
+            </trans-unit>
             <trans-unit id="sourceHost">
                 <source>Source host</source>
             </trans-unit>

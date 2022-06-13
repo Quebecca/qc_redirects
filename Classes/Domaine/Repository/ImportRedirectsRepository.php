@@ -13,7 +13,6 @@
 namespace QcRedirects\Domaine\Repository;
 
 use Doctrine\DBAL\Driver\Exception;
-use QcRedirects\Mapper\RedirectEntityMapper;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -36,17 +35,12 @@ class ImportRedirectsRepository
      */
     protected string $table = 'sys_redirect';
 
-    /**
-     * @var RedirectEntityMapper
-     */
-    protected RedirectEntityMapper $redirectMapper;
 
 
     public function __construct()
     {
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
-        $this->redirectMapper = GeneralUtility::makeInstance(RedirectEntityMapper::class);
     }
 
     /**
@@ -57,7 +51,6 @@ class ImportRedirectsRepository
     {
         $data =[];
         foreach ($redirectsEntities as $key => $redirectsEntity) {
-          //  $row = $this->redirectMapper->redirectEntityToDBRow($redirectsEntity);
             $redirectsEntity['pid'] = '0';
             $data[$this->table]['NEW_'.$key] = $redirectsEntity;
         }

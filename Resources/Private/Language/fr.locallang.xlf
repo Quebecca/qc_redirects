@@ -89,6 +89,10 @@
                 <source>can't be empty</source>
                 <target>ne peut pas être vide</target>
             </trans-unit>
+            <trans-unit id="readOnlyField">
+                <source>Field is on read only </source>
+                <target>Le champs est pour la lecture seulement</target>
+            </trans-unit>
             <trans-unit id="source_host">
                 <source>Source host</source>
                 <target>Domaine source</target>

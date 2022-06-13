@@ -17,7 +17,6 @@ use Doctrine\DBAL\Driver\Exception;
 use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ServerRequestInterface;
 use QcRedirects\Domaine\Repository\ImportRedirectsRepository;
-use QcRedirects\Mapper\RedirectEntityMapper;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
@@ -46,10 +45,6 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $localizationUtility;
 
-    /**
-     * @var RedirectEntityMapper
-     */
-    protected RedirectEntityMapper $redirectMapper;
 
     /**
      * @var array|string[]
@@ -83,13 +78,19 @@ class AddRedirectsController  extends BackendModuleActionController
         'invalidValue' => false,
         'syntaxError' => false,
         'duplicatedSourcePath' => false,
-        'invalidField' => false
+        'invalidField' => false,
+        'readOnlyField' => false
     ];
 
     /**
      * @var array
      */
     protected array $invalidFields = [];
+
+    /**
+     * @var array
+     */
+    protected array $readOnlyFields = [];
 
     /**
      * @var array|string[]
@@ -148,7 +149,6 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
-        $this->redirectMapper =  GeneralUtility::makeInstance(RedirectEntityMapper::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
     }
 
@@ -184,12 +184,23 @@ class AddRedirectsController  extends BackendModuleActionController
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
+
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
-        // todo : Check if the field is readOnly
-        $invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
-        if(!empty($invalidFields)){
+        $this->invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
+
+        // check if the field is on ReadOnly
+        foreach ($this->extraFields as $field){
+            if($this->allowedAdditionalFields[$field]['config']['readOnly']){
+                $this->readOnlyFields [] = $field;
+            }
+        }
+        if(!empty($this->readOnlyFields)){
+            $this->errorsTypes['readOnlyField'] = true;
+            $this->generateAlertMessage(false);
+        }
+
+        if(!empty($this->invalidFields)){
             $this->errorsTypes['invalidField'] = true;
-            $this->invalidFields = $invalidFields;
             $this->generateAlertMessage(false);
         }
         else{
@@ -262,8 +273,7 @@ class AddRedirectsController  extends BackendModuleActionController
             }
 
             // make sure that we have all important fields
-            // todo : limit number of imported fields
-            if(count($row) >= self::NUMBER_OF_FIELDS){
+            if(count($row) == count($this->rowsConstraints)){
                 // verify if the source path,source host, target value is not empty
                 if(!$this->verifyMandatoryColumnsExistence($mappedRow)){
                     $validImport = false;
@@ -366,6 +376,9 @@ class AddRedirectsController  extends BackendModuleActionController
                     $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.$errorType);
                     if($this->wrongValuekey != -1){
                         $alertMessageHeader .= " ' ".$this->rowsConstraints[$this->wrongValuekey]." '";
+                    }
+                    if(!empty($this->readOnlyFields)){
+                        $alertMessageHeader .= implode(', ', $this->readOnlyFields);
                     }
                     if(!empty($this->invalidFields)){
                         $alertMessageHeader .= implode(', ', $this->invalidFields);
