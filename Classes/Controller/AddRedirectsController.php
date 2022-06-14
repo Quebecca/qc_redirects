@@ -186,16 +186,48 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
+        // todo : modify doc
+        // todo : add significant message in case of error
+        // todo : separation select - save the previous select
+        // todo : label in fields - importing form
         if($request == null){
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
 
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
+
+        $requestBody = [];
+        if(!$this->checkForInvalidFields() || !$this->checkForReadOnlyFields()){
+            $this->generateAlertMessage(false);
+            // we display the inserted data when an error appears
+            $requestBody = $request->getParsedBody();
+        }
+        else{
+            $redirectsList = $request->getParsedBody()['redirectsList'];
+            $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
+            // convert data to array
+            $redirectsListArray = explode("\r\n", $redirectsList);
+            $created = $this->processRedirects($redirectsListArray);
+            if(!$created)
+                $requestBody = $request->getParsedBody();
+            // alert message
+            $this->generateAlertMessage($created);
+        }
+        $this->renderView($requestBody);
+        return new HtmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    public function checkForInvalidFields() : bool{
         $this->invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
+        if(!empty($this->invalidFields)){
+            $this->errorsTypes['invalidField'] = true;
+            return false;
+        }
+        return true;
+    }
 
-        // todo : save inserted values in the for in case of error
-
+    public function checkForReadOnlyFields() : bool{
         // check if the field is on ReadOnly
         foreach ($this->extraFields as $field){
             if($this->allowedAdditionalFields[$field]['config']['readOnly']){
@@ -204,26 +236,9 @@ class AddRedirectsController  extends BackendModuleActionController
         }
         if(!empty($this->readOnlyFields)){
             $this->errorsTypes['readOnlyField'] = true;
-            $this->generateAlertMessage(false);
+            return false;
         }
-
-        elseif(!empty($this->invalidFields)){
-            $this->errorsTypes['invalidField'] = true;
-            $this->generateAlertMessage(false);
-        }
-        else{
-            $redirectsList = $request->getParsedBody()['redirectsList'];
-            $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
-            if(!is_null($redirectsList)){
-                // convert data to array
-                $redirectsListArray = explode("\r\n", $redirectsList);
-                $created = $this->processRedirects($redirectsListArray);
-                // alert message
-                $this->generateAlertMessage($created);
-            }
-        }
-        $this->renderView($request->getParsedBody());
-        return new HtmlResponse($this->moduleTemplate->renderContent());
+        return true;
     }
 
     /**
@@ -302,23 +317,29 @@ class AddRedirectsController  extends BackendModuleActionController
                     $this->errorsTypes['duplicatedSourcePath'] = true;
                     break;
                 }
+
                 // verify fields values
                 $index = 0;
                 foreach ($mappedRow as $key => $value){
-                    $chckingMethodName = $this->allowedAdditionalFields[$key]['config']['renderType'];
-                    if($chckingMethodName != ''){
-                        $chckingMethodName .= 'Verify';
-                    }
-                    if($chckingMethodName != null && in_array($chckingMethodName, $this->checkingRules )){
-                        if(!$this->$chckingMethodName($value)){
+                    $renderType = $this->allowedAdditionalFields[$key]['config']['renderType'];
+                    if($renderType != null &&  in_array($renderType, $this->checkingRules )){
+                        $checkingMethodName = $renderType.'Verify';
+                        if(!$this->$checkingMethodName($value)){
                             $this->wrongValuekey = $index;
                             $this->errorsTypes['invalidValue'] = true;
                             $validImport = false;
                             break;
                         }
+                        else{
+                            switch ($renderType){
+                                case 'inputDateTime' : $mappedRow[$key] = strtotime($value); break;
+                                case 'checkboxToggle' : $mappedRow[$key] = $value == 'true' ? 1 : 0;
+                            }
+                        }
                     }
                     $index++;
                 }
+
                 array_push($sourcePathArray,  $mappedRow['source_path']);
                 array_push($redirectEntities, $mappedRow);
             }
@@ -361,12 +382,12 @@ class AddRedirectsController  extends BackendModuleActionController
     }
     public function inputDateTimeVerify($value): bool
     {
-        return (bool)strtotime($value);
+        return (bool)strtotime($value) || $value == '';
     }
 
     public function checkboxToggleVerify($value): bool
     {
-        return $value == 'true' || $value == 'false';
+        return $value == 'true' || $value == 'false' || $value == '';
     }
 
     /**
