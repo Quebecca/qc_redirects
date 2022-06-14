@@ -17,10 +17,13 @@
             <f:translate key="regularExpressionValuesDesc" extensionName="qc_redirects" />
         </li>
         <li>
-            <f:translate key="emptyFieldsDesc" extensionName="qc_redirects" />
+            <f:translate key="optionalFields" extensionName="qc_redirects" />
         </li>
         <li>
-            exemple :  www.example.com;/example;targetExample;false
+            <f:translate key="optionalFieldsDesc" extensionName="qc_redirects" />
+        </li>
+        <li>
+            <f:translate key="example" extensionName="qc_redirects" /> www.example.com;/example;targetExample;false
         </li>
     </ul>
 </f:be.infobox>
@@ -33,7 +36,8 @@
                     <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
                     <select name="separationCharacter" class="qc-form-control" id="separationCharacter">
                         <f:for each="{separatedChars}" key="charKey" as="character">
-                            <option value="{charKey}" ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
+                            <f:variable name="selected" value="{f:if(condition: '{charKey} == {separationCharacter}', then: 'selected', else: '')}"/>
+                            <option value="{charKey}" {selected} ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
                         </f:for>
                     </select>
 
@@ -55,8 +59,6 @@
             <div class="row">
                 <div class="form-group col-xs-12">
                     <h4><f:translate key="advanced" extensionName="qc_redirects" /></h4>
-                </div>
-                <div class="form-group col-xs-12">
                     <label for="extraFields"><f:translate key="extraFields" extensionName="qc_redirects" /></label>
                     <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
                 </div>

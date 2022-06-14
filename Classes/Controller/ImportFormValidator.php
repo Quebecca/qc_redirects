@@ -83,7 +83,7 @@ class ImportFormValidator
             $this->setErrorsTypes(
                 'invalidField',
                 true,
-                " '".implode(', ', $this->invalidFields)."'"
+                " '".implode(', ', $this->invalidFields)."' "
             );
             return false;
         }

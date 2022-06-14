@@ -127,9 +127,6 @@ class AddRedirectsController  extends BackendModuleActionController
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
         // todo : modify doc
-        // todo : add significant message in case of error
-        // todo : separation select - save the previous select
-        // todo : label in fields - importing form
         if($request == null){
             return null;
         }

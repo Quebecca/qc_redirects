@@ -48,8 +48,7 @@
                 <source>Error when importing the redirect list, the source path : </source>
             </trans-unit>
             <trans-unit id="invalidField">
-                <source>Error : Invalid field </source>
-                <target>Erreur : champ invalid</target>
+                <source>Invalid field(s) : </source>
             </trans-unit>
             <trans-unit id="error">
                 <source>Error</source>
@@ -61,7 +60,7 @@
                 <source> is duplicated</source>
             </trans-unit>
             <trans-unit id="columns">
-                <source> source host, source path, target, is regular experssion (true, false), title, start time, end time,  status code</source>
+                <source>source_host, source_path, target, is_regexp (true, false)</source>
             </trans-unit>
             <trans-unit id="syntaxError">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
@@ -73,7 +72,7 @@
                 <source>Invalid value inserted for the column</source>
             </trans-unit>
             <trans-unit id="emptyValue">
-                <source>can't be empty</source>
+                <source>Empty value inserted for the field : </source>
             </trans-unit>
             <trans-unit id="readOnlyField">
                 <source>Field is on read only </source>
@@ -100,13 +99,16 @@
                    <source>Update date</source>
              </trans-unit>
             <trans-unit id="mandatoryFieldsDesc">
-                <source>The Source host, Source path, Target and 'Is Regular Expression' field value are required.</source>
+                <source>The source_host, source_path, target and is_regexp value are required. the order of this fields is required.</source>
             </trans-unit>
             <trans-unit id="regularExpressionValuesDesc">
-                <source>The "Is a regular expression" field can take only the values 'true' or 'false'</source>
+                <source>The "is_regexp" field can take only the values 'true' or 'false'</source>
             </trans-unit>
-            <trans-unit id="emptyFieldsDesc">
-                <source>The default fields can be empty</source>
+            <trans-unit id="optionalFields">
+                <source>The optional fields can be empty.</source>
+            </trans-unit>
+            <trans-unit id="optionalFieldsDesc">
+                <source>The optional fields have the same configuration(field name, value validation) as the fields used in the TCA configuration for the Redirect module, you can uses any order for this fields.</source>
             </trans-unit>
             <trans-unit id="instructions">
                 <source>Instructions</source>
@@ -115,7 +117,10 @@
                 <source>Advanced</source>
             </trans-unit>
             <trans-unit id="extraFields">
-                <source>Additional field names (space comma) (title, startTime, endTime, statusCode)</source>
+                <source>Additional field names (space comma) (title, starttime, endtime, target_statuscode, ...)</source>
+            </trans-unit>
+            <trans-unit id="example">
+                <source>Example : </source>
             </trans-unit>
         </body>
     </file>
