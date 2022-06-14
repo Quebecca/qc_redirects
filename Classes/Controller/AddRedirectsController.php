@@ -31,7 +31,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AddRedirectsController  extends BackendModuleActionController
 {
 
-    const NUMBER_OF_FIELDS = 4;
     const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     /**
      * ModuleTemplate object
@@ -229,7 +228,11 @@ class AddRedirectsController  extends BackendModuleActionController
                 if(in_array($mappedRow['source_path'], $sourcePathArray, TRUE)){
                     $validImport = false;
                     $this->importFormValidator->setDuplicatedSourcePath($mappedRow['source_path']);
-                    $this->importFormValidator->setErrorsTypes('duplicatedSourcePath', true);
+                    $this->importFormValidator->setErrorsTypes(
+                        'duplicatedSourcePath',
+                        true,
+                        $this->importFormValidator->getDuplicatedSourcePath()  .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated')
+                    );
                     break;
                 }
 
@@ -239,9 +242,13 @@ class AddRedirectsController  extends BackendModuleActionController
                     $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'];
                     if($renderType != null &&  in_array($renderType, $this->importFormValidator->getCheckingRules() )){
                         $checkingMethodName = $renderType.'Verify';
-                        if(!$this->importFormValidator->$checkingMethodName($value)){
+                        if(!$this->importFormValidator->$checkingMethodName($key,$value)){
                             $this->importFormValidator->setWrongValuekey($index);
-                            $this->importFormValidator->setErrorsTypes('invalidValue', true);
+                            $this->importFormValidator->setErrorsTypes(
+                                'invalidValue',
+                                true,
+                                " ' ".$this->importFormValidator->getRowsConstraints()[$this->importFormValidator->getWrongValuekey()]." '"
+                            );
                             $validImport = false;
                             break;
                         }
@@ -259,7 +266,11 @@ class AddRedirectsController  extends BackendModuleActionController
                 array_push($redirectEntities, $mappedRow);
             }
             else{
-                $this->importFormValidator->setErrorsTypes('syntaxError', true);
+                $this->importFormValidator->setErrorsTypes(
+                    'syntaxError',
+                    true,
+                    ''
+                );
                 $validImport = false;
                 break;
             }
@@ -277,35 +288,12 @@ class AddRedirectsController  extends BackendModuleActionController
      * @param bool $success
      */
     public function generateAlertMessage(bool $success){
-
-        if($success){
-            $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.'import_success_body');
-            $alertMessageBody = $this->localizationUtility->translate(self::LANG_FILE.'success');
-            $flashMessageService =  AbstractMessage::OK;
-        }
-        else{
-            $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
-            $flashMessageService =   AbstractMessage::ERROR;
-            $alertMessageHeader = "";
-            foreach ($this->importFormValidator->getErrorsTypes() as $errorType => $value){
-                if($value){
-                    $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.$errorType);
-                    if($this->importFormValidator->getWrongValuekey() != -1){
-                        $alertMessageHeader .= " ' ".$this->importFormValidator->getRowsConstraints()[$this->importFormValidator->getWrongValuekey()]." '";
-                    }
-                    if(!empty($this->importFormValidator->getReadOnlyFields())){
-                        $alertMessageHeader .= implode(', ', $this->importFormValidator->getReadOnlyFields());
-                    }
-                    if(!empty($this->invalidFields)){
-                        $alertMessageHeader .= implode(', ', $this->invalidFields);
-                    }
-                    if($this->importFormValidator->getDuplicatedSourcePath() != ''){
-                        $alertMessageHeader .= ' "'.  $this->importFormValidator->getDuplicatedSourcePath()  .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;   ;
-                    }
-                }
-            }
-        }
-
+        $body = $success ? 'success' : 'error';
+        $flashServiceMessage = $success ? AbstractMessage::OK : AbstractMessage::ERROR;
+        $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.$body);
+        $flashMessageService = $flashServiceMessage;
+        $alertMessageHeader = $success ? $this->localizationUtility->translate(self::LANG_FILE.'import_success_body')
+                                : $this->importFormValidator->getErrorMessage();
 
         $message = GeneralUtility::makeInstance(FlashMessage::class,
             $alertMessageHeader,

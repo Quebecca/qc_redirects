@@ -2,6 +2,9 @@
 
 namespace QcRedirects\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+
 class ImportFormValidator
 {
     /**
@@ -18,19 +21,19 @@ class ImportFormValidator
      * @var array|string[]
      */
     protected array $checkingRules = [
-        'inputLink', 'inputDateTime', 'checkboxToggle'
+        'inputLink', 'inputDateTime', 'checkboxToggle', 'selectSingle'
     ];
 
     /**
      * @var array|string[]
      */
-    protected array $errorsTypes = [
-        'emptyValue' => false,
-        'invalidValue' => false,
-        'syntaxError' => false,
-        'duplicatedSourcePath' => false,
-        'invalidField' => false,
-        'readOnlyField' => false
+    protected array $errorsTypes =[
+        'emptyValue' => [false],
+        'invalidValue' => [false],
+        'syntaxError' => [false],
+        'duplicatedSourcePath' => [false],
+        'invalidField' => [false],
+        'readOnlyField' => [false]
     ];
 
     /**
@@ -62,17 +65,26 @@ class ImportFormValidator
      * @var string
      */
     protected string $duplicatedSourcePath = '';
+    /**
+     * @var LocalizationUtility
+     */
+    protected $localizationUtility;
+    const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
 
     public function __construct()
     {
+        $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
-
     }
 
     public function checkForInvalidFields(array $extraFields) : bool{
         $this->invalidFields = array_diff($extraFields, array_keys($this->allowedAdditionalFields));
         if(!empty($this->invalidFields)){
-            $this->errorsTypes['invalidField'] = true;
+            $this->setErrorsTypes(
+                'invalidField',
+                true,
+                " '".implode(', ', $this->invalidFields)."'"
+            );
             return false;
         }
         return true;
@@ -86,7 +98,11 @@ class ImportFormValidator
             }
         }
         if(!empty($this->readOnlyFields)){
-            $this->errorsTypes['readOnlyField'] = true;
+            $this->setErrorsTypes(
+                'readOnlyFields',
+                true,
+                implode(', ', $this->getReadOnlyFields())
+            );
             return false;
         }
         return true;
@@ -103,7 +119,11 @@ class ImportFormValidator
         foreach ($this->mandatoryFields as $fieldName){
             if(empty($row[$fieldName])){
                 $this->wrongValuekey = $i;
-                $this->errorsTypes['emptyValue'] = true;
+                $this->setErrorsTypes(
+                    'emptyValue',
+                    true,
+                    " ' ".$this->getRowsConstraints()[$this->getWrongValuekey()]." '"
+                );
                 return false;
             }
             $i++;
@@ -115,14 +135,22 @@ class ImportFormValidator
         //  return filter_var($value, FILTER_VALIDATE_URL);
         return true;
     }
-    public function inputDateTimeVerify($value): bool
+    public function inputDateTimeVerify(string $key , $value): bool
     {
         return (bool)strtotime($value) || $value == '';
     }
 
-    public function checkboxToggleVerify($value): bool
+    public function checkboxToggleVerify(string $key, $value): bool
     {
         return $value == 'true' || $value == 'false' || $value == '';
+    }
+
+    public function selectSingleVerify(string $key, $value) : bool {
+        $availablValues = [];
+        foreach ($this->allowedAdditionalFields[$key]['config']['items'] as $item){
+            $availablValues[] = $item[1];
+        }
+        return in_array($value, $availablValues);
     }
 
     /**
@@ -177,11 +205,23 @@ class ImportFormValidator
      * @param string $key
      * @param bool $value
      */
-    public function setErrorsTypes(string $key, bool $value): void
+    public function setErrorsTypes(string $key, bool $value,string $message): void
     {
-        $this->errorsTypes[$key] = $value;
+        $this->errorsTypes[$key][0] = $value;
+        $this->errorsTypes[$key][1] = $this->localizationUtility->translate(self::LANG_FILE.$key) . $message;
     }
 
+    /**
+     * @return string
+     */
+    public function getErrorMessage(): string{
+        foreach (array_values($this->getErrorsTypes()) as $errorType){
+            if($errorType[0]){
+                return $errorType[1];
+            }
+        }
+        return '';
+    }
 
 
     /**
