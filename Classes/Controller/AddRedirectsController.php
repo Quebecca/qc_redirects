@@ -58,67 +58,6 @@ class AddRedirectsController  extends BackendModuleActionController
     ];
 
     /**
-     * @var int
-     */
-    protected int $wrongValuekey = -1;
-
-
-    /**
-     * @var array|string[]
-     */
-    protected array $rowsConstraints = [];
-
-    /**
-     * @var array|string[]
-     */
-    protected array $checkingRules = [
-        'inputLink', 'inputDateTime', 'checkboxToggle'
-    ];
-
-
-    /**
-     * @var array|string[]
-     */
-    protected array $errorsTypes = [
-        'emptyValue' => false,
-        'invalidValue' => false,
-        'syntaxError' => false,
-        'duplicatedSourcePath' => false,
-        'invalidField' => false,
-        'readOnlyField' => false
-    ];
-
-    /**
-     * @var array
-     */
-    protected array $invalidFields = [];
-
-    /**
-     * @var array
-     */
-    protected array $readOnlyFields = [];
-
-    /**
-     * @var array|string[]
-     */
-    protected array $mandatoryFields = [
-        0 => 'source_host',
-        1 => 'source_path',
-        2 => 'target',
-        3 => 'is_regexp'
-    ];
-
-    /**
-     * @var array|string[]
-     */
-    protected array $allowedAdditionalFields  = [
-        'title',
-        'startTime',
-        'endTime',
-        'statusCode'
-    ];
-
-    /**
      * @var string
      */
     protected string $selectedSeparatedChar = '';
@@ -126,9 +65,9 @@ class AddRedirectsController  extends BackendModuleActionController
     protected array $extraFields = [];
 
     /**
-     * @var string
+     * @var ImportFormValidator
      */
-    protected string $duplicatedSourcePath = '';
+    protected ImportFormValidator $importFormValidator;
 
     /**
      * @var ImportRedirectsRepository
@@ -156,6 +95,8 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
+        $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
+
     }
 
     /**
@@ -194,11 +135,8 @@ class AddRedirectsController  extends BackendModuleActionController
             return null;
         }
         $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
-
-        $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
-
         $requestBody = [];
-        if(!$this->checkForInvalidFields() || !$this->checkForReadOnlyFields()){
+        if(!$this->importFormValidator->checkForInvalidFields($this->extraFields) || !$this->importFormValidator->checkForReadOnlyFields($this->extraFields)){
             $this->generateAlertMessage(false);
             // we display the inserted data when an error appears
             $requestBody = $request->getParsedBody();
@@ -216,29 +154,6 @@ class AddRedirectsController  extends BackendModuleActionController
         }
         $this->renderView($requestBody);
         return new HtmlResponse($this->moduleTemplate->renderContent());
-    }
-
-    public function checkForInvalidFields() : bool{
-        $this->invalidFields = array_diff($this->extraFields, array_keys($this->allowedAdditionalFields));
-        if(!empty($this->invalidFields)){
-            $this->errorsTypes['invalidField'] = true;
-            return false;
-        }
-        return true;
-    }
-
-    public function checkForReadOnlyFields() : bool{
-        // check if the field is on ReadOnly
-        foreach ($this->extraFields as $field){
-            if($this->allowedAdditionalFields[$field]['config']['readOnly']){
-                $this->readOnlyFields [] = $field;
-            }
-        }
-        if(!empty($this->readOnlyFields)){
-            $this->errorsTypes['readOnlyField'] = true;
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -285,9 +200,9 @@ class AddRedirectsController  extends BackendModuleActionController
             $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
             $mappedRow = [];
             $index = 0;
-            $this->rowsConstraints = array_merge($this->mandatoryFields, $this->extraFields);
+            $this->importFormValidator->setRowsConstraints(array_merge($this->importFormValidator->getMandatoryFields(), $this->extraFields));
             // adding optional fields to be validated
-            foreach ($this->rowsConstraints as $fieldName){
+            foreach ($this->importFormValidator->getRowsConstraints() as $fieldName){
                 $mappedRow[$fieldName] = $row[$index];
                  $index++;
             }
@@ -303,9 +218,9 @@ class AddRedirectsController  extends BackendModuleActionController
             }
 
             // make sure that we have all important fields
-            if(count($row) == count($this->rowsConstraints)){
+            if(count($row) == count($this->importFormValidator->getRowsConstraints())){
                 // verify if the source path,source host, target value is not empty
-                if(!$this->verifyMandatoryColumnsExistence($mappedRow)){
+                if(!$this->importFormValidator->verifyMandatoryColumnsExistence($mappedRow)){
                     $validImport = false;
                     break;
                 }
@@ -313,20 +228,20 @@ class AddRedirectsController  extends BackendModuleActionController
                 // verify if the source_path is already exists
                 if(in_array($mappedRow['source_path'], $sourcePathArray, TRUE)){
                     $validImport = false;
-                    $this->duplicatedSourcePath = $mappedRow['source_path'];
-                    $this->errorsTypes['duplicatedSourcePath'] = true;
+                    $this->importFormValidator->setDuplicatedSourcePath($mappedRow['source_path']);
+                    $this->importFormValidator->setErrorsTypes('duplicatedSourcePath', true);
                     break;
                 }
 
                 // verify fields values
                 $index = 0;
                 foreach ($mappedRow as $key => $value){
-                    $renderType = $this->allowedAdditionalFields[$key]['config']['renderType'];
-                    if($renderType != null &&  in_array($renderType, $this->checkingRules )){
+                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'];
+                    if($renderType != null &&  in_array($renderType, $this->importFormValidator->getCheckingRules() )){
                         $checkingMethodName = $renderType.'Verify';
-                        if(!$this->$checkingMethodName($value)){
-                            $this->wrongValuekey = $index;
-                            $this->errorsTypes['invalidValue'] = true;
+                        if(!$this->importFormValidator->$checkingMethodName($value)){
+                            $this->importFormValidator->setWrongValuekey($index);
+                            $this->importFormValidator->setErrorsTypes('invalidValue', true);
                             $validImport = false;
                             break;
                         }
@@ -344,7 +259,7 @@ class AddRedirectsController  extends BackendModuleActionController
                 array_push($redirectEntities, $mappedRow);
             }
             else{
-                $this->errorsTypes['syntaxError'] = true;
+                $this->importFormValidator->setErrorsTypes('syntaxError', true);
                 $validImport = false;
                 break;
             }
@@ -355,39 +270,6 @@ class AddRedirectsController  extends BackendModuleActionController
             return true;
         }
         return false;
-    }
-
-
-    /**
-     * This function is used to verify the values of the columns
-     * @param array $row
-     * @return bool
-     */
-    public function verifyMandatoryColumnsExistence(array $row) : bool {
-        $i = 0;
-        foreach ($this->mandatoryFields as $fieldName){
-            if(empty($row[$fieldName])){
-                $this->wrongValuekey = $i;
-                $this->errorsTypes['emptyValue'] = true;
-                return false;
-            }
-            $i++;
-        }
-        return true;
-    }
-
-    public function inputLinkVerify($value){
-      //  return filter_var($value, FILTER_VALIDATE_URL);
-        return true;
-    }
-    public function inputDateTimeVerify($value): bool
-    {
-        return (bool)strtotime($value) || $value == '';
-    }
-
-    public function checkboxToggleVerify($value): bool
-    {
-        return $value == 'true' || $value == 'false' || $value == '';
     }
 
     /**
@@ -405,20 +287,20 @@ class AddRedirectsController  extends BackendModuleActionController
             $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.'error');
             $flashMessageService =   AbstractMessage::ERROR;
             $alertMessageHeader = "";
-            foreach ($this->errorsTypes as $errorType => $value){
+            foreach ($this->importFormValidator->getErrorsTypes() as $errorType => $value){
                 if($value){
                     $alertMessageHeader = $this->localizationUtility->translate(self::LANG_FILE.$errorType);
-                    if($this->wrongValuekey != -1){
-                        $alertMessageHeader .= " ' ".$this->rowsConstraints[$this->wrongValuekey]." '";
+                    if($this->importFormValidator->getWrongValuekey() != -1){
+                        $alertMessageHeader .= " ' ".$this->importFormValidator->getRowsConstraints()[$this->importFormValidator->getWrongValuekey()]." '";
                     }
-                    if(!empty($this->readOnlyFields)){
-                        $alertMessageHeader .= implode(', ', $this->readOnlyFields);
+                    if(!empty($this->importFormValidator->getReadOnlyFields())){
+                        $alertMessageHeader .= implode(', ', $this->importFormValidator->getReadOnlyFields());
                     }
                     if(!empty($this->invalidFields)){
                         $alertMessageHeader .= implode(', ', $this->invalidFields);
                     }
-                    if($this->duplicatedSourcePath != ''){
-                        $alertMessageHeader .= ' "'.  $this->duplicatedSourcePath  .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;   ;
+                    if($this->importFormValidator->getDuplicatedSourcePath() != ''){
+                        $alertMessageHeader .= ' "'.  $this->importFormValidator->getDuplicatedSourcePath()  .'"'.$this->localizationUtility->translate(self::LANG_FILE.'is_duplicated') ;   ;
                     }
                 }
             }
