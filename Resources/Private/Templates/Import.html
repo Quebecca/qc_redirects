@@ -59,8 +59,14 @@
             <div class="row">
                 <div class="form-group col-xs-12">
                     <h4><f:translate key="advanced" extensionName="qc_redirects" /></h4>
-                    <label for="extraFields"><f:translate key="extraFields" extensionName="qc_redirects" /></label>
-                    <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
+                    <label for="extraFields">
+                        <f:translate key="additionalFieldLabel" extensionName="qc_redirects" />
+                    </label>
+                    <br>
+                    <span class="formengine-field-item-description text-muted"><f:translate key="extraFields" extensionName="qc_redirects" /></span>
+                    <div class="form-control-wrap">
+                        <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
+                    </div>
                 </div>
             </div>
 

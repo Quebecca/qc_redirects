@@ -116,8 +116,11 @@
             <trans-unit id="advanced">
                 <source>Advanced</source>
             </trans-unit>
+            <trans-unit id="additionalFieldLabel">
+                <source>Additional field names (space comma)</source>
+            </trans-unit>
             <trans-unit id="extraFields">
-                <source>Additional field names (space comma) (title, starttime, endtime, target_statuscode, ...)</source>
+                <source>title, starttime, endtime, disabled, target_statuscode,respect_query_parameters, target_statuscode, force_https, keep_query_parameters</source>
             </trans-unit>
             <trans-unit id="example">
                 <source>Example : </source>
