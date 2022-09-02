@@ -4,8 +4,9 @@
  * Extension Manager/Repository config file for ext "qc_redirects".
  */
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'qc_redirects',
+    'title' => 'Qc Redirects',
     'description' => 'Module used to improve the redirects module, by importing a redirects list with a title column',
+    'author' => 'Quebec.ca',
     'category' => 'module',
     'constraints' => [
         'depends' => [
