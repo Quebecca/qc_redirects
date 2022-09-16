@@ -123,7 +123,7 @@
                 <source>title, starttime, endtime, disabled, target_statuscode,respect_query_parameters, target_statuscode, force_https, keep_query_parameters</source>
             </trans-unit>
             <trans-unit id="example">
-                <source>Example : </source>
+                <source>Example (With semicolon separator) : </source>
             </trans-unit>
         </body>
     </file>

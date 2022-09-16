@@ -115,7 +115,8 @@ class ManagementControllerExt extends ManagementController
         $this->view->setTemplateRootPaths(['EXT:qc_redirects/Resources/Private/Templates/']);
 
         // orderBy
-        if((string)(GeneralUtility::_GP('orderBy')) != null){
+        $orderBy = (string)(GeneralUtility::_GP('orderBy'));
+        if(in_array($orderBy, array_keys(self::ORDER_BY_VALUES))){
             $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
         }
         $this->demand->setOrderType(str_contains($this->demand->getOrderBy(), '_reverse') ? 'ASC' : 'DESC');

@@ -152,8 +152,8 @@
                 <source>title, starttime, endtime, disabled, target_statuscode,respect_query_parameters, target_statuscode, force_https, keep_query_parameters</source>
             </trans-unit>
             <trans-unit id="example">
-                <source>Example : </source>
-                <target>Exemple : </target>
+                <source>Example (With semicolon separator) : </source>
+                <target>Exemple (Avec un séparateur point-virgule) : </target>
             </trans-unit>
         </body>
     </file>
