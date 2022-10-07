@@ -109,7 +109,7 @@ class ManagementControllerExt extends ManagementController
      * @param string $templateName
      * @throws RouteNotFoundException
      */
-    protected function initializeView(string $templateName)
+    protected function initializeView(string $templateName) : void
     {
         parent::initializeView($templateName);
         $this->view->setTemplateRootPaths(['EXT:qc_redirects/Resources/Private/Templates/']);
@@ -152,7 +152,7 @@ class ManagementControllerExt extends ManagementController
      * This overloaded function is used to add order column and the order type
      * @param ServerRequestInterface $request
      */
-    protected function overviewAction(ServerRequestInterface $request)
+    protected function overviewAction(ServerRequestInterface $request) : void
     {
         $this->getButtons();
 
