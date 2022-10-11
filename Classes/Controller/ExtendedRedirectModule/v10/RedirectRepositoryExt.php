@@ -9,13 +9,10 @@
  *  (c) 2022 <techno@quebec.ca>
  *
  ***/
+namespace QcRedirects\Controller\ExtendedRedirectModule\v10;
 
-
-
-namespace QcRedirects\Controller\ExtendedRedirectModule;
-
+use QcRedirects\Controller\ExtendedRedirectModule\DemandExt;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class RedirectRepositoryExt extends RedirectRepository
@@ -58,7 +55,7 @@ class RedirectRepositoryExt extends RedirectRepository
      *
      * @return array
      */
-    public function findRedirectsByDemand(Demand $demand = null): array
+    public function findRedirectsByDemand(): array
     {
         return $this->getQueryBuilderForDemand()
             ->setMaxResults($this->demand->getLimit())
@@ -72,10 +69,9 @@ class RedirectRepositoryExt extends RedirectRepository
     /**
      * Prepares the QueryBuilder with Constraints from the Demand
      *
-     * @param Demand|null $demand
      * @return QueryBuilder
      */
-    protected function getQueryBuilderForDemand(Demand $demand = null): QueryBuilder
+    protected function getQueryBuilderForDemand(): QueryBuilder
     {
         $queryBuilder = parent::getQueryBuilderForDemand();
         $constraints = '';

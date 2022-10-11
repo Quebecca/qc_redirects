@@ -13,8 +13,9 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule;
+namespace QcRedirects\Controller\ExtendedRedirectModule\v11;
 
+use QcRedirects\Util\Arrayable;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,7 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Demand Object for filtering redirects in the backend module
  * @internal
  */
-class DemandExt extends Demand
+class DemandExt extends Demand implements Arrayable
 {
     /**
      * @var string
@@ -39,24 +40,23 @@ class DemandExt extends Demand
      */
     protected string $orderType;
 
-    /**
-     * Demand constructor.
-     * @param int $page
-     * @param string $sourceHost
-     * @param string $sourcePath
-     * @param string $target
-     * @param int $statusCode
-     */
-    public function __construct(int $page = 1, string $sourceHost = '', string $sourcePath = '', string $target = '', int $statusCode = 0, string $title = '', string $orderBy = '', string $orderType = '')
+
+    public function __construct(
+        int $page = 1,
+        string $orderField = self::DEFAULT_ORDER_FIELD,
+        string $orderDirection = self::ORDER_ASCENDING,
+        array $sourceHosts = [],
+        string $sourcePath = '',
+        string $target = '',
+        array $statusCodes = [],
+        int $maxHits = 0,
+        \DateTimeInterface $olderThan = null,
+        string $title = '',
+        string $orderBy = '',
+        string $orderType = ''
+    )
     {
-        parent::__construct();
-
-        $this->setPage($page);
-        $this->setSourceHost($sourceHost);
-        $this->setSourcePath($sourcePath);
-        $this->setTarget($target);
-        $this->setStatusCode($statusCode);
-
+        parent::__construct($page,$orderField,$orderDirection,$sourceHosts,$sourcePath,$target,$statusCodes,$maxHits,$olderThan);
         $this->title = $title;
         $this->orderType = $orderType;
         $this->orderBy = $orderBy;
@@ -183,21 +183,6 @@ class DemandExt extends Demand
         $this->title = $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getSourceHost(): string
-    {
-        return $this->sourceHost;
-    }
-
-    /**
-     * @param string $sourceHost
-     */
-    public function setSourceHost(string $sourceHost): void
-    {
-        $this->sourceHost = $sourceHost;
-    }
 
     /**
      * @return string
@@ -234,22 +219,6 @@ class DemandExt extends Demand
     /**
      * @return int
      */
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    /**
-     * @param int $statusCode
-     */
-    public function setStatusCode(int $statusCode): void
-    {
-        $this->statusCode = $statusCode;
-    }
-
-    /**
-     * @return int
-     */
     public function getLimit(): int
     {
         return $this->limit;
@@ -279,7 +248,47 @@ class DemandExt extends Demand
         $this->page = $page;
     }
 
+    protected const KEY_Page = 'page';
+    protected const KEY_OrderField = 'orderField';
+    protected const KEY_OrderDirection = 'orderDirection';
+    protected const KEY_SourceHosts = 'sourceHosts';
+    protected const KEY_Target = 'target';
+    protected const KEY_StatusCodes = 'statusCodes';
+    protected const KEY_SourcePath = 'sourcePath';
+    protected const KEY_Title = 'title';
+    protected const KEY_OrderBy = 'orderBy';
+    protected const KEY_OrderType = 'orderType';
+    public function toArray()
+    {
+        return [
+            self::KEY_Page => $this->getPage() ?? '',
+            self::KEY_OrderField => $this->getOrderField() ?? '',
+            self::KEY_OrderDirection => $this->getOrderDirection()  ?? '',
+            self::KEY_SourceHosts => $this->getSourceHosts()  ?? [],
+            self::KEY_Target => $this->getTarget()  ?? '',
+            self::KEY_StatusCodes => $this->getStatusCodes()  ?? [],
+            self::KEY_SourcePath => $this->getSourcePath()  ?? '',
+            self::KEY_Title => $this->getTitle()  ?? '',
+            self::KEY_OrderBy => $this->getOrderBy()  ?? '',
+            self::KEY_OrderType => $this->getOrderType()  ?? '',
+        ];
+    }
 
-
-
+    public static function getInstanceFromArray(array $values)
+    {
+        return new DemandExt(
+            $values[self::KEY_Page],
+            $values[self::KEY_OrderField],
+            $values[self::KEY_OrderDirection],
+           [ $values[self::KEY_SourceHosts]],
+            '$values[self::KEY_SourcePath]',
+            $values[self::KEY_Target],
+            [$values[self::KEY_StatusCodes]],
+            0,
+            null,
+            $values[self::KEY_Title],
+            $values[self::KEY_OrderBy],
+            $values[self::KEY_OrderType]
+        );
+    }
 }
