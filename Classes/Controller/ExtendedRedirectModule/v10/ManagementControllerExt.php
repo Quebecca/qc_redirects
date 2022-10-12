@@ -141,7 +141,7 @@ class ManagementControllerExt extends ManagementController
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         $this->request = $request;
-        $this->initializeView('redirectOverview');
+        $this->initializeView('redirectOverviewV10');
         $this->overviewAction($request);
         $this->moduleTemplate->setContent($this->view->render());
         return new HtmlResponse($this->moduleTemplate->renderContent());
@@ -156,17 +156,23 @@ class ManagementControllerExt extends ManagementController
     {
         $this->getButtons();
 
-        $demand = DemandExt::createFromRequest($request);
-        if($request->getParsedBody() != null){
-            $this->demand->setTitle($demand->getTitle());
-            $this->demand->setOrderType($demand->getOrderType());
-            $this->demand->setOrderBy($demand->getOrderBy());
-            $this->demand->setSourceHost($demand->getSourceHost());
-            $this->demand->setSourcePath($demand->getSourcePath());
-            $this->demand->setLimit($demand->getLimit());
-            $this->demand->setStatusCode($demand->getStatusCode());
+        if($request->getQueryParams()['resetFilter'] == 'true'){
+            $this->demand = new DemandExt();
         }
-        $this->demand->setPage($demand->getPage());
+        else{
+            $demand = DemandExt::createFromRequest($request);
+            if($request->getParsedBody() != null){
+                $this->demand->setTitle($demand->getTitle());
+                $this->demand->setOrderType($demand->getOrderType());
+                $this->demand->setOrderBy($demand->getOrderBy());
+                $this->demand->setTarget($demand->getTarget());
+                $this->demand->setSourceHost($demand->getSourceHost());
+                $this->demand->setSourcePath($demand->getSourcePath());
+                $this->demand->setLimit($demand->getLimit());
+                $this->demand->setStatusCode($demand->getStatusCode());
+            }
+            $this->demand->setPage($demand->getPage());
+        }
         $this->updateFilter();
         $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
 
@@ -181,7 +187,7 @@ class ManagementControllerExt extends ManagementController
             'orderBy' => $this->demand->getOrderBy(),
             'orderType' => $this->demand->getOrderType(),
             'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
-            'pagination' => $this->preparePagination($demand, $count),
+            'pagination' => $this->preparePagination($this->demand, $count),
         ]);
     }
 

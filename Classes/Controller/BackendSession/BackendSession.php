@@ -11,6 +11,8 @@ use phpDocumentor\Reflection\Types\String_;
 use QcRedirects\Util\Arrayable;
 use QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class BackendSession
 {
@@ -23,6 +25,7 @@ class BackendSession
 
     /** @var string[] */
     protected $registeredKeys = [];
+    protected int $typoVersion;
 
     /**
      * Unique key to store data in the session.
@@ -36,6 +39,8 @@ class BackendSession
     {
         $this->sessionObject = $GLOBALS['BE_USER'];
         $this->registerFilterKey('qc_redirect_filterKey', DemandExt::class);
+        $this->typoVersion = GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion();
+
     }
 
     /**
@@ -82,11 +87,12 @@ class BackendSession
      */
     public function store(string $key, $value)
     {
+
         if (!isset($this->registeredKeys[$key])) {
             throw new \InvalidArgumentException('Unknown key ' . $key);
         }
         $sessionData = $this->sessionObject->getSessionData($this->storageKey);
-        if ($key != 'lastAction') {
+        if ($this->typoVersion == 11) {
             $valueArray = $value->toArray();
             $sessionData[$key] = $valueArray;
         } else {
@@ -119,6 +125,8 @@ class BackendSession
             return null;
         }
         $result = $sessionData[$key];
+        if($this->typoVersion == 10)
+            return $result;
         // safeguard: check for incomplete class
         if (is_object($result) && is_a($result, __PHP_Incomplete_Class::class)) {
             $this->delete($key);
