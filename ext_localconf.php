@@ -5,9 +5,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 defined('TYPO3') or die();
 
-$typoVersion = explode('.',GeneralUtility::makeInstance(Typo3Version::class)->getVersion())[0];
-
-if($typoVersion == '10'){
+//$typoVersion = explode('.',GeneralUtility::makeInstance(Typo3Version::class)->getVersion())[0];
+$typoVersion = GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion();
+if($typoVersion == 10){
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TYPO3\CMS\Redirects\Controller\ManagementController::class] = [
         'className' => QcRedirects\Controller\ExtendedRedirectModule\v10\ManagementControllerExt::class
     ];
@@ -20,6 +20,7 @@ if($typoVersion == '10'){
     ];
 }
 else{
+
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TYPO3\CMS\Redirects\Controller\ManagementController::class] = [
         'className' => QcRedirects\Controller\ExtendedRedirectModule\v11\ManagementControllerExtV11::class
     ];

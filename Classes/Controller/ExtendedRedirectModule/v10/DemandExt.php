@@ -49,14 +49,7 @@ class DemandExt extends Demand
      */
     public function __construct(int $page = 1, string $sourceHost = '', string $sourcePath = '', string $target = '', int $statusCode = 0, string $title = '', string $orderBy = '', string $orderType = '')
     {
-        parent::__construct();
-
-        $this->setPage($page);
-        $this->setSourceHost($sourceHost);
-        $this->setSourcePath($sourcePath);
-        $this->setTarget($target);
-        $this->setStatusCode($statusCode);
-
+        parent::__construct($page,$sourceHost,$sourcePath,$target,$statusCode);
         $this->title = $title;
         $this->orderType = $orderType;
         $this->orderBy = $orderBy;

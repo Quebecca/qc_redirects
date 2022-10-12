@@ -60,8 +60,6 @@ class BackendSession
     protected function isClassImplementsInterface(string $class, string $interface): bool
     {
         $interfaces = class_implements($class);
-        debug($interfaces);
-        debug($interface);
         if ($interfaces && in_array($interface, $interfaces)) {
             return true;
         }
@@ -87,7 +85,6 @@ class BackendSession
         if (!isset($this->registeredKeys[$key])) {
             throw new \InvalidArgumentException('Unknown key ' . $key);
         }
-
         $sessionData = $this->sessionObject->getSessionData($this->storageKey);
         if ($key != 'lastAction') {
             $valueArray = $value->toArray();
@@ -117,6 +114,7 @@ class BackendSession
     public function get(string $key)
     {
         $sessionData = $this->sessionObject->getSessionData($this->storageKey);
+
         if (!isset($sessionData[$key]) || !$sessionData[$key]) {
             return null;
         }

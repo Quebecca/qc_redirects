@@ -152,7 +152,7 @@ class ManagementControllerExt extends ManagementController
      * This overloaded function is used to add order column and the order type
      * @param ServerRequestInterface $request
      */
-    protected function overviewAction(ServerRequestInterface $request) : void
+    protected function overviewAction(ServerRequestInterface $request): void
     {
         $this->getButtons();
 

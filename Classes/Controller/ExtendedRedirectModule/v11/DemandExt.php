@@ -136,6 +136,48 @@ class DemandExt extends Demand implements Arrayable
     }
 
     /**
+     * @param string[] $sourceHosts
+     */
+    public function setSourceHosts(array $sourceHosts): void
+    {
+        $this->sourceHosts = $sourceHosts;
+    }
+
+    /**
+     * @param int[] $statusCodes
+     */
+    public function setStatusCodes(array $statusCodes): void
+    {
+        $this->statusCodes = $statusCodes;
+    }
+
+    public static function fromRequest(ServerRequestInterface $request): self
+    {
+
+        $page = (int)($request->getQueryParams()['page'] ?? $request->getParsedBody()['page'] ?? 1);
+        $orderField = $request->getQueryParams()['orderField'] ?? $request->getParsedBody()['orderField'] ?? self::DEFAULT_ORDER_FIELD;
+        $orderDirection = $request->getQueryParams()['orderDirection'] ?? $request->getParsedBody()['orderDirection'] ?? self::ORDER_ASCENDING;
+        $demand = $request->getQueryParams()['demand'] ?? $request->getParsedBody()['demand'] ?? [];
+        if (empty($demand)) {
+            return new self($page, $orderField, $orderDirection);
+        }
+        $sourceHost = $demand['source_host'] ?? '';
+        $sourceHosts = $sourceHost ? [$sourceHost] : [];
+        $sourcePath = $demand['source_path'] ?? '';
+        $statusCode = (int)($demand['target_statuscode'] ?? 0);
+        $statusCodes = $statusCode > 0 ? [$statusCode] : [];
+        $target = $demand['target'] ?? '';
+        $maxHits = (int)($demand['max_hits'] ?? 0);
+        $orderType = $demand['orderType'] ?? '';
+        $orderBy = $demand['orderBy'] ?? '';
+        $title = $demand['title'] ?? '';
+
+        return new self($page, $orderField, $orderDirection, $sourceHosts, $sourcePath, $target, $statusCodes, $maxHits,
+            null,$title,$orderBy,$orderType);
+    }
+
+
+    /**
      * @return bool
      */
     public function hasConstraints(): bool
@@ -280,10 +322,10 @@ class DemandExt extends Demand implements Arrayable
             $values[self::KEY_Page],
             $values[self::KEY_OrderField],
             $values[self::KEY_OrderDirection],
-           [ $values[self::KEY_SourceHosts]],
-            '$values[self::KEY_SourcePath]',
+            $values[self::KEY_SourceHosts],
+            $values[self::KEY_SourcePath],
             $values[self::KEY_Target],
-            [$values[self::KEY_StatusCodes]],
+            $values[self::KEY_StatusCodes],
             0,
             null,
             $values[self::KEY_Title],

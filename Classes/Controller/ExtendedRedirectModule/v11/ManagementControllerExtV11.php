@@ -12,11 +12,13 @@
 
 namespace QcRedirects\Controller\ExtendedRedirectModule\v11;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use QcRedirects\Controller\BackendSession\BackendSession;
-use QcRedirects\Controller\ExtendedRedirectModule\v10\RedirectRepositoryExt;
+use QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExtV11;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -143,7 +145,7 @@ class ManagementControllerExtV11 extends ManagementController{
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Redirects/RedirectsModule');
         $this->getLanguageService()->includeLLFile('EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf');
-        $this->initializeView('redirectOverview');
+        $this->initializeView('redirectOverviewV11');
         $this->overviewAction($request);
         $this->moduleTemplate->setContent($this->view->render());
         return new HtmlResponse($this->moduleTemplate->renderContent());
@@ -159,33 +161,36 @@ class ManagementControllerExtV11 extends ManagementController{
         $this->getButtons();
 
         $demand = DemandExt::fromRequest($request);
-
-        if($request->getParsedBody() != null){
-            $this->demand->setTitle($demand->getTitle());
+        if($demand && $request->getParsedBody() != null){
+            $this->demand->setTitle($demand->getTitle() );
             $this->demand->setOrderType($demand->getOrderType());
             $this->demand->setOrderBy($demand->getOrderBy());
-            $this->demand->setSourceHost($demand->getSourceHost());
+            $this->demand->setSourceHosts($demand->getSourceHosts() ?? []);
+            $this->demand->setTarget($demand->getTarget());
             $this->demand->setSourcePath($demand->getSourcePath());
             $this->demand->setLimit($demand->getLimit());
-            $this->demand->setStatusCode($demand->getStatusCode());
+            $this->demand->setStatusCodes($demand->getStatusCodes() ?? []);
         }
         $this->demand->setPage($demand->getPage());
         $this->updateFilter();
-        $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
+        $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExtV11::class, $this->demand);
 
         $redirectRepository->setOrderBy(str_replace('_reverse', '', $this->demand->getOrderBy()));
         $redirectRepository->setOrderType($this->demand->getOrderType());
-
-        $this->view->assignMultiple([
-            'redirects' => $redirectRepository->findRedirectsByDemand(),
-            'hosts' => $redirectRepository->findHostsOfRedirects(),
-            'statusCodes' => $redirectRepository->findStatusCodesOfRedirects(),
-            'demand' => $this->demand,
-            'orderBy' => $this->demand->getOrderBy(),
-            'orderType' => $this->demand->getOrderType(),
-            'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
-            'pagination' => $this->preparePagination($demand),
-        ]);
+        try {
+            $this->view->assignMultiple([
+                'redirects' => $redirectRepository->findRedirectsByDemand($this->demand),
+                'hosts' => $redirectRepository->findHostsOfRedirects(),
+                'statusCodes' => $redirectRepository->findStatusCodesOfRedirects(),
+                'demand' => $this->demand,
+                'orderBy' => $this->demand->getOrderBy(),
+                'orderType' => $this->demand->getOrderType(),
+                'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
+                'pagination' => $this->preparePagination($demand),
+            ]);
+        } catch (Exception $e) {
+            throw new \TYPO3\CMS\Core\Exception();
+        }
     }
 
     /**
