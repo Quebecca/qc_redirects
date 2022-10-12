@@ -133,9 +133,10 @@ class ManagementControllerExtV11 extends ManagementController{
     /**
      * Injects the request object for the current request, and renders the overview of all redirects
      * This core function is overloaded to change the template
-     *
-     * @param ServerRequestInterface $request the current request
-     * @return ResponseInterface the response with the content
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws DBALException
+     * @throws Exception
      * @throws RouteNotFoundException
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
@@ -151,46 +152,54 @@ class ManagementControllerExtV11 extends ManagementController{
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
+
     /**
-     * Show all redirects, and add a button to create a new redirect
-     * This overloaded function is used to add order column and the order type
      * @param ServerRequestInterface $request
+     * @throws DBALException
+     * @throws Exception
      */
     protected function overviewAction(ServerRequestInterface $request) : void
     {
         $this->getButtons();
 
-        $demand = DemandExt::fromRequest($request);
-        if($demand && $request->getParsedBody() != null){
-            $this->demand->setTitle($demand->getTitle() );
-            $this->demand->setOrderType($demand->getOrderType());
-            $this->demand->setOrderBy($demand->getOrderBy());
-            $this->demand->setSourceHosts($demand->getSourceHosts() ?? []);
-            $this->demand->setTarget($demand->getTarget());
-            $this->demand->setSourcePath($demand->getSourcePath());
-            $this->demand->setLimit($demand->getLimit());
-            $this->demand->setStatusCodes($demand->getStatusCodes() ?? []);
+        // Filter reset
+        if($request->getQueryParams()['resetFilter'] == 'true'){
+            $this->demand = new DemandExt();
         }
-        $this->demand->setPage($demand->getPage());
+        else{
+            $demand = DemandExt::fromRequest($request);
+
+            if($demand && $request->getParsedBody() != null){
+                $this->demand->setTitle($demand->getTitle() );
+                $this->demand->setOrderType($demand->getOrderType());
+                $this->demand->setOrderBy($demand->getOrderBy());
+                $this->demand->setSourceHosts($demand->getSourceHosts() ?? []);
+                $this->demand->setTarget($demand->getTarget());
+                $this->demand->setSourcePath($demand->getSourcePath());
+                $this->demand->setLimit($demand->getLimit());
+                $this->demand->setStatusCodes($demand->getStatusCodes() ?? []);
+                $this->demand->setPage($demand->getPage());
+
+            }
+        }
+
         $this->updateFilter();
         $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExtV11::class, $this->demand);
 
         $redirectRepository->setOrderBy(str_replace('_reverse', '', $this->demand->getOrderBy()));
         $redirectRepository->setOrderType($this->demand->getOrderType());
-        try {
-            $this->view->assignMultiple([
-                'redirects' => $redirectRepository->findRedirectsByDemand($this->demand),
-                'hosts' => $redirectRepository->findHostsOfRedirects(),
-                'statusCodes' => $redirectRepository->findStatusCodesOfRedirects(),
-                'demand' => $this->demand,
-                'orderBy' => $this->demand->getOrderBy(),
-                'orderType' => $this->demand->getOrderType(),
-                'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
-                'pagination' => $this->preparePagination($demand),
-            ]);
-        } catch (Exception $e) {
-            throw new \TYPO3\CMS\Core\Exception();
-        }
+
+        $this->view->assignMultiple([
+            'redirects' => $redirectRepository->findRedirectsByDemand($this->demand),
+            'hosts' => $redirectRepository->findHostsOfRedirects(),
+            'statusCodes' => $redirectRepository->findStatusCodesOfRedirects(),
+            'demand' => $this->demand,
+            'orderBy' => $this->demand->getOrderBy(),
+            'orderType' => $this->demand->getOrderType(),
+            'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
+            'pagination' => $this->preparePagination($this->demand),
+        ]);
+
     }
 
     /**

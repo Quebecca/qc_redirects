@@ -52,8 +52,8 @@ class DemandExt extends Demand implements Arrayable
         int $maxHits = 0,
         \DateTimeInterface $olderThan = null,
         string $title = '',
-        string $orderBy = '',
-        string $orderType = ''
+        string $orderBy = 'createdon',
+        string $orderType = 'DESC'
     )
     {
         parent::__construct($page,$orderField,$orderDirection,$sourceHosts,$sourcePath,$target,$statusCodes,$maxHits,$olderThan);
