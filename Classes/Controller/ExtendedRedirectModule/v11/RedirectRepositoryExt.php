@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
-class RedirectRepositoryExtV11 extends RedirectRepository
+class RedirectRepositoryExt extends RedirectRepository
 {
     /**
      * @var DemandExt

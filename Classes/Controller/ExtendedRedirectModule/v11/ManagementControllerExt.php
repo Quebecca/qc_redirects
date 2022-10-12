@@ -18,7 +18,7 @@ use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use QcRedirects\Controller\BackendSession\BackendSession;
-use QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExtV11;
+use QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExt;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Redirects\Controller\ManagementController;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
-class ManagementControllerExtV11 extends ManagementController{
+class ManagementControllerExt extends ManagementController{
     /**
      * @var string
      */
@@ -184,7 +184,7 @@ class ManagementControllerExtV11 extends ManagementController{
         }
 
         $this->updateFilter();
-        $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExtV11::class, $this->demand);
+        $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
 
         $redirectRepository->setOrderBy(str_replace('_reverse', '', $this->demand->getOrderBy()));
         $redirectRepository->setOrderType($this->demand->getOrderType());
