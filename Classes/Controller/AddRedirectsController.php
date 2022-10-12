@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace QcRedirects\Controller;
 
 use Doctrine\DBAL\Driver\Exception;
-use LST\BackendModule\Controller\BackendModuleActionController;
 use Psr\Http\Message\ServerRequestInterface;
 use QcRedirects\Domaine\Repository\ImportRedirectsRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
