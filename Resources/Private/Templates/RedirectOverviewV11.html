@@ -242,7 +242,6 @@
 </f:section>
 
 <f:section name="filter">
-
     <form action="{f:be.uri(route:'site_redirects', parameters: '{action: \'overview\'}')}"
           method="post"
           enctype="multipart/form-data"
@@ -252,76 +251,71 @@
                value="{orderBy}"/>
         <input type="hidden" name="demand[orderType]"
                value="{orderType}"/>
-        <div class="form-group">
-            <label for="demand-source-host">
-                <f:translate
-                        key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:source_host"/>
-            </label>
-            <select id="demand-source-host" class="form-control input-sm" name="demand[source_host]"
-                    data-on-change="submit">
-                <option value="">
+        <div class="row row-cols-auto align-items-end g-3 mb-4">
+            <div class="col">
+                <label for="demand-source-host">
                     <f:translate
-                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.source_host.showAll"/>
-                </option>
-                <f:for each="{hosts}" as="host">
-                    <f:form.select.option value="{host.name}" selected="{host.name} === {demand.sourceHosts.0}">
-                        {host.name}
-                    </f:form.select.option>
-                </f:for>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="demand-source-path">
-                <f:translate
-                        key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:source_path"/>
-            </label>
-            <input type="text" id="demand-source-path" class="form-control input-sm" name="demand[source_path]"
-                   value="{demand.sourcePath}"/>
-        </div>
-        <div class="form-group">
-            <label for="demand-target">
-                <f:translate
-                        key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.destination"/>
-            </label>
-            <input type="text" id="demand-target" class="form-control input-sm" name="demand[target]"
-                   value="{demand.target}"/>
-        </div>
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" class="form-control input-sm" name="demand[title]" value="{demand.title}"/>
-        </div>
-        <div class="form-group">
-            <label for="demand-target-status-code">
-                <f:translate
-                        key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.targetStatusCode"/>
-            </label>
-            <select id="demand-target-status-code" class="form-control input-sm" name="demand[target_statuscode]"
-                    data-on-change="submit">
-                <option value="">
+                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:source_host"/>
+                </label>
+                <select id="demand-source-host" class="form-control input-sm" name="demand[source_host]"
+                        data-on-change="submit">
+                    <option value="">
+                        <f:translate
+                                key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.source_host.showAll"/>
+                    </option>
+                    <f:for each="{hosts}" as="host">
+                        <f:form.select.option value="{host.name}" selected="{host.name} === {demand.sourceHosts.0}">
+                            {host.name}
+                        </f:form.select.option>
+                    </f:for>
+                </select>
+            </div>
+            <div class="col">
+                <label for="demand-source-path">
                     <f:translate
-                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.source_host.showAll"/>
-                </option>
-                <f:for each="{statusCodes}" as="statusCode">
-                    <f:form.select.option value="{statusCode.code}"
-                                          selected="{statusCode.code} === {demand.statusCodes.0}">
-                        {statusCode.code}
-                    </f:form.select.option>
-                </f:for>
-            </select>
-        </div>
-        <div class="form-group">
-            <input type="submit"
-                   value="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.sendButton')}"
-                   class="btn btn-default btn-sm"/>
-        </div>
-        <div class="form-group">
-            <a class="btn btn-default btn-sm"
-               href="{f:be.uri(route:'site_redirects', parameters: '{action: \'overview\', resetFilter : \'true\'}')}">
-                <f:translate
-                        key="LLL:EXT:beuser/Resources/Private/Language/locallang.xlf:reset"/>
-            </a>
+                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:source_path"/>
+                </label>
+                <input type="text" id="demand-source-path" class="form-control input-sm" name="demand[source_path]"
+                       value="{demand.sourcePath}"/>
+            </div>
+            <div class="col">
+                <label for="demand-target">
+                    <f:translate
+                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.destination"/>
+                </label>
+                <input type="text" id="demand-target" class="form-control input-sm" name="demand[target]"
+                       value="{demand.target}"/>
+            </div>
+            <div class="col">
+                <label for="title">Title</label>
+                <input type="text" id="title" class="form-control input-sm" name="demand[title]" value="{demand.title}"/>
+            </div>
+            <div class="col">
+                <label for="demand-target-status-code">
+                    <f:translate
+                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.targetStatusCode"/>
+                </label>
+                <select id="demand-target-status-code" class="form-control input-sm" name="demand[target_statuscode]"
+                        data-on-change="submit">
+                    <option value="">
+                        <f:translate
+                                key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.source_host.showAll"/>
+                    </option>
+                    <f:for each="{statusCodes}" as="statusCode">
+                        <f:form.select.option value="{statusCode.code}"
+                                              selected="{statusCode.code} === {demand.statusCodes.0}">
+                            {statusCode.code}
+                        </f:form.select.option>
+                    </f:for>
+                </select>
+            </div>
+            <div class="col">
+                <input type="submit" value="{f:translate(key: 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.sendButton')}" class="btn btn-default" />
+                <a href="{f:be.uri(route:'site_redirects',  parameters: '{action: \'overview\', resetFilter : \'true\'}')}" class="btn btn-link">
+                    <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.resetButton"/>
+                </a>
+            </div>
         </div>
     </form>
-
 </f:section>
 </html>
