@@ -213,7 +213,7 @@ class ManagementControllerExt extends ManagementController{
             'orderBy' => $this->demand->getOrderBy(),
         ];
         // if same key, additionalQueryParameters should overwrite parameters
-        $parameters = [...$parameters, ...$additionalQueryParameters];
+        $parameters = array_merge($parameters, $additionalQueryParameters);
 
         /**
          * @var UriBuilder $uriBuilder
