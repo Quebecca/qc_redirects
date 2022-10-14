@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-4": {
-            "QcRedirects\\": "Classes/"
+            "Qc\\QcRedirects\\": "Classes/"
         }
     },
     "extra": {

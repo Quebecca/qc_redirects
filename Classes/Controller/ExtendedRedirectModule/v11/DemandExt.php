@@ -13,9 +13,9 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule\v11;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
-use QcRedirects\Util\Arrayable;
+use Qc\QcRedirects\Util\Arrayable;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use Psr\Http\Message\ServerRequestInterface;
 

@@ -12,7 +12,7 @@ declare(strict_types=1);
  *  (c) 2022 <techno@quebec.ca>
  *
  ***/
-namespace QcRedirects\Util;
+namespace Qc\QcRedirects\Util;
 
 interface Arrayable
 {

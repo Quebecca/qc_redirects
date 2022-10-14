@@ -9,7 +9,7 @@
  *  (c) 2022 <techno@quebec.ca>
  *
  ***/
-namespace QcRedirects\Controller;
+namespace Qc\QcRedirects\Controller;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;

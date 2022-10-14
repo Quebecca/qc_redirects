@@ -11,11 +11,11 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller;
+namespace Qc\QcRedirects\Controller;
 
 use Doctrine\DBAL\Driver\Exception;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Domaine\Repository\ImportRedirectsRepository;
+use Qc\QcRedirects\Domaine\Repository\ImportRedirectsRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;

@@ -12,7 +12,7 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller;
+namespace Qc\QcRedirects\Controller;
 
 
 use TYPO3\CMS\Backend\Clipboard\Clipboard;

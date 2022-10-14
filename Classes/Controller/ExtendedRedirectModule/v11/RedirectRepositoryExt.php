@@ -9,9 +9,9 @@
  *  (c) 2022 <techno@quebec.ca>
  *
  ***/
-namespace QcRedirects\Controller\ExtendedRedirectModule\v11;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
-use QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
+use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;

@@ -11,7 +11,7 @@ call_user_func(
                 'admin', // Submodule key
                 '', // Position
                 [
-                    QcRedirects\Controller\AddRedirectsController::class => 'import',
+                    Qc\QcRedirects\Controller\AddRedirectsController::class => 'import',
                 ],
                 [
                     'access' => 'user,group',

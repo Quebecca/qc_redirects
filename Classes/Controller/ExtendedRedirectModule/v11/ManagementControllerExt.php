@@ -10,15 +10,15 @@
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule\v11;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Controller\BackendSession\BackendSession;
-use QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExt;
+use Qc\QcRedirects\Controller\BackendSession\BackendSession;
+use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExt;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;

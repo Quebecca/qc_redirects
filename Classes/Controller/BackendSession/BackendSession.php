@@ -13,12 +13,12 @@ declare(strict_types=1);
  ***/
 
 
-namespace QcRedirects\Controller\BackendSession;
+namespace Qc\QcRedirects\Controller\BackendSession;
 
 use __PHP_Incomplete_Class;
 use phpDocumentor\Reflection\Types\String_;
-use QcRedirects\Util\Arrayable;
-use QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
+use Qc\QcRedirects\Util\Arrayable;
+use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

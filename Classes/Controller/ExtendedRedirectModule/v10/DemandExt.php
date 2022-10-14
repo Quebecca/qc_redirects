@@ -13,7 +13,7 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule\v10;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v10;
 
 use TYPO3\CMS\Redirects\Repository\Demand;
 use Psr\Http\Message\ServerRequestInterface;

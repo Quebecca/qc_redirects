@@ -10,11 +10,11 @@
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule\v10;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v10;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Controller\BackendSession\BackendSession;
+use Qc\QcRedirects\Controller\BackendSession\BackendSession;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Configuration\Features;

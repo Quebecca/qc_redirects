@@ -10,7 +10,7 @@
  *
  ***/
 
-namespace QcRedirects\Domaine\Repository;
+namespace Qc\QcRedirects\Domaine\Repository;
 
 use Doctrine\DBAL\Driver\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
