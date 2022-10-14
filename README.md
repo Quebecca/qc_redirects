@@ -16,17 +16,27 @@ This extension adds features to the TYPO3 Core Redirects module.
 ## How to import a redirect list
 The best way to import is by using a CSV or an Excel file, in which we define the values of the fields to be entered.
 The extension offers the option to choose the separation character.
-The order of fields, used to import redirects, is : 
+The required fields to be imported by order are : 
 
-     Source host, Source path, Target, Is regular expression, Title, Start time, End time, Status code. 
+    source_host, source_path, target, is_regexp
 
-The value of the source host, the source path, the target, and 'Is regular expression' are required.
+The field "is_regexp" takes two possible values 'true' or 'false'.
 
-The regular expression column takes two possible values 'true' or 'false'.
+You can import the others optional fields by specifying them in the 'Advanced field names', then you can import them easily in the import section, example :
 
-NB: the default fields can be empty:
+In the 'Additional field names' we specify the optional fields by order and separated by comma: 
 
-    www.example.com;/example;targetExample;false;;;;
+    title, disabled, keep_query_parameters
+   
+Then in the Import section : 
+
+    www.example.com;/example;targetExample;false;MyTitleExample;true;false
+
+Note : the optional fields can be empty, for example :
+    
+    www.example.com;/example;targetExample;false;;;
+
+Note : There are fields that accept only 'true' or 'false' value to be imported, visite the Redirect TCA configuration.
 
 ### Files example
 In the /Documentation/ folder you will find 2 files: One in CSV format and the other in XLS (Excel) format.
@@ -52,15 +62,25 @@ Cette extension ajoute des fonctionnalités au module TYPO3 Redirects.
 ## Importer une liste de redirection
 La meilleure façon d’importer les redirections est d’utiliser un fichier CSV ou Excel, selon un ordre précis.  
 L’extension offre la possibilité de choisir le caractère de séparation.
-L’ordre d’importation des champs est le suivant :
 
-     Chemin de hôte, Chemin de source, Cible, Est une expression régulière, Titre, Date de debut, Date de fin, Code d'état. 
+Les champs obligatoires à importer par ordre sont les suivants : 
 
-La valeur de champ Chemin d'hôte, Chemin de source, Cible et 'Est une expression régulière' sont obligatoires.
+    source_host, source_path, target, is_regexp
 
-Le champ "Est une expression régulière" peut prendre uniquement les valeurs 'true' ou 'false'.
+Le champ "is_regexp" peut prendre uniquement les valeurs 'true' ou 'false'.
 
-NB: les champs par défaut peuvent être vides : 
+Vous pouvez importer les autres champs optionnels en les spécifiant dans le champ 'Noms des champs supplémentaires', puis on peut les ajouter dans le champ d'importation, exemple :
+
+- Dans le champ 'Noms des champs supplémentaires' on ajoute par ordre les champs optionnels à importer :
+
+
+    title, disabled, keep_query_parameters
+
+Après dans le champ d'importation on peut les ajouter aux champs obligatoires :
+
+    www.example.com;/example;targetExample;false;MyTitleExample;true;false
+
+- NB: les champs optionnels peuvent être vides : 
 
     www.example.com;/example;targetExample;false;;;;
 
