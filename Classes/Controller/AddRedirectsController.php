@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AddRedirectsController  extends BackendModuleActionController
 {
 
-    const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+    protected const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
     /**
      * ModuleTemplate object
      *
@@ -60,6 +60,9 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected string $selectedSeparatedChar = '';
 
+    /**
+     * @var array
+     */
     protected array $extraFields = [];
 
     /**
@@ -77,21 +80,14 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $view;
 
-    /**
-     * @param ModuleTemplate|null $moduleTemplate
-     * @param LocalizationUtility|null $localizationUtility
-     * @param StandaloneView|null $view
-     */
+
     public function __construct(
-        ModuleTemplate $moduleTemplate = null,
-        LocalizationUtility $localizationUtility = null,
-        StandaloneView $view = null
     )
     {
-        $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
-        $this->moduleTemplate = $moduleTemplate ?? GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
+        $this->moduleTemplate ??= GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
-        $this->view = $view ?? GeneralUtility::makeInstance(StandaloneView::class);
+        $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
 
@@ -258,8 +254,8 @@ class AddRedirectsController  extends BackendModuleActionController
                     $index++;
                 }
 
-                array_push($sourcePathArray,  $mappedRow['source_path']);
-                array_push($redirectEntities, $mappedRow);
+                $sourcePathArray[] = $mappedRow['source_path'];
+                $redirectEntities[] = $mappedRow;
             }
             else{
                 $this->importFormValidator->setErrorsTypes(

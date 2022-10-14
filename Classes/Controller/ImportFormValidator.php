@@ -78,11 +78,12 @@ class ImportFormValidator
      * @var LocalizationUtility
      */
     protected $localizationUtility;
-    const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+
+    protected const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
 
     public function __construct()
     {
-        $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
+        $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
     }
 

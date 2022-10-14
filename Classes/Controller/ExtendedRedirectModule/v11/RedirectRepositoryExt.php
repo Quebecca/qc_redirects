@@ -11,7 +11,7 @@
  ***/
 namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
-use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
+use Doctrine\DBAL\Driver\Exception;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\Demand;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;
@@ -52,8 +52,7 @@ class RedirectRepositoryExt extends RedirectRepository
     /**
      * @param Demand $demand
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function findRedirectsByDemand(Demand $demand): array
     {

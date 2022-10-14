@@ -73,7 +73,7 @@ class ImportRedirectsRepository
             ->from($this->table)
             ->execute();
         while ($row = $statement->fetchAssociative()) {
-            array_push($sourcePathArray, $row['source_path']);
+            $sourcePathArray[] = $row['source_path'];
         }
         return $sourcePathArray;
     }

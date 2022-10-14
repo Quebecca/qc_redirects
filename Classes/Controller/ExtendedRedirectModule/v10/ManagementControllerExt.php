@@ -38,8 +38,8 @@ class ManagementControllerExt extends ManagementController
     /**
      * @var string
      */
-    const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
-    const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
+    protected const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+    protected const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
     protected const ORDER_BY_DEFAULT = 'createdon';
     protected const ORDER_TYPE_DEFAULT = 'DESC';
@@ -116,7 +116,7 @@ class ManagementControllerExt extends ManagementController
 
         // orderBy
         $orderBy = (string)(GeneralUtility::_GP('orderBy'));
-        if(in_array($orderBy, array_keys(self::ORDER_BY_VALUES))){
+        if(array_key_exists($orderBy, self::ORDER_BY_VALUES)){
             $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
         }
         $this->demand->setOrderType(str_contains($this->demand->getOrderBy(), '_reverse') ? 'ASC' : 'DESC');

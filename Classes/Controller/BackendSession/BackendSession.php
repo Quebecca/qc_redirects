@@ -74,10 +74,7 @@ class BackendSession
     protected function isClassImplementsInterface(string $class, string $interface): bool
     {
         $interfaces = class_implements($class);
-        if ($interfaces && in_array($interface, $interfaces)) {
-            return true;
-        }
-        return false;
+        return ($interfaces && in_array($interface, $interfaces));
     }
 
     /**
@@ -137,11 +134,11 @@ class BackendSession
         if($this->typoVersion == 10)
             return $result;
         // safeguard: check for incomplete class
-        if (is_object($result) && is_a($result, __PHP_Incomplete_Class::class)) {
+        if (is_object($result) && $result instanceof \__PHP_Incomplete_Class) {
             $this->delete($key);
             return null;
         }
-        if (is_object($result) && is_a($result, Arrayable::class)) {
+        if (is_object($result) && $result instanceof Arrayable) {
             return $result;
         }
         if (is_array($result) && isset($this->registeredKeys[$key])) {

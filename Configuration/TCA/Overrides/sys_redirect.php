@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3') or die();
+defined('TYPO3') || die();
 $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
 
 // Add some fields to sys_redirect table to show TCA fields definitions

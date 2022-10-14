@@ -364,7 +364,7 @@ class BackendModuleActionController extends ActionController
      */
     protected function redirectToCreateNewRecord($table)
     {
-        if (!isset($this->moduleName)) {
+        if ($this->moduleName === null) {
             throw new \Exception('The module name is not defined. Define $this->moduleName in the initializeAction method in your controller extending the BackendActionController.', '1471456225');
         }
 
@@ -388,7 +388,7 @@ class BackendModuleActionController extends ActionController
      */
     protected function redirectToEditRecord($table, $recordId)
     {
-        if (!isset($this->moduleName)) {
+        if ($this->moduleName === null) {
             throw new \Exception('The module name is not defined. Define $this->moduleName in the initializeAction mehtod in your controller extending the BackendActionController.', '1471456225');
         }
 
@@ -440,9 +440,7 @@ class BackendModuleActionController extends ActionController
 
         /** @var BeUriBuilder $uriBuilder */
         $uriBuilder = GeneralUtility::makeInstance(BeUriBuilder::class);
-        $returnUrl = (string)$uriBuilder->buildUriFromRoute($this->moduleName, $parameter);
-
-        return $returnUrl;
+        return (string)$uriBuilder->buildUriFromRoute($this->moduleName, $parameter);
     }
 
     /**

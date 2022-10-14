@@ -14,11 +14,9 @@ namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
-use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Qc\QcRedirects\Controller\BackendSession\BackendSession;
-use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\RedirectRepositoryExt;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -35,8 +33,8 @@ class ManagementControllerExt extends ManagementController{
     /**
      * @var string
      */
-    const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
-    const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
+    protected const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+    protected const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
     protected const ORDER_BY_DEFAULT = 'createdon';
     protected const ORDER_TYPE_DEFAULT = 'DESC';
@@ -116,8 +114,8 @@ class ManagementControllerExt extends ManagementController{
 
         // orderBy
         $orderBy = (string)(GeneralUtility::_GP('orderBy'));
-        if(in_array($orderBy, array_keys(self::ORDER_BY_VALUES))){
-            $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
+        if(array_key_exists($orderBy, self::ORDER_BY_VALUES)){
+                $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
         }
         $this->demand->setOrderType(str_contains($this->demand->getOrderBy(), '_reverse') ? 'ASC' : 'DESC');
         // Table header
@@ -215,7 +213,7 @@ class ManagementControllerExt extends ManagementController{
             'orderBy' => $this->demand->getOrderBy(),
         ];
         // if same key, additionalQueryParameters should overwrite parameters
-        $parameters = array_merge($parameters, $additionalQueryParameters);
+        $parameters = [...$parameters, ...$additionalQueryParameters];
 
         /**
          * @var UriBuilder $uriBuilder
