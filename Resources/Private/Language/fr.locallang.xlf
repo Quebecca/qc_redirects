@@ -53,7 +53,7 @@
                 <source>Success</source>
                 <target>Succès</target>
             </trans-unit>
-            <trans-unit id="import_error_duplicated">
+            <trans-unit id="duplicatedSourcePath">
                 <source>Error when importing the redirect list, the source path : </source>
                 <target>Erreur lors de l'importation,</target>
             </trans-unit>
@@ -66,26 +66,37 @@
                 <target> est dupliqué</target>
             </trans-unit>
             <trans-unit id="columns">
-                <source> source host, source path, target, is regular experssion (true, false), title, start time, end time,  status code</source>
-                <target> chemin d'hôte, chemin de source, cible, expression régulière (true, false), titre, heure de début, heure de fin, code http (302,307,etc)</target>
+                <source>source_host, source_path, target, is_regexp (true, false)</source>
             </trans-unit>
-            <trans-unit id="import_error_syntax">
+            <trans-unit id="syntaxError">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
                 <target>Erreur lors de l'importation. Veuillez vérifier la syntaxe d'importation</target>
+            </trans-unit>
+            <trans-unit id="invalidField">
+                <source>Invalid field(s) : </source>
+                <target>Champ(s) invalides : </target>
             </trans-unit>
             <trans-unit id="import">
                 <source>Import the redirects list</source>
                 <target>Importer la liste des redirections</target>
             </trans-unit>
-            <trans-unit id="import_invalidValue">
+            <trans-unit id="invalidValue">
                 <source>Invalid value inserted for the column</source>
                 <target>Valeur non valide insérée pour la colonne</target>
             </trans-unit>
-            <trans-unit id="sourceHost">
+            <trans-unit id="emptyValue">
+                <source>Empty value inserted for the field : </source>
+                <target>Valeur vide insérée pour le champ : </target>
+            </trans-unit>
+            <trans-unit id="readOnlyField">
+                <source>Field is on read only </source>
+                <target>Le champs est pour la lecture seulement</target>
+            </trans-unit>
+            <trans-unit id="source_host">
                 <source>Source host</source>
                 <target>Domaine source</target>
             </trans-unit>
-            <trans-unit id="sourcePath">
+            <trans-unit id="source_path">
                 <source>Source path</source>
                 <target>Chemin source</target>
             </trans-unit>
@@ -114,16 +125,35 @@
                 <target>Titre</target>
             </trans-unit>
             <trans-unit id="mandatoryFieldsDesc">
-                <source>The Source host, Source path, Target and 'Is Regular Expression' field value are required.</source>
-                <target>La valeur de champ Chemin d'hôte, Chemin de source, Cible et 'Est une expression régulière' sont obligatoires.</target>
+                <source>The source_host, source_path, target and is_regexp value are required. the order of this fields is required.</source>
+                <target>La valeur de champ source_host, source_path, target et is_regexp sont obligatoires. l'ordre de ces champs est obligatoire. </target>
             </trans-unit>
             <trans-unit id="regularExpressionValuesDesc">
-                <source>The "Is a regular expression" field can take only the values 'true' or 'false'</source>
-                <target>Le champ "Est une expression régulière" peut prendre uniquement les valeurs 'true' ou 'false'.</target>
+                <source>The "is_regexp" field can take only the values 'true' or 'false'</source>
+                <target>Le champ "is_regexp" peut prendre uniquement les valeurs 'true' ou 'false'.</target>
             </trans-unit>
-            <trans-unit id="emptyFieldsDesc">
-                <source>The default fields can be empty</source>
-                <target>Les champs par défaut peuvent être vides.</target>
+            <trans-unit id="optionalFields">
+                <source>The optional fields can be empty.</source>
+                <target>Les champs optionnels peuvent être vides.</target>
+            </trans-unit>
+            <trans-unit id="optionalFieldsDesc">
+                <source>The optional fields have the same configuration(field name, value validation) as the fields used in the TCA configuration for the Redirect module, you can uses any order for this fields.</source>
+                <target>Les champs optionnels portent la même configuration (nom de champ, validation de valeur) que les champs utilisés dans la configuration TCA de module Redirect. vous pouvez choisir l'ordre de ces champs.</target>
+            </trans-unit>
+            <trans-unit id="advanced">
+                <source>Advanced</source>
+                <target>Avancée</target>
+            </trans-unit>
+            <trans-unit id="additionalFieldLabel">
+                <source>Additional field names (space comma)</source>
+                <target>Noms des champs supplémentaires (délimités par des virgules)</target>
+            </trans-unit>
+            <trans-unit id="extraFields">
+                <source>title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</source>
+            </trans-unit>
+            <trans-unit id="example">
+                <source>Example (With semicolon separator) : </source>
+                <target>Exemple (Avec un séparateur point-virgule) : </target>
             </trans-unit>
         </body>
     </file>

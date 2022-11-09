@@ -12,7 +12,7 @@
 
 
 
-namespace QcRedirects\Controller\ExtendedRedirectModule;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v10;
 
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\RedirectRepository;

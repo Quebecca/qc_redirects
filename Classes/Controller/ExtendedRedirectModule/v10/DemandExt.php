@@ -13,7 +13,7 @@ declare(strict_types=1);
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v10;
 
 use TYPO3\CMS\Redirects\Repository\Demand;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,7 +47,16 @@ class DemandExt extends Demand
      * @param string $target
      * @param int $statusCode
      */
-    public function __construct(int $page = 1, string $sourceHost = '', string $sourcePath = '', string $target = '', int $statusCode = 0, string $title = '', string $orderBy = '', string $orderType = '')
+    public function __construct(
+        int $page = 1,
+        string $sourceHost = '',
+        string $sourcePath = '',
+        string $target = '',
+        int $statusCode = 0,
+        string $title = '',
+        string $orderBy = 'createdon',
+        string $orderType = 'DESC'
+    )
     {
         parent::__construct($page,$sourceHost,$sourcePath,$target,$statusCode);
         $this->title = $title;

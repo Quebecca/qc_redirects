@@ -10,11 +10,11 @@
  *
  ***/
 
-namespace QcRedirects\Controller\ExtendedRedirectModule;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v10;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use QcRedirects\Controller\BackendSession\BackendSession;
+use Qc\QcRedirects\Controller\BackendSession\BackendSession;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Configuration\Features;
@@ -38,8 +38,8 @@ class ManagementControllerExt extends ManagementController
     /**
      * @var string
      */
-    const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
-    const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
+    protected const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
+    protected const CORE_LANG_FILE = 'LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:';
 
     protected const ORDER_BY_DEFAULT = 'createdon';
     protected const ORDER_TYPE_DEFAULT = 'DESC';
@@ -109,13 +109,14 @@ class ManagementControllerExt extends ManagementController
      * @param string $templateName
      * @throws RouteNotFoundException
      */
-    protected function initializeView(string $templateName)
+    protected function initializeView(string $templateName) : void
     {
         parent::initializeView($templateName);
         $this->view->setTemplateRootPaths(['EXT:qc_redirects/Resources/Private/Templates/']);
 
         // orderBy
-        if((string)(GeneralUtility::_GP('orderBy')) != null){
+        $orderBy = (string)(GeneralUtility::_GP('orderBy'));
+        if(array_key_exists($orderBy, self::ORDER_BY_VALUES)){
             $this->demand->setOrderBy((string)(GeneralUtility::_GP('orderBy')));
         }
         $this->demand->setOrderType(str_contains($this->demand->getOrderBy(), '_reverse') ? 'ASC' : 'DESC');
@@ -140,7 +141,7 @@ class ManagementControllerExt extends ManagementController
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
         $this->request = $request;
-        $this->initializeView('redirectOverview');
+        $this->initializeView('redirectOverviewV10');
         $this->overviewAction($request);
         $this->moduleTemplate->setContent($this->view->render());
         return new HtmlResponse($this->moduleTemplate->renderContent());
@@ -151,21 +152,27 @@ class ManagementControllerExt extends ManagementController
      * This overloaded function is used to add order column and the order type
      * @param ServerRequestInterface $request
      */
-    protected function overviewAction(ServerRequestInterface $request)
+    protected function overviewAction(ServerRequestInterface $request): void
     {
         $this->getButtons();
 
-        $demand = DemandExt::createFromRequest($request);
-        if($request->getParsedBody() != null){
-            $this->demand->setTitle($demand->getTitle());
-            $this->demand->setOrderType($demand->getOrderType());
-            $this->demand->setOrderBy($demand->getOrderBy());
-            $this->demand->setSourceHost($demand->getSourceHost());
-            $this->demand->setSourcePath($demand->getSourcePath());
-            $this->demand->setLimit($demand->getLimit());
-            $this->demand->setStatusCode($demand->getStatusCode());
+        if($request->getQueryParams()['resetFilter'] == 'true'){
+            $this->demand = new DemandExt();
         }
-        $this->demand->setPage($demand->getPage());
+        else{
+            $demand = DemandExt::createFromRequest($request);
+            if($request->getParsedBody() != null){
+                $this->demand->setTitle($demand->getTitle());
+                $this->demand->setOrderType($demand->getOrderType());
+                $this->demand->setOrderBy($demand->getOrderBy());
+                $this->demand->setTarget($demand->getTarget());
+                $this->demand->setSourceHost($demand->getSourceHost());
+                $this->demand->setSourcePath($demand->getSourcePath());
+                $this->demand->setLimit($demand->getLimit());
+                $this->demand->setStatusCode($demand->getStatusCode());
+            }
+            $this->demand->setPage($demand->getPage());
+        }
         $this->updateFilter();
         $redirectRepository = GeneralUtility::makeInstance(RedirectRepositoryExt::class, $this->demand);
 
@@ -180,7 +187,7 @@ class ManagementControllerExt extends ManagementController
             'orderBy' => $this->demand->getOrderBy(),
             'orderType' => $this->demand->getOrderType(),
             'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
-            'pagination' => $this->preparePagination($demand, $count),
+            'pagination' => $this->preparePagination($this->demand, $count),
         ]);
     }
 
