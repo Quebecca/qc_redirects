@@ -121,46 +121,50 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
     {
-        // todo : modify doc
+        $requestBody = [];
         if($request == null){
             return null;
         }
-        $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
-        $requestBody = [];
-        if(!$this->importFormValidator->checkForInvalidFields($this->extraFields) || !$this->importFormValidator->checkForReadOnlyFields($this->extraFields)){
-            $this->generateAlertMessage(false);
-            // we display the inserted data when an error appears
-            $requestBody = $request->getParsedBody();
-        }
-        else{
-            $redirectsList = $request->getParsedBody()['redirectsList'];
-            $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
-            // convert data to array
-            $redirectsListArray = explode("\r\n", $redirectsList);
-            $created = $this->processRedirects($redirectsListArray);
-            if(!$created)
+        if($request->getParsedBody() !== null){
+
+            $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
+            if(!$this->importFormValidator->checkForInvalidFields($this->extraFields) || !$this->importFormValidator->checkForReadOnlyFields($this->extraFields)){
+                $this->generateAlertMessage(false);
+                // we display the inserted data when an error appears
                 $requestBody = $request->getParsedBody();
-            // alert message
-            $this->generateAlertMessage($created);
+            }
+            else{
+                $redirectsList = $request->getParsedBody()['redirectsList'];
+                $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
+                // convert data to array
+                $redirectsListArray = explode("\r\n", $redirectsList);
+                $created = $this->processRedirects($redirectsListArray);
+                if(!$created)
+                    $requestBody = $request->getParsedBody();
+                // alert message
+                $this->generateAlertMessage($created);
+            }
         }
-        $this->renderView($requestBody);
+        $this->renderViewAction($requestBody);
         return new HtmlResponse($this->moduleTemplate->renderContent());
+    }
+
+    public function resetAction(ServerRequestInterface $request = null){
+        $this->forward('import', null, null, null);
     }
 
     /**
      * This function is used to render View after form submission
      */
-    function renderView($requestBody = null){
+    function renderViewAction($requestBody = null){
         $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
             'EXT:qc_redirects/Resources/Private/Templates/Import.html'
         ));
-        if($requestBody){
-            $this->view->assignMultiple([
-                'redirectsList' => $requestBody['redirectsList'],
-                'separationCharacter' => $requestBody['separationCharacter'],
-                'extraFields' => $requestBody['extraFields']
-            ]);
-        }
+        $this->view->assignMultiple([
+            'redirectsList' => $requestBody['redirectsList'],
+            'separationCharacter' => $requestBody['separationCharacter'],
+            'extraFields' => $requestBody['extraFields']
+        ]);
         $this->view->assign('separatedChars', $this->separatedChars);
         $this->moduleTemplate->setContent($this->view->render());
     }

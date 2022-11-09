@@ -72,8 +72,7 @@
 
         </div>
     </div>
-
-    <div class="form-group">
+    <div id="submit-button">
         <input
                 class="btn btn-default"
                 type="submit"
@@ -82,11 +81,14 @@
                 data-message="{f:translate(key:'lCreate_msg1', extensionName:'qc_redirects')}"
                 onclick="return confirm(this.dataset.message)"
         />
-        <input
-                class="btn btn-default"
-                type="reset"
-                value="{f:translate(key:'lReset', extensionName:'qc_redirects')}"
-        />
     </div>
+
 </form>
+    <div id="reset-button">
+        <f:link.action controller="AddRedirects" action="reset" arguments="{reset : 'true'}">
+            <button  class="btn btn-default">{f:translate(key:'lReset', extensionName:'qc_redirects')}</button>
+        </f:link.action>
+    </div>
+
+<br>
 </html>
