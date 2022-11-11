@@ -42,14 +42,12 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
 );
 
 
-// Feld einer neuen Palette hinzufügen
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'sys_redirect',
     'details',
     'title, createdon, updatedon'
 );
 
-// Neue Palette dem Tag hinzufügen, nach dem Titel - Dadurch Anzeige im Backend
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'sys_redirect',
     '--palette--;;details',

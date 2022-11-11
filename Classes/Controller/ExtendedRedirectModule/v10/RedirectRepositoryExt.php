@@ -86,6 +86,4 @@ class RedirectRepositoryExt extends RedirectRepository
         }
         return $queryBuilder->andWhere($constraints);
     }
-
-
 }

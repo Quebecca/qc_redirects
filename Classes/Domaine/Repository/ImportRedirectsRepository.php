@@ -35,8 +35,6 @@ class ImportRedirectsRepository
      */
     protected string $table = 'sys_redirect';
 
-
-
     public function __construct()
     {
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
@@ -45,7 +43,7 @@ class ImportRedirectsRepository
 
     /**
      * This function use the Datahandler for store records in sys_redirects table
-     * @param $rows
+     * @param $redirectsEntities
      */
     public function saveRedirects($redirectsEntities)
     {

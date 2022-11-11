@@ -26,16 +26,6 @@ use TYPO3\CMS\Redirects\Controller\ManagementController;
 class ManagementControllerExt extends ManagementController
 {
     /**
-     * @var LocalizationUtility
-     */
-    protected $localizationUtility;
-
-    /**
-     * @var BackendSession
-     */
-    protected BackendSession $backendSession;
-
-    /**
      * @var string
      */
     protected const QC_LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
@@ -70,6 +60,16 @@ class ManagementControllerExt extends ManagementController
             ['createdon', 'DESC'],
         ],
     ];
+
+    /**
+     * @var LocalizationUtility
+     */
+    protected $localizationUtility;
+
+    /**
+     * @var BackendSession
+     */
+    protected BackendSession $backendSession;
 
     /**
      * @var DemandExt
@@ -127,7 +127,6 @@ class ManagementControllerExt extends ManagementController
         }
         $this->view->assign('sortActions', $sortActions);
         $this->view->assign('tableHeader', $this->getVariablesForTableHeader($sortActions));
-
     }
 
     /**

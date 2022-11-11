@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-    <file source-language="en" datatype="plaintext" original="messages" date="2021-11-15UTC17:03:210">
-        <header>
-            <authorEmail>techno@mce.ca</authorEmail>
-        </header>
+    <file source-language="en" datatype="plaintext" original="messages">
         <body>
             <trans-unit id="import_redirects_list">
                 <source>Import redirects list</source>

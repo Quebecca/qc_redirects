@@ -46,6 +46,9 @@ class DemandExt extends Demand
      * @param string $sourcePath
      * @param string $target
      * @param int $statusCode
+     * @param string $title
+     * @param string $orderBy
+     * @param string $orderType
      */
     public function __construct(
         int $page = 1,
@@ -280,8 +283,4 @@ class DemandExt extends Demand
     {
         $this->page = $page;
     }
-
-
-
-
 }
