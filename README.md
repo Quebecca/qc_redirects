@@ -73,7 +73,7 @@ Vous pouvez importer les autres champs optionnels en les spécifiant dans le cha
 
 Dans le champ 'Noms des champs supplémentaires' on ajoute par ordre les champs optionnels à importer:
 
-   title, disabled, keep_query_parameters
+    title, disabled, keep_query_parameters
 
 Après dans le champ d'importation on peut ajouter aux champs obligatoires:
 
