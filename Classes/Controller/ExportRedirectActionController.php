@@ -84,6 +84,8 @@ class ExportRedirectActionController
 
         // @Todo : handle the case where no data found
 
+        // @Todo : add filter for specific creation dateRange, disabled  redirect ?,
+
         // Build header array for csv headers
         $headerArray = [];
         foreach (array_keys($data[0]) as $headerName){

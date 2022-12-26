@@ -1,14 +1,12 @@
 mod{
   qcRedirects{
     csvExport {
-      filename {
-        // This date will added to the exported file name
-        dateFormat = YmdHi
-      }
       // Csv parameters
-      separator = ;
+      separator = ,
       enclosure = "
       escape = \\
+      // @Todo : add this options when exporting
+      recordOrder = DESC
     }
   }
 }
