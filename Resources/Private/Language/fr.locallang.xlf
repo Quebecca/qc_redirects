@@ -158,11 +158,11 @@
                 <source>UID</source>
                 <target>UID</target>
             </trans-unit>
-            <trans-unit id="csvHeader.creationDate">
+            <trans-unit id="csvHeader.createdon">
                 <source>Creation date</source>
                 <target>Date de création</target>
             </trans-unit>
-            <trans-unit id="csvHeader.modificationDate">
+            <trans-unit id="csvHeader.updatedon">
                 <source>Modification date</source>
                 <target>Date de modification</target>
             </trans-unit>
@@ -170,7 +170,7 @@
                 <source>Title</source>
                 <target>Titre</target>
             </trans-unit>
-            <trans-unit id="csvHeader.sourcePath">
+            <trans-unit id="csvHeader.source_path">
                 <source>Source path</source>
                 <target>Chemin source</target>
             </trans-unit>

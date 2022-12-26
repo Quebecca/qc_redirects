@@ -2,6 +2,7 @@
 
 namespace Qc\QcRedirects\Domaine\Repository;
 
+use Doctrine\DBAL\Driver\Exception;
 use Qc\QcRedirects\Controller\ExtendedRedirectModule\v10\DemandExt;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -14,12 +15,11 @@ class ExportRedirectsRepository
 
 
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
-    public function getRedirectsList(){
+    public function getRedirectsList(): array
+    {
         $queryBuilder = $this->getQueryBuilderForTable('sys_redirect');
-
-        $csvData = [];
         // 	createdby
         //target :::::: t3://page?uid=13877
 
@@ -41,7 +41,8 @@ class ExportRedirectsRepository
         return $csvData;
     }
 
-    protected function getAssociatedGroupNameAndPageSlug(int $pageUid){
+    protected function getAssociatedGroupNameAndPageSlug(int $pageUid): array
+    {
 
         $data = BackendUtility::getRecord('pages', $pageUid, 'perms_groupid, slug');
         $pageSlug = $data['slug'];
@@ -62,8 +63,6 @@ class ExportRedirectsRepository
     {
         return  GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($tableName);
-        /*$queryBuilder
-            ->getRestrictions()
-            ->removeAll();*/
+
     }
 }

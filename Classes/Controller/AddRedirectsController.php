@@ -367,19 +367,25 @@ class AddRedirectsController  extends BackendModuleActionController
         $filename = 'Redirects-list-Export-' . date('Y-m-d_H-i').'.csv';
 
         $response = new Response('php://output', 200,
-            ['Content-Type' => 'text/csv; charset=utf-8',
+            [
+                'Content-Type' => 'text/csv; charset=utf-8',
                 'Content-Description' => 'File transfer',
                 'Content-Disposition' => 'attachment; filename="' . $filename . '"'
             ]
         );
 
-        //Implement Array Contains Key of the Lang File To regenerate an Array For CSV Header
-        $LangArrayHeader = ['csvHeader.uid', 'csvHeader.creationDate', 'csvHeader.modificationDate', 'csvHeader.title', 'csvHeader.sourcePath', 'csvHeader.target', 'csvHeader.beGroup', 'csvHeader.slug'];
 
-        //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
-        $headerCsv = $this->generateCsvHeaderArray($LangArrayHeader);
-        /**Verification of Filter Element*/
+        /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList();
+
+        // Build header array for csv headers
+        $headerArray = [];
+        foreach (array_keys($data[0]) as $headerName){
+            $headerArray[] = 'csvHeader.'.$headerName;
+        }
+        //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
+        $headerCsv = $this->generateCsvHeaderArray($headerArray);
+
         //Open File Based on Function Php To start Write inside the file CSV
         $fp = fopen('php://output', 'wb');
 
