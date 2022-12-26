@@ -6,6 +6,8 @@ use Doctrine\DBAL\Driver\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Qc\QcRedirects\Domaine\Repository\ExportRedirectsRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -27,12 +29,12 @@ class ExportRedirectActionController
     /**
      * @var string
      */
-    protected $quote;
+    protected $enclosure ;
 
     /**
      * @var string
      */
-    protected $delimiter;
+    protected $separator;
 
     /**
      * @var CharsetConverter
@@ -44,25 +46,19 @@ class ExportRedirectActionController
      */
     protected $localizationUtility;
 
+    protected $userTS;
+
 
     public function __construct()
     {
         $this->charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-        $this->exportRedirectsRepository =  GeneralUtility::makeInstance(ExportRedirectsRepository::class);
-        $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
-
-        //Render configuration from ext_conf_template file for quote and delimter
-        /* $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-         $configuration = $extensionConfiguration->get('qc_redirects');
-         if (is_array($configuration)) {
-             $this->quote = $configuration['quote'] ?? '"';
-
-             $this->delimiter = $configuration['delimiter'] ?? ',';
-
-             }*/
-        $this->quote = '"';
-        $this->delimiter = ';';
+        $this->exportRedirectsRepository = GeneralUtility::makeInstance(ExportRedirectsRepository::class);
+        $this->localizationUtility = GeneralUtility::makeInstance(LocalizationUtility::class);
+        $this->initializeTsConfig();
+        $this->enclosure =$this->userTS['enclosure'] ?? '"';
+        $this->separator =$this->userTS['separator'] ?? ';';
     }
+
 
     /**
      * This Action is to export Redirects list as a CSV Files
@@ -83,9 +79,10 @@ class ExportRedirectActionController
             ]
         );
 
-
         /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList();
+
+        // @Todo : handle the case where no data found
 
         // Build header array for csv headers
         $headerArray = [];
@@ -98,11 +95,11 @@ class ExportRedirectActionController
         //Open File Based on Function Php To start Write inside the file CSV
         $fp = fopen('php://output', 'wb');
 
-        fputcsv($fp, $headerCsv, $this->delimiter, $this->quote);
+        fputcsv($fp, $headerCsv, $this->separator, $this->enclosure);
 
         foreach ($data as $item) {
             //Write Inside Our CSV File
-            fputcsv($fp, $item, $this->delimiter, $this->quote);
+            fputcsv($fp, $item, $this->separator, $this->enclosure);
         }
         fclose($fp);
         return $response;
@@ -122,5 +119,18 @@ class ExportRedirectActionController
             $headerCsv[] = $this->charsetConverter->conv($this->localizationUtility->translate(self::LANG_FILE . $itemsArray[$i]), 'utf-8', 'iso-8859-15');
         }
         return $headerCsv;
+    }
+
+    protected function initializeTsConfig(){
+        /*Initialize the TsConfing mod of the current Backend user */
+        $this->userTS = $this->getBackendUser()->getTSConfig()['mod.']['qcRedirects.']['csvExport.'];
+    }
+
+    /**
+     * @return BackendUserAuthentication
+     */
+    protected function getBackendUser(): BackendUserAuthentication
+    {
+        return $GLOBALS['BE_USER'];
     }
 }
