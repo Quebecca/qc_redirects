@@ -9,7 +9,7 @@ return [
     'export_redirects_list' => [
         'path' => '/export-redirects',
         'referrer' => 'required,refresh-empty',
-        'target' =>  \Qc\QcRedirects\Controller\AddRedirectsController::class . '::exportRedirectsListAction'
+        'target' =>  \Qc\QcRedirects\Controller\ExportRedirectActionController::class . '::exportRedirectsListAction'
     ],
 
 ];

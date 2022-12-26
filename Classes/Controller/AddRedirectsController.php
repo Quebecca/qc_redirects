@@ -14,17 +14,11 @@ declare(strict_types=1);
 namespace Qc\QcRedirects\Controller;
 
 use Doctrine\DBAL\Driver\Exception;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Qc\QcRedirects\Domaine\Repository\ExportRedirectsRepository;
 use Qc\QcRedirects\Domaine\Repository\ImportRedirectsRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Beuser\Domain\Model\Demand;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -51,15 +45,6 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $localizationUtility;
 
-    /**
-     * @var string
-     */
-    protected $quote;
-
-    /**
-     * @var string
-     */
-    protected $delimiter;
 
     /**
      * @var array|string[]
@@ -99,21 +84,16 @@ class AddRedirectsController  extends BackendModuleActionController
 
 
     /**
-     * @var CharsetConverter
-     */
-    protected $charsetConverter;
-
-    /**
      * @var IconFactory
      */
     protected $iconFactory;
 
     /**
-     * @var string
+     * @var Icon
      */
-    const MODULE_LANG_FILE = "LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:";
+    protected $icon;
 
-    protected ExportRedirectsRepository $exportRedirectsRepository;
+
 
     public function __construct(
     )
@@ -124,22 +104,8 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
-        $this->charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-        $this->exportRedirectsRepository =  GeneralUtility::makeInstance(ExportRedirectsRepository::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->icon = $this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL);
-        //Render configuration from ext_conf_template file for quote and delimter
-       /* $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $configuration = $extensionConfiguration->get('qc_redirects');
-        if (is_array($configuration)) {
-            $this->quote = $configuration['quote'] ?? '"';
-
-            $this->delimiter = $configuration['delimiter'] ?? ',';
-
-            }*/
-        $this->quote = '"';
-        $this->delimiter = ';';
-
     }
 
     /**
@@ -353,67 +319,5 @@ class AddRedirectsController  extends BackendModuleActionController
         $messageQueue = $flashService->getMessageQueueByIdentifier();
         $messageQueue->addMessage($message);
     }
-
-    /**
-     * This Action is to export Redirects list as a CSV Files
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws Exception
-     */
-    public function exportRedirectsListAction(ServerRequestInterface $request): ResponseInterface
-    {
-        //Initialize Response and create Name of Our FIle CSV
-        $filename = 'Redirects-list-Export-' . date('Y-m-d_H-i').'.csv';
-
-        $response = new Response('php://output', 200,
-            [
-                'Content-Type' => 'text/csv; charset=utf-8',
-                'Content-Description' => 'File transfer',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"'
-            ]
-        );
-
-
-        /**Getting redirects data*/
-        $data = $this->exportRedirectsRepository->getRedirectsList();
-
-        // Build header array for csv headers
-        $headerArray = [];
-        foreach (array_keys($data[0]) as $headerName){
-            $headerArray[] = 'csvHeader.'.$headerName;
-        }
-        //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
-        $headerCsv = $this->generateCsvHeaderArray($headerArray);
-
-        //Open File Based on Function Php To start Write inside the file CSV
-        $fp = fopen('php://output', 'wb');
-
-        fputcsv($fp, $headerCsv, $this->delimiter, $this->quote);
-
-        foreach ($data as $item) {
-            //Write Inside Our CSV File
-            fputcsv($fp, $item, $this->delimiter, $this->quote);
-        }
-        fclose($fp);
-        return $response;
-    }
-
-    /**
-     * This Function to Generate an array for Header CSV Based on Language file get as parameter and array of key of language file "LLL:EXT:qc_info_rights/Resources/Private/Language/Module/locallang.xlf"
-     *
-     * @param array $itemsArray
-     *
-     * @return array
-     */
-    protected function generateCsvHeaderArray(array $itemsArray): array
-    {
-        $headerCsv = [];
-        for ($i = 0; $i < count($itemsArray); $i++) {
-            $headerCsv[] = $this->charsetConverter->conv($this->localizationUtility->translate(Self::MODULE_LANG_FILE . $itemsArray[$i]), 'utf-8', 'iso-8859-15');
-        }
-        return $headerCsv;
-    }
-
 
 }
