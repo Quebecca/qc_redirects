@@ -122,6 +122,35 @@
             <trans-unit id="example">
                 <source>Example (With semicolon separator) : </source>
             </trans-unit>
+
+            <!-- CSV HEADER Fields -->
+            <trans-unit id="csvHeader.uid">
+                <source>UID</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.creationDate">
+                <source>Creation date</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.modificationDate">
+                <source>Modification date</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.sourcePath">
+                <source>Source path</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.target">
+                <source>Target</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.beGroup">
+                <source>BE group</source>
+            </trans-unit>
+            <trans-unit id="csvHeader.slug">
+                <source>Slug</source>
+            </trans-unit>
+            <trans-unit id="export_csv">
+                <source>Export CSV</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

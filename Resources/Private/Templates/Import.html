@@ -4,91 +4,100 @@
         data-namespace-typo3-fluid="true"
 >
 
-<h1>
-    <f:translate key="import_redirects_list" extensionName="qc_redirects"/>
-</h1>
-<f:flashMessages />
-<f:be.infobox title="{f:translate(key: 'instructions', extensionName:'qc_redirects')}" state="-1">
-    <ul>
-        <li>
-            <f:translate key="mandatoryFieldsDesc" extensionName="qc_redirects" />
-        </li>
-        <li>
-            <f:translate key="regularExpressionValuesDesc" extensionName="qc_redirects" />
-        </li>
-        <li>
-            <f:translate key="optionalFields" extensionName="qc_redirects" />
-        </li>
-        <li>
-            <f:translate key="optionalFieldsDesc" extensionName="qc_redirects" />
-        </li>
-        <li>
-            <f:translate key="example" extensionName="qc_redirects" /> www.example.com;/example;targetExample;false
-        </li>
-    </ul>
-</f:be.infobox>
-<form action="{be:moduleLink(route:'add_redirects')}" method="post">
+    <h1>
+        <f:translate key="import_redirects_list" extensionName="qc_redirects"/>
+    </h1>
+    <f:flashMessages />
+    <f:be.infobox title="{f:translate(key: 'instructions', extensionName:'qc_redirects')}" state="-1">
+        <ul>
+            <li>
+                <f:translate key="mandatoryFieldsDesc" extensionName="qc_redirects" />
+            </li>
+            <li>
+                <f:translate key="regularExpressionValuesDesc" extensionName="qc_redirects" />
+            </li>
+            <li>
+                <f:translate key="optionalFields" extensionName="qc_redirects" />
+            </li>
+            <li>
+                <f:translate key="optionalFieldsDesc" extensionName="qc_redirects" />
+            </li>
+            <li>
+                <f:translate key="example" extensionName="qc_redirects" /> www.example.com;/example;targetExample;false
+            </li>
+        </ul>
+    </f:be.infobox>
+    <form action="{be:moduleLink(route:'add_redirects')}" method="post">
 
-    <div class="form-group">
-        <div class="form-section">
-            <div class="row">
-                <div class="form-group col-xs-12">
-                    <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
-                    <select name="separationCharacter" class="qc-form-control" id="separationCharacter">
-                        <f:for each="{separatedChars}" key="charKey" as="character">
-                            <f:variable name="selected" value="{f:if(condition: '{charKey} == {separationCharacter}', then: 'selected', else: '')}"/>
-                            <option value="{charKey}" {selected} ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
-                        </f:for>
-                    </select>
+        <div class="form-group">
 
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group col-xs-12">
-                    <label for="importedList">
-                        <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
-                    </label>
-                    <br>
-                    <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
-                    <div class="form-control-wrap">
-                        <textarea class="form-control" id="importedList" name="redirectsList" rows="18" required="required">{redirectsList}</textarea>
+            <div class="form-section">
+                <div class="row">
+                    <div class="form-group col-xs-10">
+                        <label for="separationCharacter"><f:translate key="separationCharacter" extensionName="qc_redirects" /></label>
+                        <select name="separationCharacter" class="qc-form-control" id="separationCharacter">
+                            <f:for each="{separatedChars}" key="charKey" as="character">
+                                <f:variable name="selected" value="{f:if(condition: '{charKey} == {separationCharacter}', then: 'selected', else: '')}"/>
+                                <option value="{charKey}" {selected} ><f:translate key="{charKey}" extensionName="qc_redirects" /></option>
+                            </f:for>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-2 typo3-csvLink">
+                        <a class="btn btn-default" href="{f:be.uri(route: 'export_redirects_list')}">
+                            {icon -> f:format.raw()}
+                            <f:translate key="LLL:EXT:qc_info_rights/Resources/Private/Language/locallang.xlf:export_csv"/>
+                        </a>
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="form-group col-xs-12">
-                    <h4><f:translate key="advanced" extensionName="qc_redirects" /></h4>
-                    <label for="extraFields">
-                        <f:translate key="additionalFieldLabel" extensionName="qc_redirects" />
-                    </label>
-                    <br>
-                    <span class="formengine-field-item-description text-muted"><f:translate key="extraFields" extensionName="qc_redirects" /></span>
-                    <div class="form-control-wrap">
-                        <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <label for="importedList">
+                            <f:translate key="enterRedirectsItems" extensionName="qc_redirects" />
+                        </label>
+                        <br>
+                        <span class="formengine-field-item-description text-muted"><f:translate key="columns" extensionName="qc_redirects" /></span>
+                        <div class="form-control-wrap">
+                            <textarea class="form-control" id="importedList" name="redirectsList" rows="18" required="required">{redirectsList}</textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <h4><f:translate key="advanced" extensionName="qc_redirects" /></h4>
+                        <label for="extraFields">
+                            <f:translate key="additionalFieldLabel" extensionName="qc_redirects" />
+                        </label>
+                        <br>
+                        <span class="formengine-field-item-description text-muted"><f:translate key="extraFields" extensionName="qc_redirects" /></span>
+                        <div class="form-control-wrap">
+                            <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
-    <div id="submit-button">
-        <input
-                class="btn btn-default"
-                type="submit"
-                name="create"
-                value="{f:translate(key:'import', extensionName:'qc_redirects')}"
-                data-message="{f:translate(key:'lCreate_msg1', extensionName:'qc_redirects')}"
-                onclick="return confirm(this.dataset.message)"
-        />
-    </div>
+        <div id="submit-button">
+            <input
+                    class="btn btn-default"
+                    type="submit"
+                    name="create"
+                    value="{f:translate(key:'import', extensionName:'qc_redirects')}"
+                    data-message="{f:translate(key:'lCreate_msg1', extensionName:'qc_redirects')}"
+                    onclick="return confirm(this.dataset.message)"
+            />
+        </div>
 
-</form>
+    </form>
+
+
     <div id="reset-button">
         <f:link.action controller="AddRedirects" action="reset" arguments="{reset : 'true'}">
             <button  class="btn btn-default">{f:translate(key:'lReset', extensionName:'qc_redirects')}</button>
         </f:link.action>
     </div>
 
-<br>
+    <br>
 </html>
