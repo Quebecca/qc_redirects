@@ -50,9 +50,9 @@ class AddRedirectsController  extends BackendModuleActionController
      * @var array|string[]
      */
     protected array $separatedChars = [
+        'semicolon' => ';',
         'tabulation' => "\t",
         'pipe' => '|',
-        'semicolon' => ';',
         'colon' => ':',
         'comma' => ',',
     ];

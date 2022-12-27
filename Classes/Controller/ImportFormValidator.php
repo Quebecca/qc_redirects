@@ -59,10 +59,9 @@ class ImportFormValidator
      * @var array|string[]
      */
     protected array $mandatoryFields = [
-        0 => 'source_host',
-        1 => 'source_path',
-        2 => 'target',
-        3 => 'is_regexp'
+        0 => 'source_path',
+        1 => 'target',
+        2 => 'is_regexp'
     ];
 
     /**

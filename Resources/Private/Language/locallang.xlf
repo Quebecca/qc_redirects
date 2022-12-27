@@ -57,7 +57,7 @@
                 <source> is duplicated</source>
             </trans-unit>
             <trans-unit id="columns">
-                <source>source_host, source_path, target, is_regexp (true, false)</source>
+                <source>source_path, target, is_regexp (true, false)</source>
             </trans-unit>
             <trans-unit id="syntaxError">
                 <source>Error when importing the redirect list, please verify the importing syntax </source>
@@ -107,6 +107,9 @@
             <trans-unit id="optionalFieldsDesc">
                 <source>The optional fields have the same configuration(field name, value validation) as the fields used in the TCA configuration for the Redirect module, you can uses any order for this fields.</source>
             </trans-unit>
+            <trans-unit id="targetFieldDesc">
+                <source>The field « target » can contain a page uid.</source>
+            </trans-unit>
             <trans-unit id="instructions">
                 <source>Instructions</source>
             </trans-unit>
@@ -117,7 +120,10 @@
                 <source>Additional field names (space comma)</source>
             </trans-unit>
             <trans-unit id="extraFields">
-                <source>title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</source>
+                <source>source_host (* by default), title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</source>
+            </trans-unit>
+            <trans-unit id="extraFieldsDesc">
+                <source>example: to add a title to your redirects, enter “title” in the field below, then in the “redirection” text box, enter a redirect in this format: /example;123;false;Redirection to example page </source>
             </trans-unit>
             <trans-unit id="example">
                 <source>Example (With semicolon separator) : </source>

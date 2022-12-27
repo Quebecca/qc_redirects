@@ -137,6 +137,10 @@
                 <source>The optional fields have the same configuration(field name, value validation) as the fields used in the TCA configuration for the Redirect module, you can uses any order for this fields.</source>
                 <target>Les champs optionnels portent la même configuration (nom de champ, validation de valeur) que les champs utilisés dans la configuration TCA de module Redirect. vous pouvez choisir l'ordre de ces champs.</target>
             </trans-unit>
+            <trans-unit id="targetFieldDesc">
+                <source>The field « target » can contain a page uid.</source>
+                <target>Le champ « target » peut contenir un uid de page.</target>
+            </trans-unit>
             <trans-unit id="advanced">
                 <source>Advanced</source>
                 <target>Avancée</target>
@@ -146,7 +150,12 @@
                 <target>Noms des champs supplémentaires (délimités par des virgules)</target>
             </trans-unit>
             <trans-unit id="extraFields">
-                <source>title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</source>
+                <source>source_host (* by default), title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</source>
+                <target>source_host (* par défaut), title, starttime, endtime, disabled, target_statuscode, respect_query_parameters, force_https, keep_query_parameters</target>
+            </trans-unit>
+            <trans-unit id="extraFieldsDesc">
+                <source>example: to add a title to your redirects, enter “title” in the field below, then in the “redirection” text box, enter a redirect in this format: /example;123;false;Redirection to example page </source>
+                <target>exemple : pour ajouter un titre à vos redirections, indiquer « title » dans le champ ci-dissous, puis dans la zone de texte « redirection », entrer une redirection de ce format : /exemple;123;false;Redirection vers  la page exemple </target>
             </trans-unit>
             <trans-unit id="example">
                 <source>Example (With semicolon separator) : </source>

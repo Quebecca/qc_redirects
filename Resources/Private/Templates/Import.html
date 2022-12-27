@@ -23,7 +23,10 @@
                 <f:translate key="optionalFieldsDesc" extensionName="qc_redirects" />
             </li>
             <li>
-                <f:translate key="example" extensionName="qc_redirects" /> www.example.com;/example;targetExample;false
+                <f:translate key="targetFieldDesc" extensionName="qc_redirects" />
+            </li>
+            <li>
+                <f:translate key="example" extensionName="qc_redirects" /> /example;1234;false
             </li>
         </ul>
     </f:be.infobox>
@@ -71,6 +74,9 @@
                         </label>
                         <br>
                         <span class="formengine-field-item-description text-muted"><f:translate key="extraFields" extensionName="qc_redirects" /></span>
+                        <br>
+                        <br>
+                        <span class="formengine-field-item-description text-muted"><f:translate key="extraFieldsDesc" extensionName="qc_redirects" /></span>
                         <div class="form-control-wrap">
                             <input class="form-control" type="text" value="{extraFields}" name="extraFields" size="30" id="extraFields"/>
                         </div>
