@@ -48,6 +48,8 @@ class ExportRedirectActionController
 
     protected $userTS;
 
+    protected string $orderType = '';
+    protected string $orderBy = '';
 
     public function __construct()
     {
@@ -57,6 +59,9 @@ class ExportRedirectActionController
         $this->initializeTsConfig();
         $this->enclosure =$this->userTS['enclosure'] ?? '"';
         $this->separator =$this->userTS['separator'] ?? ';';
+        $this->orderType =$this->userTS['orderType'] ?? 'DESC';
+        $this->orderBy =$this->userTS['orderBy'] ?? 'createdon';
+
     }
 
 
@@ -80,30 +85,30 @@ class ExportRedirectActionController
         );
 
         /**Getting redirects data*/
-        $data = $this->exportRedirectsRepository->getRedirectsList();
+        $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
 
-        // @Todo : handle the case where no data found
+        if(!empty($data)){
+            // @Todo : add filter for specific creation dateRange, disabled  redirect ?,
+            // Build header array for csv headers
+            $headerArray = [];
+            foreach (array_keys($data[0]) as $headerName){
+                $headerArray[] = 'csvHeader.'.$headerName;
+            }
+            //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
+            $headerCsv = $this->generateCsvHeaderArray($headerArray);
 
-        // @Todo : add filter for specific creation dateRange, disabled  redirect ?,
+            //Open File Based on Function Php To start Write inside the file CSV
+            $fp = fopen('php://output', 'wb');
 
-        // Build header array for csv headers
-        $headerArray = [];
-        foreach (array_keys($data[0]) as $headerName){
-            $headerArray[] = 'csvHeader.'.$headerName;
+            fputcsv($fp, $headerCsv, $this->separator, $this->enclosure);
+
+            foreach ($data as $item) {
+                //Write Inside Our CSV File
+                fputcsv($fp, $item, $this->separator, $this->enclosure);
+            }
+            fclose($fp);
         }
-        //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
-        $headerCsv = $this->generateCsvHeaderArray($headerArray);
 
-        //Open File Based on Function Php To start Write inside the file CSV
-        $fp = fopen('php://output', 'wb');
-
-        fputcsv($fp, $headerCsv, $this->separator, $this->enclosure);
-
-        foreach ($data as $item) {
-            //Write Inside Our CSV File
-            fputcsv($fp, $item, $this->separator, $this->enclosure);
-        }
-        fclose($fp);
         return $response;
     }
 

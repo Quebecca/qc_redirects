@@ -1,12 +1,15 @@
 mod{
   qcRedirects{
     csvExport {
+      // Database column name that will be used to order the records in the csv file
+      orderBy = uid
+      // Order Type ASC or DESC
+      orderType = ASC
+
       // Csv parameters
-      separator = ,
+      separator = ;
       enclosure = "
       escape = \\
-      // @Todo : add this options when exporting
-      recordOrder = DESC
     }
   }
 }
