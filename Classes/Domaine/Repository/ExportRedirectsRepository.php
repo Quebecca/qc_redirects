@@ -49,12 +49,9 @@ class ExportRedirectsRepository
             }
 
             // Gérer les cas où on apas t3://....
-            if($pageUid !== null){
-                $associatedData = $this->getAssociatedGroupNameAndPageSlug(intval($pageUid));
-                $item['beGroup'] = $associatedData['groupName'];
-                $item['slug'] = $associatedData['slug'];
-
-            }
+            $associatedData = $this->getAssociatedGroupNameAndPageSlug(intval($pageUid));
+            $item['beGroup'] = $associatedData['groupName'];
+            $item['slug'] = $associatedData['slug'];
             $item['createdon'] = date('d/m/y',  $item['createdon']);
             $item['updatedon'] = date('d/m/y',  $item['updatedon']);
             $csvData[] = $item;

@@ -188,8 +188,8 @@
                 <target>Cible</target>
             </trans-unit>
             <trans-unit id="csvHeader.beGroup">
-                <source>BE group</source>
-                <target>Groupe BE</target>
+                <source>Group of target page</source>
+                <target>Groupe de la page cible</target>
             </trans-unit>
             <trans-unit id="csvHeader.slug">
                 <source>Slug</source>

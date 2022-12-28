@@ -86,7 +86,6 @@ class ExportRedirectActionController
 
         /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
-
         if(!empty($data)){
             // @Todo : add filter for specific creation dateRange, disabled  redirect ?,
             // Build header array for csv headers
@@ -94,7 +93,7 @@ class ExportRedirectActionController
             foreach (array_keys($data[0]) as $headerName){
                 $headerArray[] = 'csvHeader.'.$headerName;
             }
-            //CSV HEADERS Using Translate File and respecting UTF-8 Charset for Special Char
+            //CSV HEADERS Using Translate File
             $headerCsv = $this->generateCsvHeaderArray($headerArray);
 
             //Open File Based on Function Php To start Write inside the file CSV

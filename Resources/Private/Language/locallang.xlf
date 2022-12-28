@@ -149,7 +149,7 @@
                 <source>Target</source>
             </trans-unit>
             <trans-unit id="csvHeader.beGroup">
-                <source>BE group</source>
+                <source>Group of the target page</source>
             </trans-unit>
             <trans-unit id="csvHeader.slug">
                 <source>Slug</source>
