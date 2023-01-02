@@ -40,27 +40,51 @@ class ExportRedirectActionController
     /**
      * @var string
      */
-    protected $enclosure ;
+    protected string $enclosure ;
 
     /**
      * @var string
      */
-    protected $separator;
+    protected string $separator;
 
     /**
      * @var CharsetConverter
      */
-    protected $charsetConverter;
+    protected CharsetConverter $charsetConverter;
 
     /**
      * @var LocalizationUtility
      */
-    protected $localizationUtility;
+    protected LocalizationUtility $localizationUtility;
 
-    protected $userTS;
+    /**
+     * @var array
+     */
+    protected array $userTS;
 
+    /**
+     * @var string
+     */
     protected string $orderType = '';
+
+    /**
+     * @var string
+     */
     protected string $orderBy = '';
+
+    /**
+     * @var array|string[]
+     */
+    protected array $csvHeader = [
+        'uid',
+        'createdon',
+        'updatedon',
+        'title',
+        'source_path',
+        'target',
+        'beGroup',
+        'slug'
+    ];
 
     public function __construct()
     {
@@ -72,7 +96,8 @@ class ExportRedirectActionController
         $this->separator =$this->userTS['separator'] ?? ';';
         $this->orderType =$this->userTS['orderType'] ?? 'DESC';
         $this->orderBy =$this->userTS['orderBy'] ?? 'createdon';
-
+        //CSV HEADERS Using Translate File
+        $this->generateCsvHeaderArray($this->csvHeader);
     }
 
 
@@ -97,26 +122,20 @@ class ExportRedirectActionController
 
         /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
-        if(!empty($data)){
-            // Build header array for csv headers
-            $headerArray = [];
-            //Open File Based on Function Php To start Write inside the file CSV
-            $fp = fopen('php://output', 'wb');
-            fwrite($fp, "\xEF\xBB\xBF");
+        // Build header array for csv headers
+        //Open File Based on Function Php To start Write inside the file CSV
+        $fp = fopen('php://output', 'wb');
+        // UTF-8 encoding issu
+        fwrite($fp, "\xEF\xBB\xBF");
 
-            foreach (array_keys($data[0]) as $headerName){
-                $headerArray[] = 'csvHeader.'.$headerName;
-            }
-            //CSV HEADERS Using Translate File
-            $headerCsv = $this->generateCsvHeaderArray($headerArray);
-            fputcsv($fp, $headerCsv, $this->separator, $this->enclosure);
-            foreach ($data as $item) {
-                //Write Inside Our CSV File
-                fputcsv($fp, $item, $this->separator, $this->enclosure);
-            }
-            fclose($fp);
+        fputcsv($fp, $this->csvHeader, $this->separator, $this->enclosure);
+
+        foreach ($data as $item) {
+            //Write Inside Our CSV File
+            fputcsv($fp, $item, $this->separator, $this->enclosure);
         }
 
+        fclose($fp);
         return $response;
     }
 
@@ -125,15 +144,12 @@ class ExportRedirectActionController
      *
      * @param array $itemsArray
      *
-     * @return array
      */
-    protected function generateCsvHeaderArray(array $itemsArray): array
+    protected function generateCsvHeaderArray(array $itemsArray)
     {
-        $headerCsv = [];
         for ($i = 0; $i < count($itemsArray); $i++) {
-            $headerCsv[] = $this->charsetConverter->conv($this->localizationUtility->translate(self::LANG_FILE . $itemsArray[$i]), 'utf-8', 'iso-8859-15');
+            $this->csvHeader[$i] = $this->localizationUtility->translate(self::LANG_FILE .'csvHeader.'. $itemsArray[$i]);
         }
-        return $headerCsv;
     }
 
     protected function initializeTsConfig(){
