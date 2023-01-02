@@ -1,4 +1,15 @@
 <?php
+declare(strict_types=1);
+/***
+ *
+ * This file is part of Qc Redirects project.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ *  (c) 2022 <techno@quebec.ca>
+ *
+ ***/
 
 namespace Qc\QcRedirects\Controller;
 
@@ -87,20 +98,18 @@ class ExportRedirectActionController
         /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
         if(!empty($data)){
-            // @Todo : add filter for specific creation dateRange, disabled  redirect ?,
             // Build header array for csv headers
             $headerArray = [];
+            //Open File Based on Function Php To start Write inside the file CSV
+            $fp = fopen('php://output', 'wb');
+            fwrite($fp, "\xEF\xBB\xBF");
+
             foreach (array_keys($data[0]) as $headerName){
                 $headerArray[] = 'csvHeader.'.$headerName;
             }
             //CSV HEADERS Using Translate File
             $headerCsv = $this->generateCsvHeaderArray($headerArray);
-
-            //Open File Based on Function Php To start Write inside the file CSV
-            $fp = fopen('php://output', 'wb');
-
             fputcsv($fp, $headerCsv, $this->separator, $this->enclosure);
-
             foreach ($data as $item) {
                 //Write Inside Our CSV File
                 fputcsv($fp, $item, $this->separator, $this->enclosure);

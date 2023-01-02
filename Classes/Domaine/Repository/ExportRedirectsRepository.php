@@ -93,7 +93,6 @@ class ExportRedirectsRepository
      * @throws Exception
      */
     protected function findPageUidBySlug(string $slug){
-        // @Todo : check if the slug can be duplicated in the Db
         $queryBuilder = $this->getQueryBuilderForTable('pages');
         $results = $queryBuilder
             ->select('uid')
