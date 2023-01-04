@@ -1,7 +1,8 @@
-www.sourceHoste1.com;/example1;target1;true;title 1;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste2.com;/example2;target2;false;title 2;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste3.com;/example3;target3;true;title 3;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste4.com;/example4;target4;true;title 4;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste5.com;/example5;target5;false;title 5;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste6.com;/example6;target6;true;title 6;10/12/2021 15:54;10/12/2021 16:54;307
-www.sourceHoste7.com;/example7;target7;false;title 7;10/12/2021 15:54;10/12/2021 16:54;307
+/example1;10;true;title 1;10/12/2022 15:54;06/08/2023 15:54;307
+/example2;11;false;title 2;10/12/2022 15:54;06/08/2023 15:54;307
+/example3;12;true;title 3;10/12/2022 15:54;06/08/2023 15:54;307
+/example4;13;true;title 4;10/12/2022 15:54;06/08/2023 15:54;307
+/example5;14;false;title 5;10/12/2022 15:54;06/08/2023 15:54;307
+/example6;15;true;title 6;10/12/2022 15:54;06/08/2023 15:54;307
+/example7;16;false;title 7;10/12/2022 15:54;06/08/2023 15:54;307
+

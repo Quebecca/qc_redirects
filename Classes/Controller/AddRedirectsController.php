@@ -211,7 +211,10 @@ class AddRedirectsController  extends BackendModuleActionController
         // precessing each line in the array
         foreach ($redirectListArray as $item){
             // separate the row columns
-            $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            $row = GeneralUtility::trimExplode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            // empty lines
+            if($row[0] === '')
+                continue;
             $mappedRow = [];
             $index = 0;
             $this->importFormValidator->setRowsConstraints(array_merge($this->importFormValidator->getMandatoryFields(), $this->extraFields));

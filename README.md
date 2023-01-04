@@ -18,9 +18,11 @@ The best way to import lots of redirects is by using a CSV or an Excel file, in 
 The extension offers the option to choose the separation character.
 The required fields are: 
 
-    source_host, source_path, target, is_regexp
+    source_path, target, is_regexp
 
 The field "is_regexp" takes two possible values: 'true' or 'false'.
+
+The field « target » can contain a page uid.
 
 You can include others optional fields by specifying them in the 'Advanced field names', then you can import them easily in the import section, example:
 
@@ -30,13 +32,15 @@ In the 'Additional field names' you specify the optional fields by order and sep
    
 Then in the Import section: 
 
-    www.example.com;/example;targetExample;false;MyTitleExample;true;false
+    /example;12345;false;MyTitleExample;true;false
 
 Note : the optional fields can be empty, for example:
     
-    www.example.com;/example;targetExample;false;;;
+    /example;12345;false;;;
 
 Note 2 : There are fields that accept only 'true' or 'false' value, check the Redirect TCA configuration of the Core extension for more information.
+
+Note 3 : The « source_host » field has the value '*' by default.
 
 ### Files example
 In the `/Documentation/` folder you will find 2 files: One in CSV format and the other in XLS (Excel) format.
@@ -65,9 +69,11 @@ L’extension offre la possibilité de choisir le caractère de séparation.
 
 Les champs obligatoires à importer sont les suivants : 
 
-    source_host, source_path, target, is_regexp
+    source_path, target, is_regexp
 
 Le champ "is_regexp" peut prendre uniquement les valeurs 'true' ou 'false'.
+
+Le champ « target » peut contenir un uid de page.
 
 Vous pouvez importer les autres champs optionnels en les spécifiant dans le champ 'Noms des champs supplémentaires', puis on peut les ajouter dans le champ d'importation, exemple :
 
@@ -77,13 +83,15 @@ Dans le champ 'Noms des champs supplémentaires' on ajoute par ordre les champs 
 
 Après dans le champ d'importation on peut ajouter aux champs obligatoires:
 
-    www.example.com;/example;targetExample;false;MyTitleExample;true;false
+    /example;12345;false;MyTitleExample;true;false
 
-Note: les champs optionnels peuvent être vides : 
+Note : les champs optionnels peuvent être vides : 
 
-    www.example.com;/example;targetExample;false;;;;
+    /example;12345;false;;;;
 
 Note 2 : Certain champs acceptent seulement des valeurs 'true' ou 'false'. Vérifiez la configuration TCA de l'extension Redirects pour plus d'information.
+
+Note 3 : Le champ « source_host » porte la valeur '*' par défaut.
 
 ### Fichiers d'exemples
 Dans le dossier `/Documentation/` , vous y trouverez 2 fichiers: Un au format CSV, l'autre au format XLS (Excel).
