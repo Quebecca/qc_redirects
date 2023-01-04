@@ -181,7 +181,7 @@
             </trans-unit>
             <trans-unit id="csvHeader.source_path">
                 <source>Source path</source>
-                <target>Chemin source</target>
+                <target>Chemin de la source</target>
             </trans-unit>
             <trans-unit id="csvHeader.target">
                 <source>Target</source>
@@ -198,6 +198,10 @@
             <trans-unit id="export_csv">
                 <source>Export CSV</source>
                 <target>Exportation CSV</target>
+            </trans-unit>
+            <trans-unit id="export_redirects_list">
+                <source>Redirects-list-</source>
+                <target>Liste-redirections-</target>
             </trans-unit>
         </body>
     </file>

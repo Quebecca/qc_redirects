@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-class ExportRedirectActionController
+class ExportRedirectsActionController
 {
 
     /**
@@ -110,7 +110,7 @@ class ExportRedirectActionController
     public function exportRedirectsListAction(ServerRequestInterface $request): ResponseInterface
     {
         //Initialize Response and create Name of Our FIle CSV
-        $filename = 'Redirects-list-Export-' . date('Y-m-d_H-i').'.csv';
+        $filename = $this->localizationUtility->translate(self::LANG_FILE .'export_redirects_list') . date('Y-m-d_H-i').'.csv';
 
         $response = new Response('php://output', 200,
             [
@@ -122,7 +122,6 @@ class ExportRedirectActionController
 
         /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
-        // Build header array for csv headers
         //Open File Based on Function Php To start Write inside the file CSV
         $fp = fopen('php://output', 'wb');
         // UTF-8 encoding issu

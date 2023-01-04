@@ -2,9 +2,9 @@ mod{
   qcRedirects{
     csvExport {
       // Database column name that will be used to order the records in the csv file
-      orderBy = uid
+      orderBy = createdon
       // Order Type ASC or DESC
-      orderType = ASC
+      orderType = DESC
 
       // Csv parameters
       separator = ;
