@@ -13,6 +13,26 @@ This extension adds features to the TYPO3 Core Redirects module.
 - Adds filter by Title;
 - Adds sorting by creation date and alphabetical sorting for the title as well as other columns of the 'Redirects' module list.
 
+## How to export the redirects list 
+You can export the liste of available redirects by clicking on the export button in the extension module, you can modify the csv file parameters 
+by the TSconfig configuration :
+
+        mod{
+            qcRedirects{
+                csvExport {
+                    // Database column name that will be used to order the records in the csv file
+                    orderBy = createdon
+                    // Order Type ASC or DESC
+                    orderType = DESC
+                    // Csv parameters
+                    separator = ;
+                    enclosure = "
+                    escape = \\
+                }
+            }
+        }
+
+
 ## How to import a redirect list
 The best way to import lots of redirects is by using a CSV or an Excel file, in which you define the values of the fields to be entered.
 The extension offers the option to choose the separation character.
@@ -40,7 +60,7 @@ Note : the optional fields can be empty, for example:
 
 Note 2 : There are fields that accept only 'true' or 'false' value, check the Redirect TCA configuration of the Core extension for more information.
 
-Note 3 : The « source_host » field has the value '*' by default.
+Note 3 : The « source_host » field has the value ' * ' by default.
 
 ### Files example
 In the `/Documentation/` folder you will find 2 files: One in CSV format and the other in XLS (Excel) format.
@@ -63,6 +83,25 @@ Cette extension ajoute des fonctionnalités au module TYPO3 Redirects.
 - Ajouts d'un filtre par Titre;
 - Ajouts de tris par date de création et tri alphabétique pour le titre ainsi que d'autre colonnes de la table des redirections.
 
+## Exporter la liste des redirections
+Vous pouvez exporter la liste des redirections en cliquant sur le bouton exporter dans le module de l'extension, vous pouvez modifier les paramètres du fichier csv
+par la configuration TSconfig :
+
+        mod{
+            qcRedirects{
+                csvExport {
+                    // Nom de colonne dans la base de données qui sera utilisé pour ordonner les enregistrements dans le fichier csv
+                    orderBy = createdon
+                    // Type d'ordre ASC or DESC
+                    orderType = DESC
+                    // Csv parameters
+                    separator = ;
+                    enclosure = "
+                    escape = \\
+                }
+            }
+        }
+
 ## Importer une liste de redirections
 La meilleure façon d’importer les redirections est d’utiliser un fichier CSV ou Excel, selon un ordre à respecter.  
 L’extension offre la possibilité de choisir le caractère de séparation.
@@ -73,7 +112,7 @@ Les champs obligatoires à importer sont les suivants :
 
 Le champ "is_regexp" peut prendre uniquement les valeurs 'true' ou 'false'.
 
-Le champ « target » peut contenir un uid de page.
+Le champ « target » peut prendre un uid de page.
 
 Vous pouvez importer les autres champs optionnels en les spécifiant dans le champ 'Noms des champs supplémentaires', puis on peut les ajouter dans le champ d'importation, exemple :
 
@@ -91,7 +130,7 @@ Note : les champs optionnels peuvent être vides :
 
 Note 2 : Certain champs acceptent seulement des valeurs 'true' ou 'false'. Vérifiez la configuration TCA de l'extension Redirects pour plus d'information.
 
-Note 3 : Le champ « source_host » porte la valeur '*' par défaut.
+Note 3 : Le champ « source_host » prend la valeur ' * ' par défaut.
 
 ### Fichiers d'exemples
 Dans le dossier `/Documentation/` , vous y trouverez 2 fichiers: Un au format CSV, l'autre au format XLS (Excel).
