@@ -161,7 +161,7 @@ class ManagementControllerExt extends ManagementController{
         $this->getButtons();
 
         // Filter reset
-        if($request->getQueryParams()['resetFilter'] == 'true'){
+        if(($request->getQueryParams()['resetFilter'] ?? false) == 'true'){
             $this->demand = new DemandExt();
         }
         else{
