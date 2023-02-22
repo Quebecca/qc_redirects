@@ -71,17 +71,17 @@ class ExportRedirectsRepository
     public function getPageUidFromTarget($target): ?int
     {
         $pageUid = null;
-        if(is_numeric($target) == true)
+        if(is_numeric($target) == true){
             $pageUid = $target;
-        else {
-            if(str_contains($target, 't3://page?uid=')){
-                $pageUid =intval(str_replace('t3://page?uid=', '' ,$target));
-            }
-            // it's a slug
-            else if(!str_contains($target, 'http://') && !str_contains($target, 'https://') ){
-                $pageUid = $this->findPageUidBySlug($target);
-            }
         }
+        elseif (str_contains($target, 't3://page?uid=')){
+            $pageUid =intval(str_replace('t3://page?uid=', '' ,$target));
+        }
+        // it's a slug
+        elseif (!str_contains($target, 'http://') && !str_contains($target, 'https://')){
+            $pageUid = $this->findPageUidBySlug($target);
+        }
+
         if($pageUid !== null){
             // Check if the uid is present in the DB
             if(BackendUtility::getRecord('pages', intval($pageUid)) !== null){
@@ -136,8 +136,9 @@ class ExportRedirectsRepository
             ->execute()
             ->fetchAssociative();
 
-        if($results !== false)
+        if($results !== false){
             return $results['uid'];
+        }
         return null;
     }
 

@@ -17,9 +17,7 @@ use Doctrine\DBAL\Driver\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Qc\QcRedirects\Domaine\Repository\ExportRedirectsRepository;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -47,10 +45,6 @@ class ExportRedirectsActionController
      */
     protected string $separator;
 
-    /**
-     * @var CharsetConverter
-     */
-    protected CharsetConverter $charsetConverter;
 
     /**
      * @var LocalizationUtility
@@ -88,7 +82,6 @@ class ExportRedirectsActionController
 
     public function __construct()
     {
-        $this->charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
         $this->exportRedirectsRepository = GeneralUtility::makeInstance(ExportRedirectsRepository::class);
         $this->localizationUtility = GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->initializeTsConfig();
@@ -120,9 +113,7 @@ class ExportRedirectsActionController
             ]
         );
 
-        /**Getting redirects data*/
         $data = $this->exportRedirectsRepository->getRedirectsList($this->orderBy,$this->orderType);
-        //Open File Based on Function Php To start Write inside the file CSV
         $fp = fopen('php://output', 'wb');
         // UTF-8 encoding issu
         fwrite($fp, "\xEF\xBB\xBF");
@@ -130,7 +121,6 @@ class ExportRedirectsActionController
         fputcsv($fp, $this->csvHeader, $this->separator, $this->enclosure);
 
         foreach ($data as $item) {
-            //Write Inside Our CSV File
             fputcsv($fp, $item, $this->separator, $this->enclosure);
         }
 
@@ -152,7 +142,6 @@ class ExportRedirectsActionController
     }
 
     protected function initializeTsConfig(){
-        /*Initialize the TsConfing mod of the current Backend user */
         $this->userTS = $this->getBackendUser()->getTSConfig()['mod.']['qcRedirects.']['csvExport.'];
     }
 

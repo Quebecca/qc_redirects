@@ -155,7 +155,7 @@
             </trans-unit>
             <trans-unit id="extraFieldsDesc">
                 <source>example: to add a title to your redirects, enter “title” in the field below, then in the “redirection” text box, enter a redirect in this format: /example;123;false;Redirection to example page </source>
-                <target>exemple : pour ajouter un titre à vos redirections, indiquer « title » dans le champ ci-dissous, puis dans la zone de texte « redirection », entrer une redirection de ce format : /exemple;123;false;Redirection vers  la page exemple </target>
+                <target>exemple : pour ajouter un titre à vos redirections, indiquer « title » dans le champ ci-dessous, puis dans la zone de texte « redirection », entrer une redirection de ce format : /exemple;123;false;Redirection vers la page exemple</target>
             </trans-unit>
             <trans-unit id="example">
                 <source>Example (With semicolon separator) : </source>

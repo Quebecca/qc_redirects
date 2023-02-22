@@ -49,7 +49,7 @@ class AddRedirectsController  extends BackendModuleActionController
     /**
      * @var array|string[]
      */
-    protected array $separatedChars = [
+    protected array $separators  = [
         'semicolon' => ';',
         'tabulation' => "\t",
         'pipe' => '|',
@@ -119,7 +119,7 @@ class AddRedirectsController  extends BackendModuleActionController
     {
         parent::initializeView($view);
         $this->view->assignMultiple([
-            'separatedChars' => $this->separatedChars,
+            'separators' => $this->separators,
             'icon' => $this->icon
         ]);
 
@@ -184,7 +184,7 @@ class AddRedirectsController  extends BackendModuleActionController
             'separationCharacter' => $requestBody['separationCharacter'],
             'extraFields' => $requestBody['extraFields']
         ]);
-        $this->view->assign('separatedChars', $this->separatedChars);
+        $this->view->assign('separators', $this->separators);
         $this->moduleTemplate->setContent($this->view->render());
     }
 
@@ -211,7 +211,8 @@ class AddRedirectsController  extends BackendModuleActionController
         // precessing each line in the array
         foreach ($redirectListArray as $item){
             // separate the row columns
-            $row = GeneralUtility::trimExplode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            $separator = $this->separators[$this->selectedSeparatedChar];
+            $row = GeneralUtility::trimExplode($separator,$item);
             // empty lines
             if($row[0] === '')
                 continue;
