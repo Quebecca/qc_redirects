@@ -19,6 +19,8 @@ use Qc\QcRedirects\Domaine\Repository\ImportRedirectsRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -47,10 +49,10 @@ class AddRedirectsController  extends BackendModuleActionController
     /**
      * @var array|string[]
      */
-    protected array $separatedChars = [
+    protected array $separators  = [
+        'semicolon' => ';',
         'tabulation' => "\t",
         'pipe' => '|',
-        'semicolon' => ';',
         'colon' => ':',
         'comma' => ',',
     ];
@@ -81,6 +83,18 @@ class AddRedirectsController  extends BackendModuleActionController
     protected $view;
 
 
+    /**
+     * @var IconFactory
+     */
+    protected $iconFactory;
+
+    /**
+     * @var Icon
+     */
+    protected $icon;
+
+
+
     public function __construct(
     )
     {
@@ -90,7 +104,8 @@ class AddRedirectsController  extends BackendModuleActionController
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
-
+        $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $this->icon = $this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL);
     }
 
     /**
@@ -103,7 +118,11 @@ class AddRedirectsController  extends BackendModuleActionController
     protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
-        $this->view->assign('separatedChars', $this->separatedChars);
+        $this->view->assignMultiple([
+            'separators' => $this->separators,
+            'icon' => $this->icon
+        ]);
+
     }
 
     public function initializeAction()
@@ -165,7 +184,7 @@ class AddRedirectsController  extends BackendModuleActionController
             'separationCharacter' => $requestBody['separationCharacter'],
             'extraFields' => $requestBody['extraFields']
         ]);
-        $this->view->assign('separatedChars', $this->separatedChars);
+        $this->view->assign('separators', $this->separators);
         $this->moduleTemplate->setContent($this->view->render());
     }
 
@@ -192,7 +211,11 @@ class AddRedirectsController  extends BackendModuleActionController
         // precessing each line in the array
         foreach ($redirectListArray as $item){
             // separate the row columns
-            $row = explode($this->separatedChars[$this->selectedSeparatedChar],$item);
+            $separator = $this->separators[$this->selectedSeparatedChar];
+            $row = GeneralUtility::trimExplode($separator,$item);
+            // empty lines
+            if($row[0] === '')
+                continue;
             $mappedRow = [];
             $index = 0;
             $this->importFormValidator->setRowsConstraints(array_merge($this->importFormValidator->getMandatoryFields(), $this->extraFields));
@@ -300,6 +323,5 @@ class AddRedirectsController  extends BackendModuleActionController
         $messageQueue = $flashService->getMessageQueueByIdentifier();
         $messageQueue->addMessage($message);
     }
-
 
 }

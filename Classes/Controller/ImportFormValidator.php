@@ -59,10 +59,9 @@ class ImportFormValidator
      * @var array|string[]
      */
     protected array $mandatoryFields = [
-        0 => 'source_host',
-        1 => 'source_path',
-        2 => 'target',
-        3 => 'is_regexp'
+        0 => 'source_path',
+        1 => 'target',
+        2 => 'is_regexp'
     ];
 
     /**
@@ -77,7 +76,7 @@ class ImportFormValidator
     /**
      * @var LocalizationUtility
      */
-    protected $localizationUtility;
+    protected LocalizationUtility $localizationUtility;
 
     protected const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
 
@@ -87,6 +86,10 @@ class ImportFormValidator
         $this->allowedAdditionalFields = $GLOBALS['TCA']['sys_redirect']['columns'];
     }
 
+    /**
+     * @param array $extraFields
+     * @return bool
+     */
     public function checkForInvalidFields(array $extraFields) : bool{
         $this->invalidFields = array_diff($extraFields, array_keys($this->allowedAdditionalFields));
         if(!empty($this->invalidFields)){
@@ -100,6 +103,10 @@ class ImportFormValidator
         return true;
     }
 
+    /**
+     * @param array $extraFields
+     * @return bool
+     */
     public function checkForReadOnlyFields(array $extraFields) : bool{
         // check if the field is on ReadOnly
         foreach ($extraFields as $field){
@@ -145,16 +152,32 @@ class ImportFormValidator
         //  return filter_var($value, FILTER_VALIDATE_URL);
         return true;
     }
+
+    /**
+     * @param string $key
+     * @param $value
+     * @return bool
+     */
     public function inputDateTimeVerify(string $key , $value): bool
     {
         return (bool)strtotime($value) || $value == '';
     }
 
+    /**
+     * @param string $key
+     * @param $value
+     * @return bool
+     */
     public function checkboxToggleVerify(string $key, $value): bool
     {
         return $value == 'true' || $value == 'false' || $value == '';
     }
 
+    /**
+     * @param string $key
+     * @param $value
+     * @return bool
+     */
     public function selectSingleVerify(string $key, $value) : bool {
         $availablValues = [];
         foreach ($this->allowedAdditionalFields[$key]['config']['items'] as $item){

@@ -19,3 +19,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'] += [
     ]
 ];
 
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(
+    "@import 'EXT:qc_redirects/Configuration/TsConfig/pageconfig.tsconfig'"
+);
+
