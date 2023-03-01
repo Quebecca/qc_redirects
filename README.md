@@ -94,7 +94,7 @@ par la configuration TSconfig :
                     orderBy = createdon
                     // Type d'ordre ASC or DESC
                     orderType = DESC
-                    // Csv parameters
+                    // Les paramètres CSV
                     separator = ;
                     enclosure = "
                     escape = \\
