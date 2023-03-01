@@ -20,7 +20,7 @@ by the TSconfig configuration :
         mod{
             qcRedirects{
                 csvExport {
-                    // Database column name that will be used to order the records in the csv file
+                    // Database column name that will be used to sort the records in the csv file
                     orderBy = createdon
                     // Order Type ASC or DESC
                     orderType = DESC
@@ -90,7 +90,7 @@ par la configuration TSconfig :
         mod{
             qcRedirects{
                 csvExport {
-                    // Nom de colonne dans la base de données qui sera utilisé pour ordonner les enregistrements dans le fichier csv
+                    // Nom de colonne dans la base de données qui sera utilisé pour trier les enregistrements dans le fichier csv
                     orderBy = createdon
                     // Type d'ordre ASC or DESC
                     orderType = DESC
