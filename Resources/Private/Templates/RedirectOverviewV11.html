@@ -277,14 +277,16 @@
             </div>
             <div class="col">
                 <label for="demand-target">
-                    <f:translate
-                            key="LLL:EXT:redirects/Resources/Private/Language/locallang_module_redirect.xlf:filter.destination"/>
+                    <label for="demand-target" class="form-label"><f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:sys_redirect.target"/></label>
                 </label>
                 <input type="text" id="demand-target" class="form-control input-sm" name="demand[target]"
                        value="{demand.target}"/>
             </div>
             <div class="col">
-                <label for="title">Title</label>
+                <label for="title">
+                    <f:translate
+                        key="LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:label_title"/>
+                </label>
                 <input type="text" id="title" class="form-control input-sm" name="demand[title]" value="{demand.title}"/>
             </div>
             <div class="col">

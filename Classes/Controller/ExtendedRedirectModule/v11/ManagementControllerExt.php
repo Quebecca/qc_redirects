@@ -176,9 +176,8 @@ class ManagementControllerExt extends ManagementController{
                 $this->demand->setSourcePath($demand->getSourcePath());
                 $this->demand->setLimit($demand->getLimit());
                 $this->demand->setStatusCodes($demand->getStatusCodes() ?? []);
-                $this->demand->setPage($demand->getPage());
-
             }
+            $this->demand->setPage($request->getQueryParams()['page'] ?? 1);
         }
 
         $this->updateFilter();
