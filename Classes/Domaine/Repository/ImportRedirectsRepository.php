@@ -12,6 +12,7 @@
 
 namespace Qc\QcRedirects\Domaine\Repository;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -59,13 +60,10 @@ class ImportRedirectsRepository
     /**
      * This function returns the columns source_path from the stored records, for comparing and prevent saving duplicated values for source_path
      * @return array
-     * @throws Exception
+     * @throws Exception|DBALException
      */
     public function getSourcePaths() : array {
         $sourcePathArray = [];
-        $this->queryBuilder
-            ->getRestrictions()
-            ->removeAll();
         $statement = $this->queryBuilder
             ->select('source_path')
             ->from($this->table)
