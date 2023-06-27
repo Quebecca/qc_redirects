@@ -11,6 +11,7 @@
  ***/
 namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v11;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\Demand;
@@ -52,7 +53,7 @@ class RedirectRepositoryExt extends RedirectRepository
     /**
      * @param Demand $demand
      * @return array
-     * @throws Exception
+     * @throws Exception|DBALException
      */
     public function findRedirectsByDemand(Demand $demand): array
     {
@@ -74,7 +75,7 @@ class RedirectRepositoryExt extends RedirectRepository
     {
         $queryBuilder = parent::getQueryBuilderForDemand($demand);
         $constraints = '';
-        if ($demand->hasTitle()) {
+        if ($demand instanceof DemandExt && $demand->hasTitle()) {
             $escapedLikeString = '%' . $queryBuilder->escapeLikeWildcards($demand->getTitle()) . '%';
             $constraints = $queryBuilder->expr()->like(
                 'title',

@@ -5,13 +5,10 @@ namespace Qc\QcRedirects\Domaine\Repository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
-use Qc\QcRedirects\Controller\ExtendedRedirectModule\v10\DemandExt;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Redirects\Repository\RedirectRepository;
 
 class ExportRedirectsRepository
 {
@@ -121,8 +118,9 @@ class ExportRedirectsRepository
     /**
      * This function is used to find pageUid by it's slug
      * @param string $slug
-     * @throws Exception
+     * @return mixed|null
      * @throws DBALException
+     * @throws Exception
      */
     protected function findPageUidBySlug(string $slug)
     {

@@ -40,6 +40,16 @@ class DemandExt extends Demand implements Arrayable
      */
     protected string $orderType;
 
+    protected const KEY_Page = 'page';
+    protected const KEY_OrderField = 'orderField';
+    protected const KEY_OrderDirection = 'orderDirection';
+    protected const KEY_SourceHosts = 'sourceHosts';
+    protected const KEY_Target = 'target';
+    protected const KEY_StatusCodes = 'statusCodes';
+    protected const KEY_SourcePath = 'sourcePath';
+    protected const KEY_Title = 'title';
+    protected const KEY_OrderBy = 'orderBy';
+    protected const KEY_OrderType = 'orderType';
 
     public function __construct(
         int $page = 1,
@@ -290,17 +300,11 @@ class DemandExt extends Demand implements Arrayable
         $this->page = $page;
     }
 
-    protected const KEY_Page = 'page';
-    protected const KEY_OrderField = 'orderField';
-    protected const KEY_OrderDirection = 'orderDirection';
-    protected const KEY_SourceHosts = 'sourceHosts';
-    protected const KEY_Target = 'target';
-    protected const KEY_StatusCodes = 'statusCodes';
-    protected const KEY_SourcePath = 'sourcePath';
-    protected const KEY_Title = 'title';
-    protected const KEY_OrderBy = 'orderBy';
-    protected const KEY_OrderType = 'orderType';
-    public function toArray()
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
     {
         return [
             self::KEY_Page => $this->getPage() ?? '',
@@ -316,7 +320,11 @@ class DemandExt extends Demand implements Arrayable
         ];
     }
 
-    public static function getInstanceFromArray(array $values)
+    /**
+     * @param array $values
+     * @return DemandExt
+     */
+    public static function getInstanceFromArray(array $values): DemandExt
     {
         return new DemandExt(
             $values[self::KEY_Page],

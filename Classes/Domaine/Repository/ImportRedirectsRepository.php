@@ -16,6 +16,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -64,6 +65,11 @@ class ImportRedirectsRepository
      */
     public function getSourcePaths() : array {
         $sourcePathArray = [];
+
+        $this->queryBuilder
+            ->getRestrictions()
+            ->removeByType(HiddenRestriction::class);
+
         $statement = $this->queryBuilder
             ->select('source_path')
             ->from($this->table)
