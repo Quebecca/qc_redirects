@@ -2,7 +2,8 @@
 
 ## Change log v1.1.2
 ### Bug Fix
-- 2023-06-28 [BUGFIX]  Fix checking for duplicated source path
+- 2023-06-28 [BUGFIX] Fix checking for duplicated source path
+- 2023-06-28 [BUGFIX] Fix hasTitle() method in Demand class 
 
 ## Change log v1.1.1
 ### Bug Fix
