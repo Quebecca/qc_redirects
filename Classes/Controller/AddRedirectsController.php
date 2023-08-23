@@ -180,9 +180,9 @@ class AddRedirectsController  extends BackendModuleActionController
             'EXT:qc_redirects/Resources/Private/Templates/Import.html'
         ));
         $this->view->assignMultiple([
-            'redirectsList' => $requestBody['redirectsList'],
-            'separationCharacter' => $requestBody['separationCharacter'],
-            'extraFields' => $requestBody['extraFields']
+            'redirectsList' => $requestBody['redirectsList'] ?? null,
+            'separationCharacter' => $requestBody['separationCharacter'] ?? null,
+            'extraFields' => $requestBody['extraFields'] ?? null,
         ]);
         $this->view->assign('separators', $this->separators);
         $this->moduleTemplate->setContent($this->view->render());
@@ -221,14 +221,14 @@ class AddRedirectsController  extends BackendModuleActionController
             $this->importFormValidator->setRowsConstraints(array_merge($this->importFormValidator->getMandatoryFields(), $this->extraFields));
             // adding optional fields to be validated
             foreach ($this->importFormValidator->getRowsConstraints() as $fieldName){
-                $mappedRow[$fieldName] = $row[$index];
+                $mappedRow[$fieldName] = $row[$index] ?? null;
                  $index++;
             }
 
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
-                $row[0] = preg_replace('/\s+/', '', $row[0]);
-                $row[1] = preg_replace('/\s+/', '', $row[1]);
+                $row[0] = preg_replace('/\s+/', '', $row[0] ?? '');
+                $row[1] = preg_replace('/\s+/', '', $row[1] ?? '');
             }
             // empty line
             if(count($row) == 1 && $row[0] == ''){
@@ -258,8 +258,13 @@ class AddRedirectsController  extends BackendModuleActionController
                 // verify fields values
                 $index = 0;
                 foreach ($mappedRow as $key => $value){
-                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'];
-                    if($renderType != null &&  in_array($renderType, $this->importFormValidator->getCheckingRules() )){
+                    $renderType = $this->importFormValidator
+                                    ->getAllowedAdditionalFields()
+                                    [$key]['config']['renderType']
+                                    ?? null;
+                    if($renderType != null
+                        &&  in_array($renderType, $this->importFormValidator->getCheckingRules()
+                        )){
                         $checkingMethodName = $renderType.'Verify';
                         if(!$this->importFormValidator->$checkingMethodName($key,$value)){
                             $this->importFormValidator->setWrongValuekey($index);

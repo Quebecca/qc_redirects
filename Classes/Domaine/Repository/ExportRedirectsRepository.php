@@ -95,8 +95,14 @@ class ExportRedirectsRepository
     protected function getAssociatedGroupNameAndPageSlug(int $pageUid): array
     {
         $data = BackendUtility::getRecord('pages', $pageUid, 'perms_groupid, slug');
-        $pageSlug = $data['slug'];
-        $beGroupName = BackendUtility::getRecord('be_groups',intval($data['perms_groupid']),'title')['title'];
+        $pageSlug = $data['slug'] ?? '';
+        $beGroupName = BackendUtility::getRecord(
+            'be_groups'
+            ,intval($data['perms_groupid'] ?? -1)
+            ,'title'
+            )
+            ['title']
+            ?? '';
         return [
             'slug' => $pageSlug,
             'groupName' => $beGroupName
