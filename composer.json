@@ -5,6 +5,7 @@
     "license": ["GPL-2.0-or-later"],
     "keywords": ["TYPO3 CMS"],
     "require": {
+        "php": "^7.4 || ^8.2",
         "typo3/cms-core": "^10.4 || ^11.5",
         "typo3/cms-backend": "^10.4 || ^11.5",
         "typo3/cms-fluid": "^10.4 || ^11.5",

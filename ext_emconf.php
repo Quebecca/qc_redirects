@@ -10,11 +10,12 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'module',
     'constraints' => [
         'depends' => [
+            'php' => '7.4-8.2',
             'typo3' => '10.4.0-11.5.99',
         ],
         'conflicts' => [
         ],
     ],
     'state' => 'beta',
-    'version' => '1.1.2'
+    'version' => '1.1.3'
 ];

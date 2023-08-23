@@ -28,7 +28,7 @@ class ExportRedirectsActionController
     /**
      * @var string
      */
-    const LANG_FILE = "LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:";
+    public const LANG_FILE = "LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:";
 
     /**
      * @var ExportRedirectsRepository

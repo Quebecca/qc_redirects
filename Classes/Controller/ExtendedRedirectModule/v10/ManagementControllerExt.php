@@ -186,7 +186,7 @@ class ManagementControllerExt extends ManagementController
             'orderBy' => $this->demand->getOrderBy(),
             'orderType' => $this->demand->getOrderType(),
             'showHitCounter' => GeneralUtility::makeInstance(Features::class)->isFeatureEnabled('redirects.hitCount'),
-            'pagination' => $this->preparePagination($this->demand, $count),
+            'pagination' => $this->preparePagination($this->demand),
         ]);
     }
 
