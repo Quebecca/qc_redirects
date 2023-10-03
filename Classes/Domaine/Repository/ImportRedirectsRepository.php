@@ -71,9 +71,7 @@ class ImportRedirectsRepository
             ->removeByType(HiddenRestriction::class);
 
         $statement = $this->queryBuilder
-            ->select('source_path')
-            ->from($this->table)
-            ->execute();
+            ->select('source_path')->from($this->table)->executeQuery();
         while ($row = $statement->fetchAssociative()) {
             $sourcePathArray[] = $row['source_path'];
         }

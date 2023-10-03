@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Qc\QcRedirects\Controller;
 
 
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BeUriBuilder;
@@ -49,16 +51,6 @@ class BackendModuleActionController extends ActionController
      * @var IconFactory
      */
     protected $iconFactory;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $view;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
      * The menu identifier for the backend module
@@ -104,6 +96,10 @@ class BackendModuleActionController extends ActionController
      * @var PageRenderer
      */
     protected $pageRenderer;
+    public function __construct(private ModuleTemplateFactory $moduleTemplateFactory, PageRenderer $pageRenderer)
+    {
+        $this->pageRenderer = $pageRenderer;
+    }
 
     /**
      * Function will be called before every other action
@@ -122,7 +118,7 @@ class BackendModuleActionController extends ActionController
                 FlashMessage::class,
                 $this->getLanguageService()->sL('LLL:EXT:backend_module/Resources/Private/Language/locallang.xlf:configuration.pid.description'),
                 $this->getLanguageService()->sL('LLL:EXT:backend_module/Resources/Private/Language/locallang.xlf:configuration.pid.title'),
-                FlashMessage::WARNING,
+                AbstractMessage::WARNING,
                 true
             );
 
@@ -140,13 +136,14 @@ class BackendModuleActionController extends ActionController
      */
     protected function initializeView(ViewInterface $view)
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
 
         if ($view instanceof BackendTemplateView) {
-            $view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation([]);
+            $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
 
-            $this->pageRenderer = $this->view->getModuleTemplate()->getPageRenderer();
+            $this->pageRenderer = $this->pageRenderer;
             $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
             $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
             $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
@@ -168,11 +165,12 @@ class BackendModuleActionController extends ActionController
      */
     protected function createMenu()
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         /** @var UriBuilder $uriBuilder */
         $uriBuilder = $this->objectManager->get(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
-        $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $menu = $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $menu->setIdentifier($this->menuIdentifier);
 
         foreach ($this->menuItems as $menuItem) {
@@ -183,7 +181,7 @@ class BackendModuleActionController extends ActionController
             $menu->addMenuItem($item);
         }
 
-        $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
+        $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
     }
 
     /**
@@ -192,7 +190,8 @@ class BackendModuleActionController extends ActionController
      */
     protected function createButtons()
     {
-        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
         $uriBuilder = $this->objectManager->get(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 

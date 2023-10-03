@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Qc\QcRedirects\Controller;
 
+use TYPO3\CMS\Core\Page\PageRenderer;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use Doctrine\DBAL\Driver\Exception;
 use Psr\Http\Message\ServerRequestInterface;
 use Qc\QcRedirects\Domaine\Repository\ImportRedirectsRepository;
@@ -95,12 +98,12 @@ class AddRedirectsController  extends BackendModuleActionController
 
 
 
-    public function __construct(
+    public function __construct(private PageRenderer $pageRenderer
     )
     {
         $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->moduleTemplate ??= GeneralUtility::makeInstance(ModuleTemplate::class);
-        $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
+        $this->pageRenderer->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
@@ -168,14 +171,14 @@ class AddRedirectsController  extends BackendModuleActionController
         return new HtmlResponse($this->moduleTemplate->renderContent());
     }
 
-    public function resetAction(ServerRequestInterface $request = null){
-        $this->forward('import', null, null, null);
+    public function resetAction(ServerRequestInterface $request = null): ResponseInterface{
+        return (new ForwardResponse('import'))->withArguments(null);
     }
 
     /**
      * This function is used to render View after form submission
      */
-    function renderViewAction($requestBody = null){
+    function renderViewAction($requestBody = null): ResponseInterface{
         $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
             'EXT:qc_redirects/Resources/Private/Templates/Import.html'
         ));
@@ -186,6 +189,7 @@ class AddRedirectsController  extends BackendModuleActionController
         ]);
         $this->view->assign('separators', $this->separators);
         $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse();
     }
 
     /**

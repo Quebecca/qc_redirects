@@ -40,9 +40,7 @@ class ExportRedirectsRepository
         $orderType = in_array($orderType, ['ASC', 'DESC']) ? $orderType : $this->defaultOrderType;
 
         $data = $queryBuilder->select('uid', 'createdon','updatedon', 'title', 'source_path', 'target')
-            ->from($this->tableName)
-            ->orderBy($orderBy,$orderType)
-            ->execute()
+            ->from($this->tableName)->orderBy($orderBy, $orderType)->executeQuery()
             ->fetchAllAssociative();
 
         $csvData = [];
@@ -127,11 +125,7 @@ class ExportRedirectsRepository
         $queryBuilder = $this->getQueryBuilderForTable('pages');
         $results = $queryBuilder
             ->select('uid')
-            ->from('pages')
-            ->where(
-                $queryBuilder->expr()->like('slug', $queryBuilder->createNamedParameter($slug)),
-            )
-            ->execute()
+            ->from('pages')->where($queryBuilder->expr()->like('slug', $queryBuilder->createNamedParameter($slug)))->executeQuery()
             ->fetchAssociative();
 
         if($results !== false){
