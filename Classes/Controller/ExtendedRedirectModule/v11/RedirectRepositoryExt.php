@@ -69,9 +69,10 @@ class RedirectRepositoryExt extends RedirectRepository
 
     /**
      * @param Demand $demand
+     * @param bool $createCountQuery
      * @return QueryBuilder
      */
-    protected function getQueryBuilderForDemand(Demand $demand): QueryBuilder
+    protected function getQueryBuilderForDemand(Demand $demand, bool $createCountQuery = false): QueryBuilder
     {
         $queryBuilder = parent::getQueryBuilderForDemand($demand);
         $constraints = '';
