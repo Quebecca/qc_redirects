@@ -22,7 +22,6 @@ use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BeUriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\FormProtection\FormProtectionFactory;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -131,34 +130,31 @@ class BackendModuleActionController extends ActionController
     }
 
     /**
-     * @param ViewInterface $view
      * @throws RouteNotFoundException
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView($view)
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
-        /** @var BackendTemplateView $view */
-        parent::initializeView($view);
+        //parent::initializeView($view);
 
-        if ($view instanceof BackendTemplateView) {
-            $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+      //  if ($view instanceof BackendTemplateView) {
+        $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
 
-            $this->pageRenderer = $this->pageRenderer;
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
-            $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
 
-            $this->createMenu();
-            $this->createButtons();
-        }
+        $this->createMenu();
+        $this->createButtons();
+        //}
 
         $this->view->assign('storagePid', $this->pageUid);
 
         $this->view->assign('returnUrl', $this->getControllerContextBasedReturnUrl());
-    }
+   }
 
     /**
      * Create menu for backend module
