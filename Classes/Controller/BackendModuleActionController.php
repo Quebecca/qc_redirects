@@ -121,7 +121,7 @@ class BackendModuleActionController extends ActionController
                 true
             );
 
-            $flashMessageService = $this->objectManager->get(FlashMessageService::class);
+            $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
             $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
             $messageQueue->addMessage($message);
         }
@@ -163,7 +163,7 @@ class BackendModuleActionController extends ActionController
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         /** @var UriBuilder $uriBuilder */
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
         $menu = $moduleTemplate->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
@@ -188,7 +188,7 @@ class BackendModuleActionController extends ActionController
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
         foreach ($this->buttons as $key => $button) {
@@ -280,7 +280,7 @@ class BackendModuleActionController extends ActionController
      */
     protected function createActionButton($action, $controller, $title, $icon, $displayConditions = null, $arguments = [], $dataAttributes = [])
     {
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
         $url = (string)$uriBuilder->reset()->setRequest($this->request)->uriFor($action, $arguments, $controller);
