@@ -19,6 +19,7 @@ use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Configuration\Features;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Redirects\Controller\ManagementController;
@@ -79,11 +80,11 @@ class ManagementControllerExt extends ManagementController
     /**
      * Instantiate the form protection before a simulated user is initialized.
      */
-    public function __construct()
+    public function __construct(protected PageRenderer $pageRenderer)
     {
         parent::__construct();
         $this->localizationUtility = $localizationUtility ?? GeneralUtility::makeInstance(LocalizationUtility::class);
-        $this->moduleTemplate->getPageRenderer()->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
+        $this->pageRenderer->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->backendSession = $backendSession ?? GeneralUtility::makeInstance(BackendSession::class);
         $this->demand = $demand ?? GeneralUtility::makeInstance(DemandExt::class);
         $this->demand->setOrderBy(self::ORDER_BY_DEFAULT);
