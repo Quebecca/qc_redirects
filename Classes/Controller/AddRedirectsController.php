@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Qc\QcRedirects\Controller;
 
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
@@ -96,13 +97,14 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $icon;
 
+    public function __construct(
+        protected ModuleTemplateFactory $moduleTemplateFactory,
+        protected PageRenderer $pageRenderer
+    ) {
+        parent::__construct($moduleTemplateFactory,$pageRenderer);
 
-
-    public function __construct(private PageRenderer $pageRenderer
-    )
-    {
         $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
-        $this->moduleTemplate ??= GeneralUtility::makeInstance(ModuleTemplate::class);
+       // $this->moduleTemplate ??= GeneralUtility::makeInstance(ModuleTemplate::class);
         $this->pageRenderer->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
@@ -114,11 +116,10 @@ class AddRedirectsController  extends BackendModuleActionController
     /**
      * Set up the doc header properly here
      *
-     * @param ViewInterface $view
      * @return void
      * @throws RouteNotFoundException
      */
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView($view)
     {
         parent::initializeView($view);
         $this->view->assignMultiple([

@@ -56,8 +56,9 @@ class RedirectRepositoryExt extends RedirectRepository
      * This core function is overloaded to add sort operation
      *
      * @return array
+     * @throws Exception
      */
-    public function findRedirectsByDemand(): array
+/*    public function findRedirectsByDemand(): array
     {
         return $this->getQueryBuilderForDemand()
             ->setMaxResults($this->demand->getLimit())
@@ -73,7 +74,7 @@ class RedirectRepositoryExt extends RedirectRepository
      *
      * @return QueryBuilder
      */
-    protected function getQueryBuilderForDemand(): QueryBuilder
+/*    protected function getQueryBuilderForDemand(): QueryBuilder
     {
         $queryBuilder = parent::getQueryBuilderForDemand();
         $constraints = '';
@@ -85,5 +86,5 @@ class RedirectRepositoryExt extends RedirectRepository
             );
         }
         return $queryBuilder->andWhere($constraints);
-    }
+    }*/
 }
