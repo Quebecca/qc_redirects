@@ -98,8 +98,8 @@ class AddRedirectsController  extends BackendModuleActionController
     protected $icon;
 
     public function __construct(
-        protected ModuleTemplateFactory $moduleTemplateFactory,
-        protected PageRenderer $pageRenderer
+        private ModuleTemplateFactory $moduleTemplateFactory,
+         PageRenderer $pageRenderer
     ) {
         parent::__construct($moduleTemplateFactory,$pageRenderer);
 
