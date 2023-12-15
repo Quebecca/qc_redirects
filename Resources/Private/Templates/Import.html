@@ -1,13 +1,11 @@
-<html
-        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-        xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
-        data-namespace-typo3-fluid="true"
->
-
+{namespace be=TYPO3\CMS\Backend\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+<f:layout name="Module" />
+<f:section name="Content">
     <h1>
         <f:translate key="import_redirects_list" extensionName="qc_redirects"/>
     </h1>
-    <f:flashMessages />
+    <f:flashMessages queueIdentifier="qc_redirects" />
     <f:be.infobox title="{f:translate(key: 'instructions', extensionName:'qc_redirects')}" state="-1">
         <ul>
             <li>
@@ -30,10 +28,9 @@
             </li>
         </ul>
     </f:be.infobox>
-    <form action="{be:moduleLink(route:'add_redirects')}" method="post">
+    <form action="{be:moduleLink(route:'add_redirects')}" id="redirect-form" method="post">
 
         <div class="form-group">
-
             <div class="form-section">
                 <div class="d-flex justify-content-between">
                     <div class="form-group col-xs-12">
@@ -95,15 +92,12 @@
                     onclick="return confirm(this.dataset.message)"
             />
         </div>
-
+        <div id="reset-button">
+            <button  class="btn btn-default resetButton">{f:translate(key:'lReset', extensionName:'qc_redirects')}</button>
+        </div>
     </form>
 
+</f:section>
 
-    <div id="reset-button">
-        <f:link.action controller="AddRedirects" action="reset" arguments="{reset : 'true'}">
-            <button  class="btn btn-default">{f:translate(key:'lReset', extensionName:'qc_redirects')}</button>
-        </f:link.action>
-    </div>
 
-    <br>
-</html>
+

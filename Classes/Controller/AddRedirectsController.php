@@ -29,11 +29,11 @@ use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-class AddRedirectsController  extends BackendModuleActionController
+class AddRedirectsController extends ActionController
 {
 
     protected const LANG_FILE = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:';
@@ -43,6 +43,13 @@ class AddRedirectsController  extends BackendModuleActionController
      * @var ModuleTemplate
      */
     protected $moduleTemplate;
+
+    /**
+     * ModuleTemplate object
+     *
+     * @var ModuleTemplateFactory
+     */
+    protected $moduleTemplateFactory;
 
     /**
      * @var LocalizationUtility
@@ -86,6 +93,10 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $view;
 
+    /**
+     * @var PageRenderer
+     */
+    protected $pageRenderer;
 
     /**
      * @var IconFactory
@@ -97,20 +108,32 @@ class AddRedirectsController  extends BackendModuleActionController
      */
     protected $icon;
 
-    public function __construct(
-        private ModuleTemplateFactory $moduleTemplateFactory,
-         PageRenderer $pageRenderer
-    ) {
-        parent::__construct($moduleTemplateFactory,$pageRenderer);
+    /**
+     * The extension key of the controller extending this class
+     *
+     * @var string
+     */
+    protected $extKey;
 
-        $this->localizationUtility ??= GeneralUtility::makeInstance(LocalizationUtility::class);
-       // $this->moduleTemplate ??= GeneralUtility::makeInstance(ModuleTemplate::class);
+    /**
+     * The module name of the backend module extending this class
+     * @var string
+     */
+    protected $moduleName;
+
+    public function __construct(
+    ) {
+        $this->moduleTemplateFactory = GeneralUtility::makeInstance(ModuleTemplateFactory::class);
+        $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $this->localizationUtility = GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->pageRenderer->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/QcRedirects/QcRedirectModuleBE');
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $this->icon = $this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL);
+
     }
 
     /**
@@ -119,10 +142,16 @@ class AddRedirectsController  extends BackendModuleActionController
      * @return void
      * @throws RouteNotFoundException
      */
-    protected function initializeView($view)
+    protected function initializeView($request)
     {
-        parent::initializeView($view);
-        $this->view->assignMultiple([
+        $this->moduleTemplate = $this->moduleTemplateFactory->create( $this->request);
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
+        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
+        $this->moduleTemplate->assignMultiple([
             'separators' => $this->separators,
             'icon' => $this->icon
         ]);
@@ -131,25 +160,24 @@ class AddRedirectsController  extends BackendModuleActionController
 
     public function initializeAction()
     {
+
         $this->extKey = $this->request->getControllerExtensionKey();
         $this->moduleName = $this->request->getPluginName();
     }
 
-
     /**
      * this function is used to receive data form the BE form
      * @param ServerRequestInterface|null $request
-     * @return HtmlResponse|null
      * @throws Exception
      */
-    public function importAction(ServerRequestInterface $request = null): ?HtmlResponse
+    public function importAction(ServerRequestInterface $request = null): ResponseInterface
     {
+
         $requestBody = [];
         if($request == null){
-            return null;
+            return $this->moduleTemplate->renderResponse('Import');
         }
         if($request->getParsedBody() !== null){
-
             $this->extraFields = GeneralUtility::trimExplode(',',$request->getParsedBody()['extraFields'], true);
             if(!$this->importFormValidator->checkForInvalidFields($this->extraFields) || !$this->importFormValidator->checkForReadOnlyFields($this->extraFields)){
                 $this->generateAlertMessage(false);
@@ -158,7 +186,7 @@ class AddRedirectsController  extends BackendModuleActionController
             }
             else{
                 $redirectsList = $request->getParsedBody()['redirectsList'];
-                $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'];
+                $this->selectedSeparatedChar = $request->getParsedBody()['separationCharacter'] ?? ';';
                 // convert data to array
                 $redirectsListArray = explode("\r\n", $redirectsList);
                 $created = $this->processRedirects($redirectsListArray);
@@ -168,31 +196,21 @@ class AddRedirectsController  extends BackendModuleActionController
                 $this->generateAlertMessage($created);
             }
         }
-        $this->renderViewAction($requestBody);
-        return new HtmlResponse($this->moduleTemplate->renderContent());
-    }
-
-    public function resetAction(ServerRequestInterface $request = null): ResponseInterface{
-        return (new ForwardResponse('import'))->withArguments(null);
-    }
-
-    /**
-     * This function is used to render View after form submission
-     */
-    function renderViewAction($requestBody = null): ResponseInterface{
-        $this->view->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName(
-            'EXT:qc_redirects/Resources/Private/Templates/Import.html'
-        ));
-        $this->view->assignMultiple([
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $moduleTemplate->assignMultiple([
+            'separators' => $this->separators,
+            'icon' => $this->icon,
             'redirectsList' => $requestBody['redirectsList'],
             'separationCharacter' => $requestBody['separationCharacter'],
             'extraFields' => $requestBody['extraFields']
         ]);
-        $this->view->assign('separators', $this->separators);
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse();
-    }
 
+
+        return $moduleTemplate->renderResponse('Import');
+    }
+    public function resetAction(ServerRequestInterface $request = null): ResponseInterface{
+        return (new ForwardResponse('import'));
+    }
     /**
      * This function will be used to get the imported data header, by combining mandatory fields with additional fields
      * @return array
@@ -216,7 +234,7 @@ class AddRedirectsController  extends BackendModuleActionController
         // precessing each line in the array
         foreach ($redirectListArray as $item){
             // separate the row columns
-            $separator = $this->separators[$this->selectedSeparatedChar];
+            $separator = $this->separators[$this->selectedSeparatedChar] ?? ';';
             $row = GeneralUtility::trimExplode($separator,$item);
             // empty lines
             if($row[0] === '')
@@ -232,8 +250,8 @@ class AddRedirectsController  extends BackendModuleActionController
 
             // remove white spacing
             if($this->selectedSeparatedChar !== "tabulation"){
-                $row[0] = preg_replace('/\s+/', '', $row[0]);
-                $row[1] = preg_replace('/\s+/', '', $row[1]);
+                $row[0] = preg_replace('/\s+/', '', $row[0] ?? '');
+                $row[1] = preg_replace('/\s+/', '', $row[1] ?? '');
             }
             // empty line
             if(count($row) == 1 && $row[0] == ''){
