@@ -112,7 +112,9 @@
                         </ul>
                     </div>
                 </th>
-                <th><f:translate key="LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:title"/></th>
+                <th>
+                    <f:render section="listHeaderSorting" arguments="{field: 'title', label: 'title', demand: demand}"/>
+                </th>
                 <th>
                     <f:render section="listHeaderSorting" arguments="{field: 'source_host', label: 'sys_redirect.source_host', demand: demand}"/>
                 </th>
@@ -272,16 +274,17 @@
 </f:section>
 
 <f:section name="listHeaderSorting">
+    <f:variable name="labelTrPath" value="{f:if(condition: '{label} === title', then: 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf:{label}', else: 'LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:{label}')}" />
     <f:if condition="{demand.orderField} === {field}">
         <f:then>
             <a href="{f:be.uri(route:'site_redirects', parameters: '{action: \'overview\', demand: demand.parameters, orderField: field, orderDirection: demand.reverseOrderDirection}')}">
-                <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:{label}"/>
+                <f:translate key="{labelTrPath}"/>
             </a>
             <core:icon identifier="status-status-sorting-{demand.orderDirection}"/>
         </f:then>
         <f:else>
             <a href="{f:be.uri(route:'site_redirects', parameters: '{action: \'overview\', demand: demand.parameters, orderField: field, orderDirection: demand.defaultOrderDirection}')}">
-                <f:translate key="LLL:EXT:redirects/Resources/Private/Language/locallang_db.xlf:{label}"/>
+                <f:translate key="{labelTrPath}"/>
             </a>
         </f:else>
     </f:if>

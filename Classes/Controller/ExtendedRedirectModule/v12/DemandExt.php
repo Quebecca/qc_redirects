@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Redirects\Repository\Demand;
 class DemandExt extends Demand
 {
+    protected const ORDER_FIELDS = ['title', 'source_host', 'source_path', 'lasthiton', 'hitcount', 'protected'];
     protected string $title;
 
 
@@ -28,6 +29,10 @@ class DemandExt extends Demand
             $olderThan,
             $creationType
         );
+        if (!in_array($orderField, self::ORDER_FIELDS, true)) {
+            $orderField = self::DEFAULT_ORDER_FIELD;
+        }
+        $this->orderField = $orderField;
         $this->title = $title;
     }
 
