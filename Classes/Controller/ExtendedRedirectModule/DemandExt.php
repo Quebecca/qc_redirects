@@ -88,4 +88,16 @@ class DemandExt extends Demand
     {
         return parent::hasConstraints() || $this->hasTitle();
     }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        $parameters = parent::getParameters();
+        if ($this->hasTitle()) {
+            $parameters['title'] = $this->getTitle();
+        }
+        return $parameters;
+    }
 }
