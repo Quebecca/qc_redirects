@@ -80,4 +80,12 @@ class DemandExt extends Demand
         $title = $demand['title'] ?? '';
         return new self($page, $orderField, $orderDirection, $sourceHosts, $sourcePath, $target, $statusCodes, $maxHits, null, $creationType, $title);
     }
+
+    /**
+     * @return bool
+     */
+    public function hasConstraints(): bool
+    {
+        return parent::hasConstraints() || $this->hasTitle();
+    }
 }
