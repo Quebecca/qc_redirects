@@ -5,7 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Redirects\Repository\Demand;
 class DemandExt extends Demand
 {
-    protected const ORDER_FIELDS = ['title', 'source_host', 'source_path', 'lasthiton', 'hitcount', 'protected'];
+    protected const ORDER_FIELDS = ['title', 'source_host', 'source_path', 'lasthiton', 'hitcount', 'protected', 'createdon'];
     protected string $title;
 
 
