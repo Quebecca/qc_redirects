@@ -59,7 +59,7 @@ class ManagementControllerExt extends ManagementController{
             'showHitCounter' => $event->getShowHitCounter(),
             'pagination' => $this->preparePagination($event->getDemand()),
         ]);
-        return $view->renderResponse('RedirectOverviewV12');
+        return $view->renderResponse('RedirectOverview');
     }
 
 }

@@ -15,7 +15,7 @@ class RedirectRepositoryExt extends RedirectRepository
     protected function getQueryBuilderForDemand(Demand $demand, bool $createCountQuery = false): QueryBuilder
     {
         $constraints = "";
-        $queryBuilder = parent::getQueryBuilderForDemand($demand);
+        $queryBuilder = parent::getQueryBuilderForDemand($demand, $createCountQuery);
         if ($demand instanceof DemandExt && $demand->hasTitle()) {
             $escapedLikeString = '%' . $queryBuilder->escapeLikeWildcards($demand->getTitle()) . '%';
             $constraints = $queryBuilder->expr()->like(
