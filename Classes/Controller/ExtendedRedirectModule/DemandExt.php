@@ -1,6 +1,6 @@
 <?php
 
-namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v12;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Redirects\Repository\Demand;
 class DemandExt extends Demand

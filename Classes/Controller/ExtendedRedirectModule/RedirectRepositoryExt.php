@@ -1,6 +1,6 @@
 <?php
 
-namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v12;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule;
 
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Redirects\Repository\Demand;

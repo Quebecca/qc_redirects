@@ -8,12 +8,12 @@ $typoVersion = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Cor
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'] += [
     TYPO3\CMS\Redirects\Controller\ManagementController::class => [
-        'className' => Qc\QcRedirects\Controller\ExtendedRedirectModule\v12\ManagementControllerExt::class
+        'className' => Qc\QcRedirects\Controller\ExtendedRedirectModule\ManagementControllerExt::class
     ],
 ];
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TYPO3\CMS\Redirects\Repository\RedirectRepository::class] = [
-    'className' => Qc\QcRedirects\Controller\ExtendedRedirectModule\v12\RedirectRepositoryExt::class
+    'className' => Qc\QcRedirects\Controller\ExtendedRedirectModule\RedirectRepositoryExt::class
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig(

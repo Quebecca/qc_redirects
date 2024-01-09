@@ -10,7 +10,7 @@
  *
  ***/
 
-namespace Qc\QcRedirects\Controller\ExtendedRedirectModule\v12;
+namespace Qc\QcRedirects\Controller\ExtendedRedirectModule;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
