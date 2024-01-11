@@ -20,6 +20,5 @@
         "typo3/cms": {
             "extension-key": "qc_redirects"
         }
-    },
-	"version": "12.4.9"
+    }
 }
