@@ -200,9 +200,9 @@ class AddRedirectsController extends ActionController
         $moduleTemplate->assignMultiple([
             'separators' => $this->separators,
             'icon' => $this->icon,
-            'redirectsList' => $requestBody['redirectsList'],
-            'separationCharacter' => $requestBody['separationCharacter'],
-            'extraFields' => $requestBody['extraFields']
+            'redirectsList' => $requestBody['redirectsList'] ?? '',
+            'separationCharacter' => $requestBody['separationCharacter'] ?? '',
+            'extraFields' => $requestBody['extraFields'] ?? ''
         ]);
 
 
@@ -281,7 +281,7 @@ class AddRedirectsController extends ActionController
                 // verify fields values
                 $index = 0;
                 foreach ($mappedRow as $key => $value){
-                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'];
+                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'] ?? null;
                     if($renderType != null &&  in_array($renderType, $this->importFormValidator->getCheckingRules() )){
                         $checkingMethodName = $renderType.'Verify';
                         if(!$this->importFormValidator->$checkingMethodName($key,$value)){

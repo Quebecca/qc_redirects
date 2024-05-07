@@ -110,7 +110,8 @@ class ImportFormValidator
     public function checkForReadOnlyFields(array $extraFields) : bool{
         // check if the field is on ReadOnly
         foreach ($extraFields as $field){
-            if($this->allowedAdditionalFields[$field]['config']['readOnly']){
+
+            if($this->allowedAdditionalFields[$field]['config']['readOnly'] ??  false){
                 $this->readOnlyFields [] = $field;
             }
         }
