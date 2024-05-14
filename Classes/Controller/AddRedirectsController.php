@@ -244,7 +244,9 @@ class AddRedirectsController extends ActionController
             $this->importFormValidator->setRowsConstraints(array_merge($this->importFormValidator->getMandatoryFields(), $this->extraFields));
             // adding optional fields to be validated
             foreach ($this->importFormValidator->getRowsConstraints() as $fieldName){
-                $mappedRow[$fieldName] = $row[$index];
+                if($row[$index] ?? false){
+                    $mappedRow[$fieldName] = $row[$index];
+                }
                  $index++;
             }
 
