@@ -21,7 +21,7 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
             'config' => [
                 'type' => 'input',
                 'default' => '',
-                'renderType' => 'inputDateTime',
+                'renderType' => 'datetime',
                 'eval' => 'datetime',
                 'readOnly' => true
             ]
@@ -33,7 +33,7 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
             'config' => [
                 'type' => 'input',
                 'default' => '',
-                'renderType' => 'inputDateTime',
+                'renderType' => 'datetime',
                 'eval' => 'datetime',
                 'readOnly' => true
             ]
