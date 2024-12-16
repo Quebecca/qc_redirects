@@ -30,7 +30,7 @@ class ImportFormValidator
      * @var array|string[]
      */
     protected array $checkingRules = [
-        'inputLink', 'inputDateTime', 'checkboxToggle', 'selectSingle'
+        'inputLink', 'datetime', 'checkboxToggle', 'selectSingle'
     ];
 
     /**
@@ -149,19 +149,24 @@ class ImportFormValidator
         return true;
     }
 
+    /**
+     * @param $value
+     * @return true
+     */
     public function inputLinkVerify($value){
         //  return filter_var($value, FILTER_VALIDATE_URL);
         return true;
     }
+
 
     /**
      * @param string $key
      * @param $value
      * @return bool
      */
-    public function inputDateTimeVerify(string $key , $value): bool
+    public function datetimeVerify(string $key , $value): bool
     {
-        return (bool)strtotime($value) || $value == '';
+        return (bool) strtotime($value) || $value == '';
     }
 
     /**
@@ -182,7 +187,7 @@ class ImportFormValidator
     public function selectSingleVerify(string $key, $value) : bool {
         $availablValues = [];
         foreach ($this->allowedAdditionalFields[$key]['config']['items'] as $item){
-            $availablValues[] = $item[1];
+            $availablValues[] = $item['value'] ?? $item[1];
         }
         return in_array($value, $availablValues);
     }

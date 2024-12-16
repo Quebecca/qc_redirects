@@ -279,11 +279,15 @@ class AddRedirectsController extends ActionController
                     );
                     break;
                 }
-
                 // verify fields values
                 $index = 0;
                 foreach ($mappedRow as $key => $value){
-                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'] ?? null;
+                    $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'] ??
+                        $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['type'] ?? null;
+                    // Exception for Typo3 v11
+                    if($renderType == 'inputDatetime'){
+                        $renderType = 'datetime';
+                    }
                     if($renderType != null &&  in_array($renderType, $this->importFormValidator->getCheckingRules() )){
                         $checkingMethodName = $renderType.'Verify';
                         if(!$this->importFormValidator->$checkingMethodName($key,$value)){
@@ -298,7 +302,7 @@ class AddRedirectsController extends ActionController
                         }
                         else{
                             switch ($renderType){
-                                case 'inputDateTime' : $mappedRow[$key] = strtotime($value); break;
+                                case 'datetime' : $mappedRow[$key] = strtotime($value); break;
                                 case 'checkboxToggle' : $mappedRow[$key] = $value == 'true' ? 1 : 0;
                             }
                         }
