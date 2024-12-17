@@ -284,7 +284,6 @@ class AddRedirectsController extends ActionController
                 foreach ($mappedRow as $key => $value){
                     $renderType = $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['renderType'] ??
                         $this->importFormValidator->getAllowedAdditionalFields()[$key]['config']['type'] ?? null;
-                    // Exception for Typo3 v11
                     if($renderType == 'inputDatetime'){
                         $renderType = 'datetime';
                     }
@@ -309,7 +308,6 @@ class AddRedirectsController extends ActionController
                     }
                     $index++;
                 }
-
                 $sourcePathArray[] = $mappedRow['source_path'];
                 $redirectEntities[] = $mappedRow;
             }
