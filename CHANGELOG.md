@@ -1,5 +1,5 @@
 # Qc Redirects
-## Chnage log v2.0.0
+## Change log v2.0.1
 - 2025-06-02 [CHANGED] Marked extension as stable
 ## Change log v2.0.0
 - 2024-12-17 [Feature] Add Support for Typo3 V12
