@@ -16,24 +16,22 @@ namespace Qc\QcRedirects\Controller;
 
 
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Backend\Clipboard\Clipboard;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BeUriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\FormProtection\FormProtectionFactory;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Imaging\IconSize;
 
 /**
  * Extend this controller to get convenience methods for backend modules
@@ -102,7 +100,7 @@ class BackendModuleActionController extends ActionController
     /**
      * Function will be called before every other action
      */
-    public function initializeAction()
+    public function initializeAction():void
     {
         // Set storage pid from settings if defined
         if ((int)($this->settings['storagePid']) !== 0) {
@@ -116,7 +114,7 @@ class BackendModuleActionController extends ActionController
                 FlashMessage::class,
                 $this->getLanguageService()->sL('LLL:EXT:backend_module/Resources/Private/Language/locallang.xlf:configuration.pid.description'),
                 $this->getLanguageService()->sL('LLL:EXT:backend_module/Resources/Private/Language/locallang.xlf:configuration.pid.title'),
-                AbstractMessage::WARNING,
+                ContextualFeedbackSeverity::WARNING,
                 true
             );
 
@@ -134,25 +132,20 @@ class BackendModuleActionController extends ActionController
     protected function initializeView($view)
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
-        //parent::initializeView($view);
 
-      //  if ($view instanceof BackendTemplateView) {
         $moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
 
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
-
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/context-menu.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/modal.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/ajax-data-handler.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/recordlist.js');
         $this->createMenu();
         $this->createButtons();
-        //}
 
-        $this->view->assign('storagePid', $this->pageUid);
-
-        $this->view->assign('returnUrl', $this->getControllerContextBasedReturnUrl());
+        $this->view->assignMultiple([
+            'storagePid' => $this->pageUid,
+            'returnUrl' => $this->getControllerContextBasedReturnUrl()
+        ]);
    }
 
     /**
@@ -237,7 +230,7 @@ class BackendModuleActionController extends ActionController
             return null;
         }
 
-        $icon = $this->iconFactory->getIcon($iconIdentifier, Icon::SIZE_SMALL);
+        $icon = $this->iconFactory->getIcon($iconIdentifier, IconSize::SMALL);
 
         if ($returnUrl === null) {
             if (!empty($returnParameter)) {
@@ -311,7 +304,7 @@ class BackendModuleActionController extends ActionController
         if (!empty($elFromTable)) {
             $url = $clipBoard->pasteUrl('', $this->pageUid);
             $title = $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:clip_pasteInto');
-            $icon = $this->iconFactory->getIcon('actions-document-paste-into', Icon::SIZE_SMALL);
+            $icon = $this->iconFactory->getIcon('actions-document-paste-into', IconSize::SMALL);
 
             $dataAttributes['content'] = $clipBoard->confirmMsgText('pages', BackendUtility::getRecord('pages', $this->pageUid), 'into', $elFromTable);
             $dataAttributes['title'] = $this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:clip_paste');
@@ -350,69 +343,6 @@ class BackendModuleActionController extends ActionController
         ];
     }
 
-    /**
-     * Redirect to TCEFORM to create a new record
-     *
-     * @param string $table table name
-     * @throws \Exception
-     */
-    protected function redirectToCreateNewRecord($table)
-    {
-        if ($this->moduleName === null) {
-            throw new \Exception('The module name is not defined. Define $this->moduleName in the initializeAction method in your controller extending the BackendActionController.', '1471456225');
-        }
-
-        $returnUrl = 'index.php?M=' . $this->moduleName . '&id=' . $this->pageUid . $this->getToken($this->moduleName);
-
-        /** @var BeUriBuilder $uriBuilder */
-        $uriBuilder = GeneralUtility::makeInstance(BeUriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('record_edit', [
-            'edit[' . $table . '][' . $this->pageUid . ']' => 'new',
-            'returnUrl' => $returnUrl
-        ]);
-
-        HttpUtility::redirect($url);
-    }
-
-    /**
-     * Redirect to TCEFORM to edit a record
-     *
-     * @param string $table table name
-     * @throws \Exception
-     */
-    protected function redirectToEditRecord($table, $recordId)
-    {
-        if ($this->moduleName === null) {
-            throw new \Exception('The module name is not defined. Define $this->moduleName in the initializeAction mehtod in your controller extending the BackendActionController.', '1471456225');
-        }
-
-        $returnUrl = 'index.php?M=' . $this->moduleName . '&id=' . $this->pageUid . $this->getToken($this->moduleName);
-
-        /** @var BeUriBuilder $uriBuilder */
-        $uriBuilder = GeneralUtility::makeInstance(BeUriBuilder::class);
-        $url = (string)$uriBuilder->buildUriFromRoute('record_edit', [
-            'edit[' . $table . '][' . $recordId . ']' => 'edit',
-            'returnUrl' => $returnUrl
-        ]);
-
-        HttpUtility::redirect($url);
-    }
-
-    /**
-     * Get a CSRF token
-     *
-     * @param string $moduleName The full name of the module e.g. tools_ExtensionnameModulename
-     * @param bool $tokenOnly Set it to TRUE to get only the token, otherwise including the &moduleToken= as prefix
-     * @return string
-     */
-    private function getToken($moduleName, $tokenOnly = false)
-    {
-        $token = FormProtectionFactory::get()->generateToken('moduleCall', $moduleName);
-        if ($tokenOnly) {
-            return $token;
-        }
-        return '&moduleToken=' . $token;
-    }
 
     /**
      * Get return url based on the current controller context
@@ -423,6 +353,7 @@ class BackendModuleActionController extends ActionController
     public function getControllerContextBasedReturnUrl()
     {
         $parameter = [];
+
         if ($this->controllerContext) {
             $currentRequest = $this->controllerContext->getRequest();
             $fullPluginName = $this->getFullPluginName();

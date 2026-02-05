@@ -95,6 +95,9 @@
              <trans-unit id="updatedon">
                    <source>Update date</source>
              </trans-unit>
+            <trans-unit id="export_csv">
+                <source>Export CSV</source>
+            </trans-unit>
             <trans-unit id="mandatoryFieldsDesc">
                 <source>The source_host, source_path, target and is_regexp value are required. the order of this fields is required.</source>
             </trans-unit>

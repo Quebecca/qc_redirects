@@ -151,14 +151,15 @@ class ExportRedirectsRepository
     }
 
     /**
-     * This function is uesd to return the SchemaManager
+     * This function is used to return the SchemaManager
      * @param string $tableName
      * @return AbstractSchemaManager|null
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getSchemaManager(string $tableName): ?AbstractSchemaManager
     {
         return GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($tableName)
-            ->getSchemaManager();
+            ->createSchemaManager();
     }
 }

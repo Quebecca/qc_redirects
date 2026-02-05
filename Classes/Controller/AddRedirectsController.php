@@ -23,9 +23,10 @@ use Qc\QcRedirects\Domaine\Repository\ImportRedirectsRepository;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -127,12 +128,12 @@ class AddRedirectsController extends ActionController
         $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $this->localizationUtility = GeneralUtility::makeInstance(LocalizationUtility::class);
         $this->pageRenderer->addCssFile('EXT:qc_redirects/Resources/Public/Css/qc_redirects.css');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/QcRedirects/QcRedirectModuleBE');
+        $this->pageRenderer->loadJavaScriptModule('@qc/qc-redirects/QcRedirectModuleBE.js');
         $this->view ??= GeneralUtility::makeInstance(StandaloneView::class);
         $this->importRedirectsRepository = GeneralUtility::makeInstance(ImportRedirectsRepository::class);
         $this->importFormValidator = GeneralUtility::makeInstance(ImportFormValidator::class);
         $this->iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $this->icon = $this->iconFactory->getIcon('actions-document-export-csv', Icon::SIZE_SMALL);
+        $this->icon = $this->iconFactory->getIcon('actions-document-export-csv', IconSize::SMALL);
 
     }
 
@@ -145,20 +146,17 @@ class AddRedirectsController extends ActionController
     protected function initializeView($request)
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create( $this->request);
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/ContextMenu');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/Tooltip');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Tooltip');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Backend/AjaxDataHandler');
-        $this->pageRenderer->loadRequireJsModule('TYPO3/CMS/Recordlist/Recordlist');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/context-menu.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/modal.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/ajax-data-handler.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/backend/recordlist.js');
         $this->moduleTemplate->assignMultiple([
             'separators' => $this->separators,
             'icon' => $this->icon
         ]);
-
     }
 
-    public function initializeAction()
+    public function initializeAction():void
     {
 
         $this->extKey = $this->request->getControllerExtensionKey();
@@ -172,7 +170,6 @@ class AddRedirectsController extends ActionController
      */
     public function importAction(?ServerRequestInterface $request = null): ResponseInterface
     {
-
         $requestBody = [];
         if($request == null){
             return $this->moduleTemplate->renderResponse('Import');
@@ -335,7 +332,7 @@ class AddRedirectsController extends ActionController
      */
     public function generateAlertMessage(bool $success){
         $body = $success ? 'success' : 'error';
-        $flashServiceMessage = $success ? AbstractMessage::OK : AbstractMessage::ERROR;
+        $flashServiceMessage = $success ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::ERROR;
         $alertMessageBody =  $this->localizationUtility->translate(self::LANG_FILE.$body);
         $flashMessageService = $flashServiceMessage;
         $alertMessageHeader = $success ? $this->localizationUtility->translate(self::LANG_FILE.'import_success_body')

@@ -12,13 +12,10 @@ declare(strict_types=1);
  *
  ***/
 
-
 namespace Qc\QcRedirects\Controller\BackendSession;
 
-use __PHP_Incomplete_Class;
-use phpDocumentor\Reflection\Types\String_;
+
 use Qc\QcRedirects\Util\Arrayable;
-use Qc\QcRedirects\Controller\ExtendedRedirectModule\v11\DemandExt;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -54,6 +51,7 @@ class BackendSession
 
     /**
      * This function is used to register keys
+     *
      * @param string $key
      * @param string $class
      */
@@ -67,8 +65,10 @@ class BackendSession
 
     /**
      * This function is used to verify if the class implements the interface Arrayable
+     *
      * @param string $class
      * @param string $interface
+     *
      * @return bool
      */
     protected function isClassImplementsInterface(string $class, string $interface): bool
@@ -89,7 +89,7 @@ class BackendSession
      * Store a value in the session
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function store(string $key, $value)
     {
@@ -121,6 +121,7 @@ class BackendSession
 
     /**
      * @param string $key
+     *
      * @return false|mixed|Arrayable|null
      */
     public function get(string $key)
@@ -131,7 +132,7 @@ class BackendSession
             return null;
         }
         $result = $sessionData[$key];
-        if($this->typoVersion == 10)
+        if ($this->typoVersion == 10)
             return $result;
         // safeguard: check for incomplete class
         if (is_object($result) && $result instanceof \__PHP_Incomplete_Class) {
