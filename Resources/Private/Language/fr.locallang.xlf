@@ -117,6 +117,10 @@
                 <source>Update date</source>
                 <target>Date de modification</target>
             </trans-unit>
+            <trans-unit id="export_csv">
+                <source>Export CSV</source>
+                <target>Exportation CSV</target>
+            </trans-unit>
             <trans-unit id="label_title">
                 <source>Title</source>
                 <target>Titre</target>
