@@ -31,7 +31,6 @@ class BackendSession
 
     /** @var string[] */
     protected $registeredKeys = [];
-    protected int $typoVersion;
 
     /**
      * Unique key to store data in the session.
@@ -45,8 +44,6 @@ class BackendSession
     {
         $this->sessionObject = $GLOBALS['BE_USER'];
         $this->registerFilterKey('qc_redirect_filterKey', DemandExt::class);
-        $this->typoVersion = GeneralUtility::makeInstance(Typo3Version::class)->getMajorVersion();
-
     }
 
     /**
@@ -98,12 +95,7 @@ class BackendSession
             throw new \InvalidArgumentException('Unknown key ' . $key);
         }
         $sessionData = $this->sessionObject->getSessionData($this->storageKey);
-        if ($this->typoVersion == 11) {
-            $valueArray = $value->toArray();
-            $sessionData[$key] = $valueArray;
-        } else {
-            $sessionData[$key] = $value;
-        }
+        $sessionData[$key] = $value;
         $this->sessionObject->setAndSaveSessionData($this->storageKey, $sessionData);
     }
 
@@ -132,8 +124,7 @@ class BackendSession
             return null;
         }
         $result = $sessionData[$key];
-        if ($this->typoVersion == 10)
-            return $result;
+
         // safeguard: check for incomplete class
         if (is_object($result) && $result instanceof \__PHP_Incomplete_Class) {
             $this->delete($key);
