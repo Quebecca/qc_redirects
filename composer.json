@@ -6,10 +6,10 @@
     "keywords": ["TYPO3 CMS"],
     "require": {
         "php": "^8.1",
-        "typo3/cms-core": "^12.4.1",
-        "typo3/cms-backend": "^12.4.1",
-        "typo3/cms-fluid": "^12.4.1",
-        "typo3/cms-redirects": "^12.4.1"
+        "typo3/cms-core": "^13.4",
+        "typo3/cms-backend": "^13.4",
+        "typo3/cms-fluid": "^13.4",
+        "typo3/cms-redirects": "^13.4"
     },
     "autoload": {
         "psr-4": {

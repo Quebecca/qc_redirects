@@ -23,7 +23,6 @@ class RedirectRepositoryExt extends RedirectRepository
                 $queryBuilder->createNamedParameter($escapedLikeString)
             );
         }
-
         return $queryBuilder->andWhere($constraints);
     }
 }

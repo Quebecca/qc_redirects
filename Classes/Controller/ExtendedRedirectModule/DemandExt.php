@@ -1,8 +1,10 @@
 <?php
 
 namespace Qc\QcRedirects\Controller\ExtendedRedirectModule;
+
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Redirects\Repository\Demand;
+
 class DemandExt extends Demand
 {
     protected const ORDER_FIELDS = ['title', 'source_host', 'source_path', 'lasthiton', 'hitcount', 'protected', 'createdon'];
@@ -10,20 +12,21 @@ class DemandExt extends Demand
 
 
     public function __construct(
-        int $page = 1,
-        string $orderField = self::DEFAULT_ORDER_FIELD,
-        string $orderDirection = self::ORDER_ASCENDING,
-        array $sourceHosts = [],
-        string $sourcePath = '',
-        string $target = '',
-        array $statusCodes = [],
-        int $maxHits = 0,
+        int                 $page = 1,
+        string              $orderField = self::DEFAULT_ORDER_FIELD,
+        string              $orderDirection = self::ORDER_ASCENDING,
+        array               $sourceHosts = [],
+        string              $sourcePath = '',
+        string              $target = '',
+        array               $statusCodes = [],
+        int                 $maxHits = 0,
         ?\DateTimeInterface $olderThan = null,
-        ?int $creationType = -1,
-        string $title = ''
-    ) {
+        ?int                $creationType = -1,
+        string              $title = ''
+    )
+    {
         parent::__construct(
-            $page,$orderField,$orderDirection,$sourceHosts,$sourcePath,$target,
+            $page, $orderField, $orderDirection, $sourceHosts, $sourcePath, $target,
             $statusCodes,
             $maxHits,
             $olderThan,

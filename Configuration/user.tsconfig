@@ -1,0 +1,15 @@
+mod{
+    qcRedirects{
+        csvExport {
+            // Database column name that will be used to order the records in the csv file
+            orderBy = createdon
+            // Order Type ASC or DESC
+            orderType = DESC
+
+            // Csv parameters
+            separator = ;
+            enclosure = "
+            escape = \\
+        }
+    }
+}

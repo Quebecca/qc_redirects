@@ -19,10 +19,8 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
             'exclude' => true,
             'label' => $lll . ':updatedon',
             'config' => [
-                'type' => 'input',
-                'default' => '',
-                'renderType' => 'datetime',
-                'eval' => 'datetime',
+                'type' => 'datetime',
+                'default' => null,
                 'readOnly' => true
             ]
         ],
@@ -31,10 +29,8 @@ $lll = 'LLL:EXT:qc_redirects/Resources/Private/Language/locallang.xlf';
             'exclude' => true,
             'label' => $lll . ':createdon',
             'config' => [
-                'type' => 'input',
-                'default' => '',
-                'renderType' => 'datetime',
-                'eval' => 'datetime',
+                'type' => 'datetime',
+                'default' => null,
                 'readOnly' => true
             ]
         ],
